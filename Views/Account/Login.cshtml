@@ -10,7 +10,7 @@
             <div class="card shadow">
                 <div class="card-header text-center py-3">
                     <img src="~/images/usp-logo.png" alt="USP Logo" class="mb-3" style="height: 80px;" />
-                    <h2 class="mb-0">USP Student Portal Login</h2>
+                    <h2 class="mb-0">SOLS Login</h2>
                 </div>
                 <div class="card-body p-4">
                     <form method="post" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">
@@ -19,8 +19,8 @@
                             <input asp-for="LoginIdentifier" class="form-control" placeholder="Enter your email or student ID" />
                             <span asp-validation-for="LoginIdentifier" class="text-danger"></span>
                             <small class="form-text text-muted">
-                                Students: Use your Student ID (e.g., S12345)<br />
-                                Managers: Use your email address
+                                For Students: Enter your Student ID (e.g., S12345)<br />
+                                For Staff: Enter your USP email address
                             </small>
                         </div>
                         <div class="form-group mb-3">
@@ -35,12 +35,15 @@
                             </div>
                         </div>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">Log in</button>
+                            <button type="submit" class="btn btn-primary btn-lg">Log in to SOLS</button>
                         </div>
                     </form>
                 </div>
                 <div class="card-footer text-center py-3">
                     <p class="mb-0">Need help? Contact <a href="mailto:helpdesk@usp.ac.fj">USP Help Desk</a></p>
+                    <small class="text-muted mt-2 d-block">
+                        For account creation or password reset, please contact your faculty administrator.
+                    </small>
                 </div>
             </div>
         </div>

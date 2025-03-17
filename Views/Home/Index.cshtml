@@ -2,22 +2,94 @@
     ViewData["Title"] = "Welcome";
 }
 
-<div class="welcome-banner text-center">
-    <div class="container">
-        <h1 class="display-4 mb-4">Welcome to USP Student Portal</h1>
-        <p class="lead mb-4">Shaping Pacific Futures - The Premier University of the Pacific Region</p>
-        
-        @if (!User.Identity.IsAuthenticated)
-        {
-            <div class="mt-4">
-                <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg px-4">Student Login</a>
+<div class="welcome-banner">
+    <h1>Welcome to SOLS - Student Online Services</h1>
+    <p class="lead">The University of the South Pacific's Online Portal</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="h5 mb-0">IMPORTANT NOTICES</h2>
             </div>
-            <div class="mt-4">
-                <p class="text-light">
-                    For student account creation, please contact the Student Administrative Services.
-                </p>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h3 class="h6 text-teal">Declaration</h3>
+                    <p>
+                        By enrolling at the University of the South Pacific you agree to abide by the rules set out in the Statutes,
+                        Ordinances, Regulations and Charter of the University. You agree to comply with the University's deadlines
+                        for withdrawal of registration, payment of fees and other relevant deadlines.
+                    </p>
+                </div>
             </div>
-        }
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="calendar-widget">
+            <h3 class="h5 mb-3">March 2025</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>M</th>
+                        <th>T</th>
+                        <th>W</th>
+                        <th>T</th>
+                        <th>F</th>
+                        <th>S</th>
+                        <th>S</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>6</td>
+                        <td>7</td>
+                        <td>8</td>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>11</td>
+                        <td>12</td>
+                        <td>13</td>
+                        <td>14</td>
+                        <td>15</td>
+                        <td>16</td>
+                    </tr>
+                    <tr>
+                        <td>17</td>
+                        <td>18</td>
+                        <td>19</td>
+                        <td>20</td>
+                        <td>21</td>
+                        <td>22</td>
+                        <td>23</td>
+                    </tr>
+                    <tr>
+                        <td>24</td>
+                        <td>25</td>
+                        <td>26</td>
+                        <td>27</td>
+                        <td>28</td>
+                        <td>29</td>
+                        <td>30</td>
+                    </tr>
+                    <tr>
+                        <td>31</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

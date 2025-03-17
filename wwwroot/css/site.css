@@ -4,34 +4,153 @@
     --usp-teal-light: #00B4B8;
     --usp-gold: #FFB81C;
     --usp-gray: #666666;
+    --usp-beige: #E6E1D3;
+    --usp-beige-dark: #D6D1C3;
 }
 
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: 'Open Sans', sans-serif;
 }
 
-/* USP Custom Styles */
+/* Header Styles */
 .navbar {
-    background-color: var(--usp-teal) !important;
+    background: linear-gradient(to right, var(--usp-teal), var(--usp-teal-dark)) !important;
+    padding: 0.5rem 1rem;
+    border-bottom: 3px solid var(--usp-gold);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    color: white !important;
+}
+
+.usp-logo {
+    height: 50px;
+    margin-right: 15px;
+}
+
+/* Left Navigation Styles */
+.sidebar {
+    background-color: var(--usp-beige);
+    border-right: 1px solid var(--usp-beige-dark);
+    padding: 0;
+    min-height: calc(100vh - 60px);
+}
+
+.sidebar .nav-link {
+    color: #333;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--usp-beige-dark);
+    border-radius: 0;
+    margin: 0;
+}
+
+.sidebar .nav-link:hover {
+    background-color: var(--usp-beige-dark);
+    color: var(--usp-teal);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--usp-teal);
+    color: white;
+}
+
+.sidebar .nav-link i {
+    width: 24px;
+    margin-right: 0.5rem;
+}
+
+/* Main Content Area */
+.main-content {
+    padding: 2rem;
+}
+
+.welcome-banner {
+    background: white;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--usp-teal);
+}
+
+.welcome-banner h1 {
+    color: var(--usp-teal);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Calendar Widget */
+.calendar-widget {
+    background: white;
+    padding: 1rem;
+    border: 1px solid var(--usp-beige-dark);
+    border-radius: 4px;
+}
+
+.calendar-widget table {
+    width: 100%;
+    text-align: center;
+}
+
+.calendar-widget th {
+    background-color: var(--usp-teal);
+    color: white;
+    padding: 0.5rem;
+}
+
+.calendar-widget td {
+    padding: 0.5rem;
+}
+
+/* Student ID Display */
+.student-id {
+    color: white;
+    padding: 0.5rem 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-right: 1rem;
+}
+
+/* Menu Header */
+.menu-header {
+    background-color: #8B8878;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+/* Login Page Specific */
+.login-container {
+    max-width: 400px;
+    margin: 2rem auto;
+}
+
+.login-card {
+    background: white;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-card .card-header {
+    background: var(--usp-teal);
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
 }
 
 .btn-primary {
@@ -42,6 +161,10 @@ body {
 .btn-primary:hover {
     background-color: var(--usp-teal-dark);
     border-color: var(--usp-teal-dark);
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .card-header {
@@ -56,20 +179,6 @@ body {
 
 .footer a {
     color: var(--usp-gold);
-}
-
-.usp-logo {
-    height: 50px;
-    margin-right: 10px;
-}
-
-.welcome-banner {
-    background: linear-gradient(rgba(0, 155, 159, 0.9), rgba(0, 155, 159, 0.9)), url('/images/usp-campus.jpg');
-    background-size: cover;
-    background-position: center;
-    color: white;
-    padding: 4rem 0;
-    margin-bottom: 2rem;
 }
 
 .text-primary {
@@ -87,39 +196,6 @@ body {
 
 .badge-rejected {
     background-color: #dc3545;
-}
-
-/* Left Navigation Styles */
-.sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 100;
-    padding: 48px 0 0;
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-}
-
-.sidebar .nav-link {
-    font-weight: 500;
-    color: #333;
-    padding: 0.75rem 1rem;
-    border-radius: 0.25rem;
-    margin: 0.2rem 1rem;
-}
-
-.sidebar .nav-link:hover {
-    color: var(--usp-teal);
-    background-color: rgba(0, 155, 159, 0.1);
-}
-
-.sidebar .nav-link.active {
-    color: var(--usp-teal);
-    background-color: rgba(0, 155, 159, 0.2);
-}
-
-.sidebar .nav-link i {
-    margin-right: 0.5rem;
 }
 
 /* Responsive adjustments */
