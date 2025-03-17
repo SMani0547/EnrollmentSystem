@@ -5,8 +5,8 @@ namespace USPEducation.ViewModels;
 public class LoginViewModel
 {
     [Required]
-    [EmailAddress]
-    public string Email { get; set; } = string.Empty;
+    [Display(Name = "Email or Student ID")]
+    public string LoginIdentifier { get; set; } = string.Empty;
 
     [Required]
     [DataType(DataType.Password)]

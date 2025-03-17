@@ -15,9 +15,13 @@
                 <div class="card-body p-4">
                     <form method="post" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">
                         <div class="form-group mb-3">
-                            <label asp-for="Email" class="form-label">Student Email</label>
-                            <input asp-for="Email" class="form-control" placeholder="Enter your student email" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <label asp-for="LoginIdentifier" class="form-label"></label>
+                            <input asp-for="LoginIdentifier" class="form-control" placeholder="Enter your email or student ID" />
+                            <span asp-validation-for="LoginIdentifier" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                Students: Use your Student ID (e.g., S12345)<br />
+                                Managers: Use your email address
+                            </small>
                         </div>
                         <div class="form-group mb-3">
                             <label asp-for="Password" class="form-label">Password</label>

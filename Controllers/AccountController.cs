@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using USPEducation.Models;
 using USPEducation.ViewModels;
 
@@ -31,23 +32,30 @@ public class AccountController : Controller
         ViewData["ReturnUrl"] = returnUrl;
         if (ModelState.IsValid)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: true);
-            if (result.Succeeded)
+            // Try to find user by email (for managers) or student ID (for students)
+            var user = await _userManager.FindByEmailAsync(model.LoginIdentifier) ??
+                      await _userManager.Users.FirstOrDefaultAsync(u => u.StudentId == model.LoginIdentifier);
+
+            if (user != null)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                var roles = await _userManager.GetRolesAsync(user);
-                
-                if (roles.Contains("Manager"))
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
+                if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Manager");
+                    var roles = await _userManager.GetRolesAsync(user);
+                    
+                    if (roles.Contains("Manager"))
+                    {
+                        return RedirectToAction("Index", "Manager");
+                    }
+                    else if (roles.Contains("Student"))
+                    {
+                        return RedirectToAction("Index", "Student");
+                    }
+                    
+                    return RedirectToLocal(returnUrl);
                 }
-                else if (roles.Contains("Student"))
-                {
-                    return RedirectToAction("Index", "Student");
-                }
-                
-                return RedirectToLocal(returnUrl);
             }
+            
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         }
         return View(model);
@@ -66,6 +74,9 @@ public class AccountController : Controller
         {
             return Redirect(returnUrl);
         }
-        return RedirectToAction("Index", "Home");
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 } 
