@@ -1,0 +1,38 @@
+@model IEnumerable<USPEducation.Models.Course>
+
+@{
+    ViewData["Title"] = "Available Courses";
+}
+
+<div class="container mt-4">
+    <h2>Available Courses</h2>
+    <div class="row mb-3">
+        <div class="col">
+            <a asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var course in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">@course.CourseCode</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">@course.Title</h6>
+                        <p class="card-text">@course.Description</p>
+                        <p class="card-text"><small class="text-muted">Credits: @course.Credits</small></p>
+                    </div>
+                    <div class="card-footer">
+                        <form asp-action="Enroll" method="post">
+                            <input type="hidden" name="courseId" value="@course.Id" />
+                            <button type="submit" class="btn btn-primary">Enroll</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div> 

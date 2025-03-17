@@ -1,0 +1,50 @@
+@model IEnumerable<USPEducation.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+<div class="container mt-4">
+    <h2>My Enrollments</h2>
+    <div class="row mb-3">
+        <div class="col">
+            <a asp-action="AvailableCourses" class="btn btn-primary">View Available Courses</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">My Courses</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Title</th>
+                        <th>Credits</th>
+                        <th>Enrollment Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var enrollment in Model)
+                    {
+                        <tr>
+                            <td>@enrollment.Course.CourseCode</td>
+                            <td>@enrollment.Course.Title</td>
+                            <td>@enrollment.Course.Credits</td>
+                            <td>@enrollment.EnrollmentDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <span class="badge @(enrollment.Status == USPEducation.Models.EnrollmentStatus.Approved ? "bg-success" : 
+                                                   enrollment.Status == USPEducation.Models.EnrollmentStatus.Rejected ? "bg-danger" : "bg-warning")">
+                                    @enrollment.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Welcome";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Welcome to USP Education</h1>
+            <p class="lead mb-4">Your gateway to academic excellence at the University of the South Pacific</p>
+            
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <div class="mt-4">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg">Login to Continue</a>
+                </div>
+                <div class="mt-4">
+                    <p class="text-muted">
+                        For student account creation, please contact the administration office.
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Students</h5>
+                    <p class="card-text">Access your course enrollments, view available courses, and manage your academic journey.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Course Management</h5>
+                    <p class="card-text">Browse through our comprehensive selection of courses designed to enhance your knowledge and skills.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Enrollment System</h5>
+                    <p class="card-text">Easy-to-use enrollment system with real-time status tracking and course management.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

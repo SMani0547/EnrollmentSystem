@@ -1,0 +1,58 @@
+@model IEnumerable<USPEducation.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "Manager Dashboard";
+}
+
+<div class="container mt-4">
+    <h2>Enrollment Management</h2>
+    <div class="row mb-3">
+        <div class="col">
+            <a asp-action="Students" class="btn btn-primary">View Students</a>
+            <a asp-action="Courses" class="btn btn-info">View Courses</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Pending Enrollments</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var enrollment in Model)
+                    {
+                        <tr>
+                            <td>@enrollment.Student.FirstName @enrollment.Student.LastName</td>
+                            <td>@enrollment.Course.CourseCode - @enrollment.Course.Title</td>
+                            <td>@enrollment.EnrollmentDate.ToString("MMM dd, yyyy")</td>
+                            <td>@enrollment.Status</td>
+                            <td>
+                                @if (enrollment.Status == USPEducation.Models.EnrollmentStatus.Pending)
+                                {
+                                    <form asp-action="ApproveEnrollment" method="post" style="display: inline;">
+                                        <input type="hidden" name="id" value="@enrollment.Id" />
+                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                    </form>
+                                    <form asp-action="RejectEnrollment" method="post" style="display: inline;">
+                                        <input type="hidden" name="id" value="@enrollment.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> 
