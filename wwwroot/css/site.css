@@ -1,3 +1,11 @@
+:root {
+    --usp-teal: #009B9F;
+    --usp-teal-dark: #008487;
+    --usp-teal-light: #00B4B8;
+    --usp-gold: #FFB81C;
+    --usp-gray: #666666;
+}
+
 html {
   font-size: 14px;
 }
@@ -19,4 +27,64 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+/* USP Custom Styles */
+.navbar {
+    background-color: var(--usp-teal) !important;
+}
+
+.btn-primary {
+    background-color: var(--usp-teal);
+    border-color: var(--usp-teal);
+}
+
+.btn-primary:hover {
+    background-color: var(--usp-teal-dark);
+    border-color: var(--usp-teal-dark);
+}
+
+.card-header {
+    background-color: var(--usp-teal) !important;
+    color: white !important;
+}
+
+.footer {
+    background-color: var(--usp-teal);
+    color: white !important;
+}
+
+.footer a {
+    color: var(--usp-gold);
+}
+
+.usp-logo {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.welcome-banner {
+    background: linear-gradient(rgba(0, 155, 159, 0.9), rgba(0, 155, 159, 0.9)), url('/images/usp-campus.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 4rem 0;
+    margin-bottom: 2rem;
+}
+
+.text-primary {
+    color: var(--usp-teal) !important;
+}
+
+.badge-pending {
+    background-color: var(--usp-gold);
+    color: var(--usp-teal);
+}
+
+.badge-approved {
+    background-color: #28a745;
+}
+
+.badge-rejected {
+    background-color: #dc3545;
 }

@@ -2,48 +2,63 @@
     ViewData["Title"] = "Welcome";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h1 class="display-4 mb-4">Welcome to USP Education</h1>
-            <p class="lead mb-4">Your gateway to academic excellence at the University of the South Pacific</p>
-            
-            @if (!User.Identity.IsAuthenticated)
-            {
-                <div class="mt-4">
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg">Login to Continue</a>
-                </div>
-                <div class="mt-4">
-                    <p class="text-muted">
-                        For student account creation, please contact the administration office.
-                    </p>
-                </div>
-            }
-        </div>
+<div class="welcome-banner text-center">
+    <div class="container">
+        <h1 class="display-4 mb-4">Welcome to USP Student Portal</h1>
+        <p class="lead mb-4">Shaping Pacific Futures - The Premier University of the Pacific Region</p>
+        
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <div class="mt-4">
+                <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg px-4">Student Login</a>
+            </div>
+            <div class="mt-4">
+                <p class="text-light">
+                    For student account creation, please contact the Student Administrative Services.
+                </p>
+            </div>
+        }
     </div>
+</div>
 
+<div class="container">
     <div class="row mt-5">
-        <div class="col-md-4">
-            <div class="card h-100">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">Students</h5>
-                    <p class="card-text">Access your course enrollments, view available courses, and manage your academic journey.</p>
+                    <h5 class="card-title text-primary">Student Services</h5>
+                    <p class="card-text">Access your course enrollments, view available courses, and manage your academic journey at USP.</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">Course Management</h5>
+                    <h5 class="card-title text-primary">Course Management</h5>
                     <p class="card-text">Browse through our comprehensive selection of courses designed to enhance your knowledge and skills.</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">Enrollment System</h5>
+                    <h5 class="card-title text-primary">Enrollment System</h5>
                     <p class="card-text">Easy-to-use enrollment system with real-time status tracking and course management.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">About USP</h5>
+                    <p class="card-text">
+                        The University of the South Pacific (USP) is the premier institution of higher learning for the Pacific region, 
+                        uniquely placed in a region of extraordinary physical, social and economic diversity. 
+                        USP has been serving the Pacific region for over 50 years, delivering high-quality education and research opportunities.
+                    </p>
                 </div>
             </div>
         </div>

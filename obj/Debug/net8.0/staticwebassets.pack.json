@@ -2,7 +2,7 @@
   "Files": [
     {
       "Id": "C:\\Users\\avishekr\\Documents\\USPEducation\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\USPEducation.bundle.scp.css",
-      "PackagePath": "staticwebassets\\USPEducation.bundle.scp.css"
+      "PackagePath": "staticwebassets\\USPEducation.j5hhh9yyqv.bundle.scp.css"
     },
     {
       "Id": "C:\\Users\\avishekr\\Documents\\USPEducation\\wwwroot\\css\\site.css",
@@ -11,6 +11,10 @@
     {
       "Id": "C:\\Users\\avishekr\\Documents\\USPEducation\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\avishekr\\Documents\\USPEducation\\wwwroot\\images\\usp-logo.png",
+      "PackagePath": "staticwebassets\\images\\usp-logo.png"
     },
     {
       "Id": "C:\\Users\\avishekr\\Documents\\USPEducation\\wwwroot\\js\\site.js",
@@ -243,6 +247,10 @@
     {
       "Id": "C:\\Users\\avishekr\\Documents\\USPEducation\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.USPEducation.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.USPEducation.Microsoft.AspNetCore.StaticWebAssets.props",
