@@ -1,0 +1,52 @@
+@model IEnumerable<USPEducation.Models.Course>
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Available Courses</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-book me-1"></i>
+                    Course List
+                </div>
+                <a asp-action="Index" class="btn btn-secondary">Back to My Courses</a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["Error"]
+                </div>
+            }
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Credits</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var course in Model)
+                    {
+                        <tr>
+                            <td>@course.CourseCode</td>
+                            <td>@course.Title</td>
+                            <td>@course.Description</td>
+                            <td>@course.Credits</td>
+                            <td>
+                                <form asp-action="Enroll" method="post" style="display: inline;">
+                                    <input type="hidden" name="courseId" value="@course.Id" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Enroll</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> 

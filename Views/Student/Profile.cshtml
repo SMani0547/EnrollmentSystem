@@ -1,0 +1,284 @@
+@model USPEducation.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Student Profile</h1>
+
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab">
+                        Personal Profile
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="address-tab" data-bs-toggle="tab" data-bs-target="#address" type="button" role="tab">
+                        Address
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="emergency-tab" data-bs-toggle="tab" data-bs-target="#emergency" type="button" role="tab">
+                        Emergency Contact
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="elsa-tab" data-bs-toggle="tab" data-bs-target="#elsa" type="button" role="tab">
+                        ELSA Test Results
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="gsd-tab" data-bs-toggle="tab" data-bs-target="#gsd" type="button" role="tab">
+                        GSD Test Results
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="passport-tab" data-bs-toggle="tab" data-bs-target="#passport" type="button" role="tab">
+                        Passport & Visa
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-4" id="profileTabContent">
+                <div class="tab-pane fade show active" id="personal" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Personal Profile</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    @if (!string.IsNullOrEmpty(Model.ProfilePhotoUrl))
+                                    {
+                                        <img src="@Model.ProfilePhotoUrl" alt="Profile Photo" class="img-fluid rounded" />
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center p-4 bg-light rounded">
+                                            <i class="bi bi-person-circle" style="font-size: 6rem;"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">First Name:</div>
+                                        <div class="col-md-8">@Model.FirstName</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Middle Name:</div>
+                                        <div class="col-md-8">@(Model.MiddleName ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Last Name:</div>
+                                        <div class="col-md-8">@Model.LastName</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Date of Birth:</div>
+                                        <div class="col-md-8">@(Model.DateOfBirth?.ToString("dd-MMM-yyyy") ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Gender:</div>
+                                        <div class="col-md-8">@(Model.Gender ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Citizenship:</div>
+                                        <div class="col-md-8">@(Model.Citizenship ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Program:</div>
+                                        <div class="col-md-8">@(Model.Program ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Student Level:</div>
+                                        <div class="col-md-8">@(Model.StudentLevel ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Student Campus:</div>
+                                        <div class="col-md-8">@(Model.StudentCampus ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Exam Site:</div>
+                                        <div class="col-md-8">@(Model.ExamSite ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Major I:</div>
+                                        <div class="col-md-8">@(Model.MajorI ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Major II:</div>
+                                        <div class="col-md-8">@(Model.MajorII ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Minor I:</div>
+                                        <div class="col-md-8">@(Model.MinorI ?? "Not specified")</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 fw-bold">Minor II:</div>
+                                        <div class="col-md-8">@(Model.MinorII ?? "Not specified")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="address" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Address Information</h5>
+                        </div>
+                        <div class="card-body">
+                            @if (Model.StudentAddress != null)
+                            {
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">Street Address:</div>
+                                    <div class="col-md-9">@Model.StudentAddress.StreetAddress</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">City:</div>
+                                    <div class="col-md-9">@Model.StudentAddress.City</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">State:</div>
+                                    <div class="col-md-9">@Model.StudentAddress.State</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">Postal Code:</div>
+                                    <div class="col-md-9">@Model.StudentAddress.PostalCode</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">Country:</div>
+                                    <div class="col-md-9">@Model.StudentAddress.Country</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">Phone Number:</div>
+                                    <div class="col-md-9">@Model.StudentAddress.PhoneNumber</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">No address information available.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="emergency" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Emergency Contact Information</h5>
+                        </div>
+                        <div class="card-body">
+                            @if (Model.EmergencyContact != null)
+                            {
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">Name:</div>
+                                    <div class="col-md-9">@Model.EmergencyContact.Name</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">Relationship:</div>
+                                    <div class="col-md-9">@Model.EmergencyContact.Relationship</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">Phone Number:</div>
+                                    <div class="col-md-9">@Model.EmergencyContact.PhoneNumber</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">Address:</div>
+                                    <div class="col-md-9">@Model.EmergencyContact.Address</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-3 fw-bold">Email:</div>
+                                    <div class="col-md-9">@Model.EmergencyContact.Email</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">No emergency contact information available.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="elsa" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">ELSA Test Results</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Test Result:</div>
+                                <div class="col-md-9">@(Model.ElsaTestResult ?? "Not available")</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Test Date:</div>
+                                <div class="col-md-9">@(Model.ElsaTestDate?.ToString("dd-MMM-yyyy") ?? "Not available")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="gsd" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">GSD Test Results</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Test Result:</div>
+                                <div class="col-md-9">@(Model.GsdTestResult ?? "Not available")</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Test Date:</div>
+                                <div class="col-md-9">@(Model.GsdTestDate?.ToString("dd-MMM-yyyy") ?? "Not available")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="passport" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Passport & Visa Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Passport Number:</div>
+                                <div class="col-md-9">@(Model.PassportNumber ?? "Not available")</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Passport Expiry Date:</div>
+                                <div class="col-md-9">@(Model.PassportExpiryDate?.ToString("dd-MMM-yyyy") ?? "Not available")</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Visa Number:</div>
+                                <div class="col-md-9">@(Model.VisaNumber ?? "Not available")</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Visa Expiry Date:</div>
+                                <div class="col-md-9">@(Model.VisaExpiryDate?.ToString("dd-MMM-yyyy") ?? "Not available")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize Bootstrap tabs
+        var triggerTabList = [].slice.call(document.querySelectorAll('#profileTabs button'))
+        triggerTabList.forEach(function (triggerEl) {
+            var tabTrigger = new bootstrap.Tab(triggerEl)
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault()
+                tabTrigger.show()
+            })
+        })
+    </script>
+} 

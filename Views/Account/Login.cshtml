@@ -4,46 +4,48 @@
     ViewData["Title"] = "Login";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
+<div class="container">
+    <div class="row justify-content-center mt-5">
         <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header text-center py-3">
-                    <img src="~/images/usp-logo.png" alt="USP Logo" class="mb-3" style="height: 80px;" />
-                    <h2 class="mb-0">SOLS Login</h2>
+            <div class="card shadow-lg">
+                <div class="card-header bg-teal text-white text-center py-4">
+                    <img src="~/images/usp-logo.png" alt="USP Logo" height="60" class="mb-3" />
+                    <h2 class="mb-0">Welcome to USP Student Portal</h2>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">
-                        <div class="form-group mb-3">
-                            <label asp-for="LoginIdentifier" class="form-label"></label>
-                            <input asp-for="LoginIdentifier" class="form-control" placeholder="Enter your email or student ID" />
+                    <form asp-controller="Account" asp-action="Login" method="post">
+                        <input type="hidden" asp-for="ReturnUrl" value="@ViewData["ReturnUrl"]" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-3"></div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="LoginIdentifier" class="form-control" placeholder="Student ID or Email" />
+                            <label asp-for="LoginIdentifier">Student ID or Email</label>
                             <span asp-validation-for="LoginIdentifier" class="text-danger"></span>
-                            <small class="form-text text-muted">
-                                For Students: Enter your Student ID (e.g., S12345)<br />
-                                For Staff: Enter your USP email address
-                            </small>
                         </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="Password" class="form-label">Password</label>
-                            <input asp-for="Password" class="form-control" placeholder="Enter your password" />
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Password" class="form-control" placeholder="Password" />
+                            <label asp-for="Password">Password</label>
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-                        <div class="form-group mb-4">
-                            <div class="form-check">
-                                <input asp-for="RememberMe" class="form-check-input" />
-                                <label asp-for="RememberMe" class="form-check-label">Remember me</label>
-                            </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="RememberMe" class="form-check-input" />
+                            <label asp-for="RememberMe" class="form-check-label">Remember me</label>
                         </div>
+
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">Log in to SOLS</button>
+                            <button type="submit" class="btn btn-primary btn-lg" style="background-color: #008080; border-color: #008080;">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </button>
                         </div>
                     </form>
                 </div>
-                <div class="card-footer text-center py-3">
-                    <p class="mb-0">Need help? Contact <a href="mailto:helpdesk@usp.ac.fj">USP Help Desk</a></p>
-                    <small class="text-muted mt-2 d-block">
-                        For account creation or password reset, please contact your faculty administrator.
-                    </small>
+                <div class="card-footer text-center py-3 bg-light">
+                    <div class="small">
+                        Need help? Contact <a href="mailto:helpdesk@usp.ac.fj">USP Help Desk</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -51,5 +53,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 } 

@@ -24,10 +24,42 @@ public class ManagerController : Controller
         var enrollments = await _context.Enrollments
             .Include(e => e.Student)
             .Include(e => e.Course)
-            .OrderByDescending(e => e.EnrollmentDate)
+            .OrderByDescending(e => e.Year)
+            .ThenByDescending(e => e.Semester)
             .ToListAsync();
 
         return View(enrollments);
+    }
+
+    public async Task<IActionResult> StudentDetails(string id)
+    {
+        var student = await _userManager.FindByIdAsync(id);
+        if (student == null)
+            return NotFound();
+
+        var enrollments = await _context.Enrollments
+            .Include(e => e.Course)
+            .Where(e => e.StudentId == id)
+            .OrderByDescending(e => e.Year)
+            .ThenByDescending(e => e.Semester)
+            .ToListAsync();
+
+        ViewBag.Student = student;
+        return View(enrollments);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateGrade(int enrollmentId, string grade)
+    {
+        var enrollment = await _context.Enrollments.FindAsync(enrollmentId);
+        if (enrollment == null)
+            return NotFound();
+
+        enrollment.Grade = grade;
+        await _context.SaveChangesAsync();
+
+        TempData["Success"] = "Grade updated successfully.";
+        return RedirectToAction(nameof(StudentDetails), new { id = enrollment.StudentId });
     }
 
     public async Task<IActionResult> Students()
@@ -40,33 +72,5 @@ public class ManagerController : Controller
     {
         var courses = await _context.Courses.ToListAsync();
         return View(courses);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> ApproveEnrollment(int id)
-    {
-        var enrollment = await _context.Enrollments.FindAsync(id);
-        if (enrollment == null)
-        {
-            return NotFound();
-        }
-
-        enrollment.Status = EnrollmentStatus.Approved;
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> RejectEnrollment(int id)
-    {
-        var enrollment = await _context.Enrollments.FindAsync(id);
-        if (enrollment == null)
-        {
-            return NotFound();
-        }
-
-        enrollment.Status = EnrollmentStatus.Rejected;
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
     }
 } 

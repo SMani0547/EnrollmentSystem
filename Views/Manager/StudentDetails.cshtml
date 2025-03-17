@@ -1,0 +1,146 @@
+@model IEnumerable<USPEducation.Models.Enrollment>
+@{
+    var student = ViewBag.Student as USPEducation.Models.ApplicationUser;
+    if (student == null)
+    {
+        <div class="alert alert-danger">Student not found.</div>
+        return;
+    }
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Student Details</h1>
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-user me-1"></i>
+                    Personal Information
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Student ID:</div>
+                        <div class="col-md-8">@student.StudentId</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Full Name:</div>
+                        <div class="col-md-8">
+                            @student.FirstName @student.MiddleName @student.LastName
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Date of Birth:</div>
+                        <div class="col-md-8">@(student.DateOfBirth?.ToString("MMMM dd, yyyy") ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Gender:</div>
+                        <div class="col-md-8">@(student.Gender ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Citizenship:</div>
+                        <div class="col-md-8">@(student.Citizenship ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Email:</div>
+                        <div class="col-md-8">@student.Email</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-graduation-cap me-1"></i>
+                    Academic Information
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Program:</div>
+                        <div class="col-md-8">@(student.Program ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Student Level:</div>
+                        <div class="col-md-8">@(student.StudentLevel ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Campus:</div>
+                        <div class="col-md-8">@(student.StudentCampus ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Exam Site:</div>
+                        <div class="col-md-8">@(student.ExamSite ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Major I:</div>
+                        <div class="col-md-8">@(student.MajorI ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Major II:</div>
+                        <div class="col-md-8">@(student.MajorII ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Minor I:</div>
+                        <div class="col-md-8">@(student.MinorI ?? "Not specified")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Minor II:</div>
+                        <div class="col-md-8">@(student.MinorII ?? "Not specified")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Course Enrollments
+        </div>
+        <div class="card-body">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Success"]
+                </div>
+            }
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                        <th>Semester</th>
+                        <th>Year</th>
+                        <th>Grade</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var enrollment in Model)
+                    {
+                        <tr>
+                            <td>@enrollment.Course.CourseCode</td>
+                            <td>@enrollment.Course.Title</td>
+                            <td>@enrollment.Semester</td>
+                            <td>@enrollment.Year</td>
+                            <td>
+                                <form asp-action="UpdateGrade" method="post" class="d-flex">
+                                    <input type="hidden" name="enrollmentId" value="@enrollment.Id" />
+                                    @{
+                                        var grades = new[] { "", "A+", "A", "B+", "B", "C+", "C", "D", "E", "F" };
+                                        var gradeList = new SelectList(grades, enrollment.Grade ?? "");
+                                    }
+                                    <select name="grade" class="form-select form-select-sm me-2" style="width: 100px;" asp-items="@gradeList">
+                                        <option value="">Select</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                </form>
+                            </td>
+                            <td>
+                                <button class="btn btn-info btn-sm" disabled>View Details</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> 

@@ -11,6 +11,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
+    public DbSet<StudentAddress> StudentAddresses { get; set; }
+    public DbSet<EmergencyContact> EmergencyContacts { get; set; }
     public DbSet<Course> Courses { get; set; }
     public DbSet<Enrollment> Enrollments { get; set; }
 
@@ -18,21 +20,29 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(builder);
 
-        // Configure unique constraints
-        builder.Entity<Course>()
-            .HasIndex(c => c.CourseCode)
-            .IsUnique();
+        // Configure one-to-one relationship between ApplicationUser and StudentAddress
+        builder.Entity<ApplicationUser>()
+            .HasOne(u => u.StudentAddress)
+            .WithOne(a => a.User)
+            .HasForeignKey<StudentAddress>(a => a.UserId);
 
-        // Configure relationships
-        builder.Entity<Enrollment>()
-            .HasOne(e => e.Student)
-            .WithMany(s => s.Enrollments)
+        // Configure one-to-one relationship between ApplicationUser and EmergencyContact
+        builder.Entity<ApplicationUser>()
+            .HasOne(u => u.EmergencyContact)
+            .WithOne(e => e.User)
+            .HasForeignKey<EmergencyContact>(e => e.UserId);
+
+        // Configure one-to-many relationship between ApplicationUser and Enrollment
+        builder.Entity<ApplicationUser>()
+            .HasMany(u => u.Enrollments)
+            .WithOne(e => e.Student)
             .HasForeignKey(e => e.StudentId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<Enrollment>()
-            .HasOne(e => e.Course)
-            .WithMany(c => c.Enrollments)
+        // Configure one-to-many relationship between Course and Enrollment
+        builder.Entity<Course>()
+            .HasMany(c => c.Enrollments)
+            .WithOne(e => e.Course)
             .HasForeignKey(e => e.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
     }

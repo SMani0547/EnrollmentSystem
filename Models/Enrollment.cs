@@ -5,23 +5,28 @@ namespace USPEducation.Models;
 
 public class Enrollment
 {
+    [Key]
     public int Id { get; set; }
     
     [Required]
+    [StringLength(450)]
     public string StudentId { get; set; } = string.Empty;
     
     [Required]
     public int CourseId { get; set; }
     
     [Required]
-    public DateTime EnrollmentDate { get; set; }
+    public string Semester { get; set; } = string.Empty;
     
-    public EnrollmentStatus Status { get; set; }
+    [Required]
+    public int Year { get; set; }
     
-    [ForeignKey("StudentId")]
+    public string? Grade { get; set; }
+    
+    [ForeignKey(nameof(StudentId))]
     public virtual ApplicationUser Student { get; set; } = null!;
     
-    [ForeignKey("CourseId")]
+    [ForeignKey(nameof(CourseId))]
     public virtual Course Course { get; set; } = null!;
 }
 
