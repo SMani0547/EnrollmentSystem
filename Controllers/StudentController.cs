@@ -92,12 +92,22 @@ public class StudentController : Controller
         if (user == null)
             return NotFound();
 
+        // Get completed courses for prerequisite checking
+        var completedCourseIds = (await _context.StudentEnrollments
+            .Where(e => e.StudentId == user.Id && e.Grade != null && e.Grade != "F")
+            .Select(e => e.CourseId)
+            .ToListAsync())
+            .ToHashSet();
+
+        ViewBag.CompletedCourses = completedCourseIds;
+
         var enrolledCourseIds = await _context.StudentEnrollments
             .Where(e => e.StudentId == user.Id)
             .Select(e => e.CourseId)
             .ToListAsync();
 
         var availableCourses = await _context.Courses
+            .Include(c => c.Prerequisites)
             .Where(c => !enrolledCourseIds.Contains(c.Id))
             .OrderBy(c => c.Code)
             .ToListAsync();
@@ -107,12 +117,25 @@ public class StudentController : Controller
 
     public async Task<IActionResult> EnrollDetails(int id)
     {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
         var course = await _context.Courses
             .Include(c => c.Prerequisites)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (course == null)
             return NotFound();
+
+        // Get completed courses for prerequisite checking
+        var completedCourseIds = (await _context.StudentEnrollments
+            .Where(e => e.StudentId == user.Id && e.Grade != null && e.Grade != "F")
+            .Select(e => e.CourseId)
+            .ToListAsync())
+            .ToHashSet();
+
+        ViewBag.CompletedCourses = completedCourseIds;
 
         return View("Enroll", course);
     }

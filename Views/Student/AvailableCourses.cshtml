@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Available Courses";
+    var userCompletedCourses = ViewBag.CompletedCourses as HashSet<int> ?? new HashSet<int>();
 }
 
 <div class="container-fluid px-4">
@@ -31,12 +32,16 @@
                                 <th>Credit Points</th>
                                 <th>Semester</th>
                                 <th>Level</th>
+                                <th>Prerequisites</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var course in Model)
                             {
+                                var hasPrerequisites = course.Prerequisites.Any();
+                                var prerequisitesMet = !hasPrerequisites || course.Prerequisites.All(p => userCompletedCourses.Contains(p.Id));
+                                
                                 <tr>
                                     <td>@course.Code</td>
                                     <td>@course.Name</td>
@@ -44,9 +49,42 @@
                                     <td>@course.Semester</td>
                                     <td>@course.Level</td>
                                     <td>
-                                        <a asp-action="Enroll" asp-route-id="@course.Id" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-plus-circle"></i> Enroll
-                                        </a>
+                                        @if (hasPrerequisites)
+                                        {
+                                            <div>
+                                                @string.Join(", ", course.Prerequisites.Select(p => p.Code))
+                                                @if (!prerequisitesMet)
+                                                {
+                                                    <span class="badge bg-warning" title="Prerequisites not met">
+                                                        <i class="bi bi-exclamation-triangle"></i>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success" title="Prerequisites met">
+                                                        <i class="bi bi-check-circle"></i>
+                                                    </span>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">None</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (prerequisitesMet)
+                                        {
+                                            <a asp-action="EnrollDetails" asp-route-id="@course.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-plus-circle"></i> Enroll
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-outline-primary" disabled title="Prerequisites not met">
+                                                <i class="bi bi-plus-circle"></i> Enroll
+                                            </button>
+                                        }
                                         <a asp-action="CourseDetails" asp-route-id="@course.Id" class="btn btn-sm btn-outline-info">
                                             <i class="bi bi-info-circle"></i> Details
                                         </a>

@@ -145,6 +145,3 @@ C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\refint\USPEducation.dl
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.pdb
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.genruntimeconfig.cache
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\ref\USPEducation.dll
-C:\Users\avishekr\Documents\USPEducation\bin\Debug\net8.0\USPEducation.staticwebassets.endpoints.json
-C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\staticwebassets\msbuild.USPEducation.Microsoft.AspNetCore.StaticWebAssetEndpoints.props

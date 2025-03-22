@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using USPEducation.Models;
+using USPEducation.Data.Seeders;
 
 namespace USPEducation.Data.Seeders;
 
@@ -126,5 +127,8 @@ public static class DbSeeder
 
         // Seed 2024 programs
         await ProgramSeeder.SeedPrograms2024(context);
+
+        // Seed course prerequisites
+        await CoursePrerequisiteSeeder.SeedPrerequisites(context);
     }
 } 
