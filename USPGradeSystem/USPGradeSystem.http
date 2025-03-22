@@ -1,0 +1,6 @@
+@USPGradeSystem_HostAddress = http://localhost:5240
+
+GET {{USPGradeSystem_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
