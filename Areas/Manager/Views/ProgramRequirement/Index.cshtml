@@ -1,0 +1,90 @@
+@model IEnumerable<ProgramRequirement>
+
+@{
+    ViewData["Title"] = "Program Requirements";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Program Requirements</h1>
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-list me-1"></i>
+                All Requirements
+            </div>
+            <a asp-action="Create" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i>Add Requirement
+            </a>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    No requirements have been added yet.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="requirementsTable">
+                        <thead>
+                            <tr>
+                                <th>Subject Area</th>
+                                <th>Type</th>
+                                <th>Year</th>
+                                <th>Credit Points</th>
+                                <th>Required Courses</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var requirement in Model)
+                            {
+                                <tr>
+                                    <td>@requirement.SubjectArea.Name</td>
+                                    <td>
+                                        <span class="badge bg-primary">@requirement.Type</span>
+                                    </td>
+                                    <td>@requirement.Year</td>
+                                    <td>@requirement.CreditPointsRequired</td>
+                                    <td>
+                                        @if (requirement.RequiredCourses.Any())
+                                        {
+                                            foreach (var course in requirement.RequiredCourses)
+                                            {
+                                                <span class="badge bg-secondary me-1">@course.Code</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No courses required</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@requirement.Id" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit me-1"></i>Edit
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@requirement.Id" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#requirementsTable').DataTable({
+                order: [[2, 'asc'], [1, 'asc']]
+            });
+        });
+    </script>
+} 

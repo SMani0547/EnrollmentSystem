@@ -11,39 +11,62 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-    public DbSet<StudentAddress> StudentAddresses { get; set; }
-    public DbSet<EmergencyContact> EmergencyContacts { get; set; }
     public DbSet<Course> Courses { get; set; }
-    public DbSet<Enrollment> Enrollments { get; set; }
+    public DbSet<SubjectArea> SubjectAreas { get; set; }
+    public DbSet<StudentEnrollment> StudentEnrollments { get; set; }
+    public DbSet<AcademicProgram> Programs { get; set; }
+    public DbSet<ProgramRequirement> ProgramRequirements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        // Configure one-to-one relationship between ApplicationUser and StudentAddress
-        builder.Entity<ApplicationUser>()
-            .HasOne(u => u.StudentAddress)
-            .WithOne(a => a.User)
-            .HasForeignKey<StudentAddress>(a => a.UserId);
+        // Configure Course prerequisites relationship
+        builder.Entity<Course>()
+            .HasMany(c => c.Prerequisites)
+            .WithMany(c => c.IsPrerequisiteFor)
+            .UsingEntity(j => j.ToTable("CoursePrerequisites"));
 
-        // Configure one-to-one relationship between ApplicationUser and EmergencyContact
-        builder.Entity<ApplicationUser>()
-            .HasOne(u => u.EmergencyContact)
-            .WithOne(e => e.User)
-            .HasForeignKey<EmergencyContact>(e => e.UserId);
+        // Configure Course-Program relationships
+        builder.Entity<AcademicProgram>()
+            .HasMany(p => p.CoreCourses)
+            .WithMany(c => c.IsCoreCourseFor)
+            .UsingEntity(j => j.ToTable("ProgramCoreCourses"));
 
-        // Configure one-to-many relationship between ApplicationUser and Enrollment
-        builder.Entity<ApplicationUser>()
-            .HasMany(u => u.Enrollments)
-            .WithOne(e => e.Student)
+        builder.Entity<AcademicProgram>()
+            .HasMany(p => p.ElectiveCourses)
+            .WithMany(c => c.IsElectiveCourseFor)
+            .UsingEntity(j => j.ToTable("ProgramElectiveCourses"));
+
+        // Configure StudentEnrollment relationships
+        builder.Entity<StudentEnrollment>()
+            .HasOne(e => e.Student)
+            .WithMany(s => s.Enrollments)
             .HasForeignKey(e => e.StudentId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Configure one-to-many relationship between Course and Enrollment
-        builder.Entity<Course>()
-            .HasMany(c => c.Enrollments)
-            .WithOne(e => e.Course)
+        builder.Entity<StudentEnrollment>()
+            .HasOne(e => e.Course)
+            .WithMany(c => c.StudentEnrollments)
             .HasForeignKey(e => e.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Configure ProgramRequirement relationships
+        builder.Entity<ProgramRequirement>()
+            .HasOne(r => r.Program)
+            .WithMany(p => p.Requirements)
+            .HasForeignKey(r => r.ProgramId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ProgramRequirement>()
+            .HasOne(r => r.SubjectArea)
+            .WithMany()
+            .HasForeignKey(r => r.SubjectAreaId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ProgramRequirement>()
+            .HasMany(r => r.RequiredCourses)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("ProgramRequirementCourses"));
     }
 } 

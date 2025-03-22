@@ -25,84 +25,162 @@ public class StudentController : Controller
         if (user == null)
             return NotFound();
 
-        var enrollments = await _context.Enrollments
+        var enrollments = await _context.StudentEnrollments
             .Include(e => e.Course)
             .Where(e => e.StudentId == user.Id)
-            .OrderByDescending(e => e.Year)
-            .ThenByDescending(e => e.Semester)
+            .OrderBy(e => e.Year)
+            .ThenBy(e => e.Semester)
             .ToListAsync();
 
         return View(enrollments);
     }
 
-    public async Task<IActionResult> Profile()
+    public async Task<IActionResult> Requirements()
     {
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
             return NotFound();
 
-        // Load related data
-        user = await _context.Users
-            .Include(u => u.StudentAddress)
-            .Include(u => u.EmergencyContact)
-            .FirstOrDefaultAsync(u => u.Id == user.Id);
+        var requirements = await _context.ProgramRequirements
+            .Include(r => r.SubjectArea)
+            .Include(r => r.RequiredCourses)
+            .Where(r => r.Year <= user.AdmissionYear && r.IsActive)
+            .ToListAsync();
 
+        // Get core requirements
+        var coreRequirements = requirements.Where(r => 
+            r.Type == RequirementType.MajorCore ||
+            r.Type == RequirementType.MinorCore ||
+            r.Type == RequirementType.ProgressionRequirement
+        ).ToList();
+
+        // Get major requirements
+        var majorRequirements = requirements.Where(r => 
+            (r.Type == RequirementType.MajorCore || r.Type == RequirementType.MajorElective) &&
+            r.SubjectArea.Code == user.MajorI
+        ).ToList();
+
+        if (user.MajorType == MajorType.DoubleMajor)
+        {
+            // Add second major requirements
+            majorRequirements.AddRange(requirements.Where(r => 
+                (r.Type == RequirementType.MajorCore || r.Type == RequirementType.MajorElective) &&
+                r.SubjectArea.Code == user.MajorII
+            ));
+        }
+        else if (user.MajorType == MajorType.MajorMinor)
+        {
+            // Add minor requirements
+            majorRequirements.AddRange(requirements.Where(r => 
+                (r.Type == RequirementType.MinorCore || r.Type == RequirementType.MinorElective) &&
+                r.SubjectArea.Code == user.MinorI
+            ));
+        }
+
+        ViewBag.MajorType = user.MajorType;
+        ViewBag.MajorI = user.MajorI;
+        ViewBag.MajorII = user.MajorII;
+        ViewBag.MinorI = user.MinorI;
+        ViewBag.AdmissionYear = user.AdmissionYear;
+
+        return View(majorRequirements);
+    }
+
+    public async Task<IActionResult> AvailableCourses()
+    {
+        var user = await _userManager.GetUserAsync(User);
         if (user == null)
             return NotFound();
 
-        return View(user);
+        var enrolledCourseIds = await _context.StudentEnrollments
+            .Where(e => e.StudentId == user.Id)
+            .Select(e => e.CourseId)
+            .ToListAsync();
+
+        var availableCourses = await _context.Courses
+            .Where(c => !enrolledCourseIds.Contains(c.Id))
+            .OrderBy(c => c.Code)
+            .ToListAsync();
+
+        return View(availableCourses);
     }
 
-    public IActionResult Enroll()
+    public async Task<IActionResult> EnrollDetails(int id)
     {
-        var courses = _context.Courses.ToList();
-        return View(courses);
+        var course = await _context.Courses
+            .Include(c => c.Prerequisites)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (course == null)
+            return NotFound();
+
+        return View("Enroll", course);
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Enroll(int courseId)
     {
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
             return NotFound();
 
-        var course = await _context.Courses.FindAsync(courseId);
+        var course = await _context.Courses
+            .Include(c => c.Prerequisites)
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+
         if (course == null)
             return NotFound();
 
         // Check if already enrolled
-        var existingEnrollment = await _context.Enrollments
-            .FirstOrDefaultAsync(e => e.StudentId == user.Id && e.CourseId == courseId);
+        var existingEnrollment = await _context.StudentEnrollments
+            .AnyAsync(e => e.StudentId == user.Id && e.CourseId == courseId);
 
-        if (existingEnrollment != null)
+        if (existingEnrollment)
         {
-            TempData["Error"] = "You are already enrolled in this course.";
-            return RedirectToAction(nameof(Enroll));
+            ModelState.AddModelError("", "You are already enrolled in this course.");
+            return View(course);
         }
 
-        var enrollment = new Enrollment
+        // Check prerequisites
+        if (course.Prerequisites.Any())
+        {
+            var prerequisiteIds = course.Prerequisites.Select(p => p.Id).ToList();
+            var completedPrerequisites = await _context.StudentEnrollments
+                .CountAsync(e => e.StudentId == user.Id && 
+                               prerequisiteIds.Contains(e.CourseId) && 
+                               e.Grade != null && 
+                               e.Grade != "F");
+
+            if (completedPrerequisites < course.Prerequisites.Count)
+            {
+                ModelState.AddModelError("", "You have not completed all prerequisites for this course.");
+                return View(course);
+            }
+        }
+
+        var enrollment = new StudentEnrollment
         {
             StudentId = user.Id,
             CourseId = courseId,
-            Semester = GetCurrentSemester(),
-            Year = DateTime.Now.Year
+            Year = DateTime.Now.Year,
+            Semester = GetCurrentSemester()
         };
 
-        _context.Enrollments.Add(enrollment);
+        _context.StudentEnrollments.Add(enrollment);
         await _context.SaveChangesAsync();
 
-        TempData["Success"] = "Successfully enrolled in the course.";
         return RedirectToAction(nameof(Index));
     }
 
-    private string GetCurrentSemester()
+    private static Semester GetCurrentSemester()
     {
         var month = DateTime.Now.Month;
         return month switch
         {
-            >= 1 and <= 4 => "Semester 1",
-            >= 5 and <= 8 => "Semester 2",
-            _ => "Summer"
+            >= 1 and <= 6 => Semester.Semester1,
+            >= 7 and <= 11 => Semester.Semester2,
+            _ => Semester.Semester1
         };
     }
 } 

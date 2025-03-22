@@ -21,7 +21,7 @@ public class ManagerController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var enrollments = await _context.Enrollments
+        var enrollments = await _context.StudentEnrollments
             .Include(e => e.Student)
             .Include(e => e.Course)
             .OrderByDescending(e => e.Year)
@@ -33,44 +33,29 @@ public class ManagerController : Controller
 
     public async Task<IActionResult> StudentDetails(string id)
     {
-        var student = await _userManager.FindByIdAsync(id);
-        if (student == null)
+        var user = await _userManager.Users
+            .Include(u => u.Enrollments)
+            .ThenInclude(e => e.Course)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null)
             return NotFound();
 
-        var enrollments = await _context.Enrollments
-            .Include(e => e.Course)
-            .Where(e => e.StudentId == id)
-            .OrderByDescending(e => e.Year)
-            .ThenByDescending(e => e.Semester)
-            .ToListAsync();
-
-        ViewBag.Student = student;
-        return View(enrollments);
+        return View(user);
     }
 
-    [HttpPost]
     public async Task<IActionResult> UpdateGrade(int enrollmentId, string grade)
     {
-        var enrollment = await _context.Enrollments.FindAsync(enrollmentId);
+        var enrollment = await _context.StudentEnrollments
+            .Include(e => e.Student)
+            .FirstOrDefaultAsync(e => e.Id == enrollmentId);
+
         if (enrollment == null)
             return NotFound();
 
         enrollment.Grade = grade;
         await _context.SaveChangesAsync();
 
-        TempData["Success"] = "Grade updated successfully.";
         return RedirectToAction(nameof(StudentDetails), new { id = enrollment.StudentId });
-    }
-
-    public async Task<IActionResult> Students()
-    {
-        var students = await _userManager.GetUsersInRoleAsync("Student");
-        return View(students);
-    }
-
-    public async Task<IActionResult> Courses()
-    {
-        var courses = await _context.Courses.ToListAsync();
-        return View(courses);
     }
 } 

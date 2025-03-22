@@ -1,52 +1,54 @@
-@model IEnumerable<USPEducation.Models.Course>
+@model USPEducation.Models.Course
+
+@{
+    ViewData["Title"] = "Enroll in Course";
+}
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Available Courses</h1>
+    <h1>Course Enrollment</h1>
     <div class="card mb-4">
         <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <i class="fas fa-book me-1"></i>
-                    Course List
-                </div>
-                <a asp-action="Index" class="btn btn-secondary">Back to My Courses</a>
-            </div>
+            <h4>@Model.Code - @Model.Name</h4>
         </div>
         <div class="card-body">
-            @if (TempData["Error"] != null)
-            {
-                <div class="alert alert-danger">
-                    @TempData["Error"]
+            <dl class="row">
+                <dt class="col-sm-3">Credit Points:</dt>
+                <dd class="col-sm-9">@Model.CreditPoints</dd>
+
+                <dt class="col-sm-3">Semester:</dt>
+                <dd class="col-sm-9">@Model.Semester</dd>
+
+                <dt class="col-sm-3">Level:</dt>
+                <dd class="col-sm-9">@Model.Level</dd>
+
+                <dt class="col-sm-3">Description:</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
+
+                @if (Model.Prerequisites != null && Model.Prerequisites.Any())
+                {
+                    <dt class="col-sm-3">Prerequisites:</dt>
+                    <dd class="col-sm-9">
+                        @string.Join(", ", Model.Prerequisites.Select(p => $"{p.Code} - {p.Name}"))
+                    </dd>
+                }
+                else
+                {
+                    <dt class="col-sm-3">Prerequisites:</dt>
+                    <dd class="col-sm-9">No prerequisites required</dd>
+                }
+            </dl>
+
+            <div class="alert alert-info">
+                Please review the course details above before enrolling.
+            </div>
+
+            <form asp-action="Enroll" method="post">
+                <input type="hidden" name="courseId" value="@Model.Id" />
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Confirm Enrollment</button>
+                    <a asp-action="AvailableCourses" class="btn btn-secondary">Back to Available Courses</a>
                 </div>
-            }
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Course Code</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Credits</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var course in Model)
-                    {
-                        <tr>
-                            <td>@course.CourseCode</td>
-                            <td>@course.Title</td>
-                            <td>@course.Description</td>
-                            <td>@course.Credits</td>
-                            <td>
-                                <form asp-action="Enroll" method="post" style="display: inline;">
-                                    <input type="hidden" name="courseId" value="@course.Id" />
-                                    <button type="submit" class="btn btn-primary btn-sm">Enroll</button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            </form>
         </div>
     </div>
 </div> 

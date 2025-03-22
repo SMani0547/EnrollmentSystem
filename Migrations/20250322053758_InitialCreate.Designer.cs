@@ -12,8 +12,8 @@ using USPEducation.Data;
 namespace USPEducation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250317033841_AddStudentProfileAndCourses")]
-    partial class AddStudentProfileAndCourses
+    [Migration("20250322053758_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,66 @@ namespace USPEducation.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AcademicProgramCourse", b =>
+                {
+                    b.Property<int>("CoreCoursesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IsCoreCourseForId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CoreCoursesId", "IsCoreCourseForId");
+
+                    b.HasIndex("IsCoreCourseForId");
+
+                    b.ToTable("ProgramCoreCourses", (string)null);
+                });
+
+            modelBuilder.Entity("AcademicProgramCourse1", b =>
+                {
+                    b.Property<int>("ElectiveCoursesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IsElectiveCourseForId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ElectiveCoursesId", "IsElectiveCourseForId");
+
+                    b.HasIndex("IsElectiveCourseForId");
+
+                    b.ToTable("ProgramElectiveCourses", (string)null);
+                });
+
+            modelBuilder.Entity("CourseCourse", b =>
+                {
+                    b.Property<int>("IsPrerequisiteForId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrerequisitesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("IsPrerequisiteForId", "PrerequisitesId");
+
+                    b.HasIndex("PrerequisitesId");
+
+                    b.ToTable("CoursePrerequisites", (string)null);
+                });
+
+            modelBuilder.Entity("CourseProgramRequirement", b =>
+                {
+                    b.Property<int>("ProgramRequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RequiredCoursesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProgramRequirementId", "RequiredCoursesId");
+
+                    b.HasIndex("RequiredCoursesId");
+
+                    b.ToTable("ProgramRequirementCourses", (string)null);
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -105,10 +165,12 @@ namespace USPEducation.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -145,10 +207,12 @@ namespace USPEducation.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -156,6 +220,55 @@ namespace USPEducation.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("USPEducation.Models.AcademicProgram", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("CreditPoints")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MajorCreditsRequired")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinorCreditsRequired")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("OfferingYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Programs");
                 });
 
             modelBuilder.Entity("USPEducation.Models.ApplicationUser", b =>
@@ -166,16 +279,12 @@ namespace USPEducation.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Citizenship")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("AdmissionYear")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -184,18 +293,10 @@ namespace USPEducation.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ExamSite")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Gender")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -209,28 +310,20 @@ namespace USPEducation.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("MajorI")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("MajorII")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
-                    b.Property<string>("MajorType")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("MiddleName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("MajorType")
+                        .HasColumnType("int");
 
                     b.Property<string>("MinorI")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("MinorII")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -249,28 +342,8 @@ namespace USPEducation.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ProfilePhotoUrl")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Program")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StudentCampus")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("StudentId")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("StudentLevel")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -300,73 +373,44 @@ namespace USPEducation.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CourseCode")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("Credits")
+                    b.Property<int>("CreditPoints")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("USPEducation.Models.EmergencyContact", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Level")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Relationship")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("SubjectAreaId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("SubjectAreaId");
 
-                    b.ToTable("EmergencyContacts");
+                    b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("USPEducation.Models.Enrollment", b =>
+            modelBuilder.Entity("USPEducation.Models.ProgramRequirement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -374,19 +418,79 @@ namespace USPEducation.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CreditPointsRequired")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MinimumGrade")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("ProgramId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectAreaId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SubjectAreaId1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProgramId");
+
+                    b.HasIndex("SubjectAreaId");
+
+                    b.HasIndex("SubjectAreaId1");
+
+                    b.ToTable("ProgramRequirements");
+                });
+
+            modelBuilder.Entity("USPEducation.Models.StudentEnrollment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AcademicProgramId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<string>("Grade")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
-                    b.Property<string>("Semester")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("StudentId")
                         .IsRequired()
-                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Year")
@@ -394,14 +498,16 @@ namespace USPEducation.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AcademicProgramId");
+
                     b.HasIndex("CourseId");
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("StudentEnrollments");
                 });
 
-            modelBuilder.Entity("USPEducation.Models.StudentAddress", b =>
+            modelBuilder.Entity("USPEducation.Models.SubjectArea", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -409,41 +515,93 @@ namespace USPEducation.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("City")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<bool>("CanBeMajor")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Country")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<bool>("CanBeMinor")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("PostalCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("State")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("StreetAddress")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.ToTable("SubjectAreas");
+                });
 
-                    b.ToTable("StudentAddresses");
+            modelBuilder.Entity("AcademicProgramCourse", b =>
+                {
+                    b.HasOne("USPEducation.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CoreCoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("USPEducation.Models.AcademicProgram", null)
+                        .WithMany()
+                        .HasForeignKey("IsCoreCourseForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AcademicProgramCourse1", b =>
+                {
+                    b.HasOne("USPEducation.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("ElectiveCoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("USPEducation.Models.AcademicProgram", null)
+                        .WithMany()
+                        .HasForeignKey("IsElectiveCourseForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CourseCourse", b =>
+                {
+                    b.HasOne("USPEducation.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("IsPrerequisiteForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("USPEducation.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("PrerequisitesId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CourseProgramRequirement", b =>
+                {
+                    b.HasOne("USPEducation.Models.ProgramRequirement", null)
+                        .WithMany()
+                        .HasForeignKey("ProgramRequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("USPEducation.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("RequiredCoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -497,21 +655,48 @@ namespace USPEducation.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("USPEducation.Models.EmergencyContact", b =>
+            modelBuilder.Entity("USPEducation.Models.Course", b =>
                 {
-                    b.HasOne("USPEducation.Models.ApplicationUser", "User")
-                        .WithOne("EmergencyContact")
-                        .HasForeignKey("USPEducation.Models.EmergencyContact", "UserId")
+                    b.HasOne("USPEducation.Models.SubjectArea", "SubjectArea")
+                        .WithMany("Courses")
+                        .HasForeignKey("SubjectAreaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("SubjectArea");
                 });
 
-            modelBuilder.Entity("USPEducation.Models.Enrollment", b =>
+            modelBuilder.Entity("USPEducation.Models.ProgramRequirement", b =>
                 {
+                    b.HasOne("USPEducation.Models.AcademicProgram", "Program")
+                        .WithMany("Requirements")
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("USPEducation.Models.SubjectArea", "SubjectArea")
+                        .WithMany()
+                        .HasForeignKey("SubjectAreaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("USPEducation.Models.SubjectArea", null)
+                        .WithMany("Requirements")
+                        .HasForeignKey("SubjectAreaId1");
+
+                    b.Navigation("Program");
+
+                    b.Navigation("SubjectArea");
+                });
+
+            modelBuilder.Entity("USPEducation.Models.StudentEnrollment", b =>
+                {
+                    b.HasOne("USPEducation.Models.AcademicProgram", null)
+                        .WithMany("StudentEnrollments")
+                        .HasForeignKey("AcademicProgramId");
+
                     b.HasOne("USPEducation.Models.Course", "Course")
-                        .WithMany("Enrollments")
+                        .WithMany("StudentEnrollments")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -527,29 +712,28 @@ namespace USPEducation.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("USPEducation.Models.StudentAddress", b =>
+            modelBuilder.Entity("USPEducation.Models.AcademicProgram", b =>
                 {
-                    b.HasOne("USPEducation.Models.ApplicationUser", "User")
-                        .WithOne("StudentAddress")
-                        .HasForeignKey("USPEducation.Models.StudentAddress", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Requirements");
 
-                    b.Navigation("User");
+                    b.Navigation("StudentEnrollments");
                 });
 
             modelBuilder.Entity("USPEducation.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("EmergencyContact");
-
                     b.Navigation("Enrollments");
-
-                    b.Navigation("StudentAddress");
                 });
 
             modelBuilder.Entity("USPEducation.Models.Course", b =>
                 {
-                    b.Navigation("Enrollments");
+                    b.Navigation("StudentEnrollments");
+                });
+
+            modelBuilder.Entity("USPEducation.Models.SubjectArea", b =>
+                {
+                    b.Navigation("Courses");
+
+                    b.Navigation("Requirements");
                 });
 #pragma warning restore 612, 618
         }

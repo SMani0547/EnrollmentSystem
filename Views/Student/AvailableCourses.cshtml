@@ -4,35 +4,65 @@
     ViewData["Title"] = "Available Courses";
 }
 
-<div class="container mt-4">
-    <h2>Available Courses</h2>
-    <div class="row mb-3">
-        <div class="col">
-            <a asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Available Courses</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Courses Available for Enrollment
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    No courses are available for enrollment at this time.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Credit Points</th>
+                                <th>Semester</th>
+                                <th>Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in Model)
+                            {
+                                <tr>
+                                    <td>@course.Code</td>
+                                    <td>@course.Name</td>
+                                    <td>@course.CreditPoints</td>
+                                    <td>@course.Semester</td>
+                                    <td>@course.Level</td>
+                                    <td>
+                                        <a asp-action="Enroll" asp-route-id="@course.Id" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-plus-circle"></i> Enroll
+                                        </a>
+                                        <a asp-action="CourseDetails" asp-route-id="@course.Id" class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-info-circle"></i> Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
 
-    <div class="row">
-        @foreach (var course in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">@course.CourseCode</h5>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">@course.Title</h6>
-                        <p class="card-text">@course.Description</p>
-                        <p class="card-text"><small class="text-muted">Credits: @course.Credits</small></p>
-                    </div>
-                    <div class="card-footer">
-                        <form asp-action="Enroll" method="post">
-                            <input type="hidden" name="courseId" value="@course.Id" />
-                            <button type="submit" class="btn btn-primary">Enroll</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        }
+    <div class="text-end">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to My Courses
+        </a>
     </div>
 </div> 

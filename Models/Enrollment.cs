@@ -28,11 +28,4 @@ public class Enrollment
     
     [ForeignKey(nameof(CourseId))]
     public virtual Course Course { get; set; } = null!;
-}
-
-public enum EnrollmentStatus
-{
-    Pending,
-    Approved,
-    Rejected
 } 

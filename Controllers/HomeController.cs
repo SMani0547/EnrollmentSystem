@@ -6,7 +6,6 @@ using USPEducation.Models;
 
 namespace USPEducation.Controllers;
 
-[Authorize]
 public class HomeController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -18,6 +17,7 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         if (User?.Identity?.IsAuthenticated == true)
@@ -28,7 +28,7 @@ public class HomeController : Controller
 
             if (User.IsInRole("Manager"))
             {
-                return RedirectToAction("Index", "Manager");
+                return RedirectToAction("Index", "Program", new { area = "Manager" });
             }
             else if (User.IsInRole("Student"))
             {
@@ -39,6 +39,7 @@ public class HomeController : Controller
         return RedirectToAction("Login", "Account");
     }
 
+    [Authorize]
     public IActionResult Privacy()
     {
         return View();

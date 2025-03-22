@@ -128,6 +128,7 @@ C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.MvcApplic
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.RazorAssemblyInfo.cache
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.RazorAssemblyInfo.cs
+C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.sourcelink.json
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\scopedcss\bundle\USPEducation.styles.css
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\scopedcss\projectbundle\USPEducation.bundle.scp.css
@@ -145,6 +146,5 @@ C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.pdb
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.genruntimeconfig.cache
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\ref\USPEducation.dll
 C:\Users\avishekr\Documents\USPEducation\bin\Debug\net8.0\USPEducation.staticwebassets.endpoints.json
-C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\USPEducation.sourcelink.json
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\avishekr\Documents\USPEducation\obj\Debug\net8.0\staticwebassets\msbuild.USPEducation.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
