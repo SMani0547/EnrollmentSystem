@@ -4,15 +4,15 @@ namespace USPEducation.ViewModels;
 
 public class LoginViewModel
 {
-    [Required(ErrorMessage = "Please enter your Student ID or Email")]
+    [Required]
     [Display(Name = "Student ID or Email")]
-    public string LoginIdentifier { get; set; } = string.Empty;
+    public required string Login { get; set; }
 
-    [Required(ErrorMessage = "Please enter your password")]
+    [Required]
     [DataType(DataType.Password)]
-    public string Password { get; set; } = string.Empty;
+    public required string Password { get; set; }
 
-    [Display(Name = "Remember me")]
+    [Display(Name = "Remember me?")]
     public bool RememberMe { get; set; }
 
     public string? ReturnUrl { get; set; }

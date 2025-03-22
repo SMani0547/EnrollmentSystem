@@ -1,48 +1,42 @@
-@model USPEducation.Models.ViewModels.LoginViewModel
+@model USPEducation.ViewModels.LoginViewModel
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Log in";
 }
 
-<div class="row justify-content-center">
+<div class="row">
     <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h2>@ViewData["Title"]</h2>
-            </div>
-            <div class="card-body">
-                <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group mb-3">
-                        <label asp-for="UserName" class="form-label"></label>
-                        <input asp-for="UserName" class="form-control" />
-                        <span asp-validation-for="UserName" class="text-danger"></span>
+        <section>
+            <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                <h4>Use your Student ID or Email to log in.</h4>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Login"></label>
+                    <input asp-for="Login" class="form-control" />
+                    <span asp-validation-for="Login" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label asp-for="RememberMe">
+                            <input asp-for="RememberMe" />
+                            @Html.DisplayNameFor(m => m.RememberMe)
+                        </label>
                     </div>
-                    <div class="form-group mb-3">
-                        <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
-                    <div class="form-group mb-3">
-                        <div class="form-check">
-                            <input asp-for="RememberMe" class="form-check-input" />
-                            <label asp-for="RememberMe" class="form-check-label"></label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Log in</button>
-                    </div>
-                </form>
-            </div>
-            <div class="card-footer">
-                <p>
-                    Don't have an account? <a asp-action="Register">Register here</a>
-                </p>
-            </div>
-        </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Log in</button>
+                </div>
+            </form>
+        </section>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 } 

@@ -9,6 +9,7 @@ public static class DbSeeder
 {
     private static async Task CreateStudent(
         UserManager<ApplicationUser> userManager,
+        string studentId,
         string email,
         string firstName,
         string lastName,
@@ -18,11 +19,12 @@ public static class DbSeeder
         string? majorII = null,
         string? minorI = null)
     {
-        if (await userManager.FindByEmailAsync(email) == null)
+        if (await userManager.FindByNameAsync(studentId.ToUpper()) == null)
         {
             var student = new ApplicationUser
             {
-                UserName = email,
+                UserName = studentId.ToUpper(),
+                StudentId = studentId.ToUpper(),
                 Email = email,
                 FirstName = firstName,
                 LastName = lastName,
@@ -48,35 +50,12 @@ public static class DbSeeder
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
         // Create roles
-        string[] roles = { "Admin", "Manager", "Student" };
+        string[] roles = { "Manager", "Student" };
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role))
             {
                 await roleManager.CreateAsync(new IdentityRole(role));
-            }
-        }
-
-        // Create admin user
-        var adminEmail = "admin@usp.ac.fj";
-        if (await userManager.FindByEmailAsync(adminEmail) == null)
-        {
-            var admin = new ApplicationUser
-            {
-                UserName = adminEmail,
-                Email = adminEmail,
-                FirstName = "System",
-                LastName = "Administrator",
-                EmailConfirmed = true,
-                AdmissionYear = DateTime.Now.Year,
-                MajorType = MajorType.SingleMajor,
-                MajorI = "ADM"
-            };
-
-            var result = await userManager.CreateAsync(admin, "Admin123!");
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(admin, "Admin");
             }
         }
 
@@ -88,6 +67,7 @@ public static class DbSeeder
             {
                 UserName = managerEmail,
                 Email = managerEmail,
+                StudentId = "MNGR0000",  // Special ID for manager
                 FirstName = "Program",
                 LastName = "Manager",
                 EmailConfirmed = true,
@@ -103,27 +83,27 @@ public static class DbSeeder
             }
         }
 
-        // Create multiple student users
+        // Create student users
         var currentYear = DateTime.Now.Year;
         
         // IT Students
-        await CreateStudent(userManager, "john.doe@usp.ac.fj", "John", "Doe", "ITC", currentYear);
-        await CreateStudent(userManager, "jane.smith@usp.ac.fj", "Jane", "Smith", "ITC", currentYear - 1);
+        await CreateStudent(userManager, "S12345678", "john.doe@usp.ac.fj", "John", "Doe", "ITC", currentYear);
+        await CreateStudent(userManager, "S12345679", "jane.smith@usp.ac.fj", "Jane", "Smith", "ITC", currentYear - 1);
         
         // Business Students
-        await CreateStudent(userManager, "bob.wilson@usp.ac.fj", "Bob", "Wilson", "ACC", currentYear, 
+        await CreateStudent(userManager, "S12345680", "bob.wilson@usp.ac.fj", "Bob", "Wilson", "ACC", currentYear, 
             MajorType.DoubleMajor, "FIN");
-        await CreateStudent(userManager, "mary.jones@usp.ac.fj", "Mary", "Jones", "MGT", currentYear,
+        await CreateStudent(userManager, "S12345681", "mary.jones@usp.ac.fj", "Mary", "Jones", "MGT", currentYear,
             MajorType.SingleMajor, null, "ACC");
             
         // Science Students
-        await CreateStudent(userManager, "alex.brown@usp.ac.fj", "Alex", "Brown", "BIO", currentYear - 1);
-        await CreateStudent(userManager, "sarah.davis@usp.ac.fj", "Sarah", "Davis", "CHE", currentYear);
+        await CreateStudent(userManager, "S12345682", "alex.brown@usp.ac.fj", "Alex", "Brown", "BIO", currentYear - 1);
+        await CreateStudent(userManager, "S12345683", "sarah.davis@usp.ac.fj", "Sarah", "Davis", "CHE", currentYear);
         
         // Economics Students
-        await CreateStudent(userManager, "mike.taylor@usp.ac.fj", "Mike", "Taylor", "ECO", currentYear,
+        await CreateStudent(userManager, "S12345684", "mike.taylor@usp.ac.fj", "Mike", "Taylor", "ECO", currentYear,
             MajorType.DoubleMajor, "MGT");
-        await CreateStudent(userManager, "lisa.anderson@usp.ac.fj", "Lisa", "Anderson", "ECO", currentYear - 2);
+        await CreateStudent(userManager, "S12345685", "lisa.anderson@usp.ac.fj", "Lisa", "Anderson", "ECO", currentYear - 2);
 
         // Seed 2024 programs
         await ProgramSeeder.SeedPrograms2024(context);

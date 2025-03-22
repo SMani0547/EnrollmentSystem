@@ -18,6 +18,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\avishekr\Documents\USPEducation
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/avishekr/Documents/USPEducation/Areas/Identity/Pages/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/avishekr/Documents/USPEducation/Areas/Manager/Views/ProgramRequirement/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTWFuYWdlclxWaWV3c1xQcm9ncmFtUmVxdWlyZW1lbnRcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -120,6 +124,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/avishekr/Documents/USPEducation/Views/Student/AvailableCourses.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxBdmFpbGFibGVDb3Vyc2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/avishekr/Documents/USPEducation/Views/Student/CourseDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxDb3Vyc2VEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/avishekr/Documents/USPEducation/Views/Student/Enroll.cshtml]
