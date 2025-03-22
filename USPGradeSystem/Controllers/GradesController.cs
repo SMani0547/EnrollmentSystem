@@ -4,6 +4,7 @@ using USPEducation.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using USPGradeSystem.Models;
+using System.Linq;
 
 namespace USPEducation.Controllers
 {
@@ -23,6 +24,22 @@ namespace USPEducation.Controllers
         public async Task<ActionResult<IEnumerable<Grade>>> GetGrades()
         {
             return await _context.Grades.ToListAsync();
+        }
+
+        // 🔹 GET: api/grades/student/{studentId}
+        [HttpGet("student/{studentId}")]
+        public async Task<ActionResult<IEnumerable<Grade>>> GetGradesByStudentId(string studentId)
+        {
+            var grades = await _context.Grades
+                .Where(g => g.StudentId == studentId)
+                .ToListAsync();
+
+            if (grades == null || !grades.Any())
+            {
+                return NotFound();
+            }
+
+            return grades;
         }
 
         // 🔹 GET: api/grades/{id}

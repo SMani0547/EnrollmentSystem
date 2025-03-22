@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace USPEducation.Services
 {
@@ -12,5 +13,6 @@ namespace USPEducation.Services
         /// <param name="grade">The student's grade.</param>
         /// <returns>Returns true if the operation is successful, otherwise false.</returns>
         Task<bool> SendGradeDataAsync(int studentId, int courseId, string grade);
+        Task<HashSet<int>> GetCompletedCourseIdsAsync(string studentId);
     }
 }
