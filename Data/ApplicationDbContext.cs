@@ -10,11 +10,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
-
+  
     public DbSet<StudentAddress> StudentAddresses { get; set; }
     public DbSet<EmergencyContact> EmergencyContacts { get; set; }
     public DbSet<Course> Courses { get; set; }
     public DbSet<Enrollment> Enrollments { get; set; }
+
+    public DbSet<StudentFinance> StudentFinances { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -45,5 +47,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithOne(e => e.Course)
             .HasForeignKey(e => e.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<StudentFinance>()
+        .HasKey(sf => sf.Id);
     }
 } 

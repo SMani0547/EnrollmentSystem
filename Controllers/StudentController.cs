@@ -70,7 +70,7 @@ public class StudentController : Controller
         if (course == null)
             return NotFound();
 
-        // Check if already enrolled
+        // Check if already enrolled in this course
         var existingEnrollment = await _context.Enrollments
             .FirstOrDefaultAsync(e => e.StudentId == user.Id && e.CourseId == courseId);
 
@@ -80,6 +80,7 @@ public class StudentController : Controller
             return RedirectToAction(nameof(Enroll));
         }
 
+        // Create the enrollment record
         var enrollment = new Enrollment
         {
             StudentId = user.Id,
@@ -89,7 +90,31 @@ public class StudentController : Controller
         };
 
         _context.Enrollments.Add(enrollment);
-        await _context.SaveChangesAsync();
+
+        // Update StudentFinance: Add the course fee to the student's total fees
+        var studentFinance = await _context.StudentFinances
+            .FirstOrDefaultAsync(sf => sf.StudentID == user.Id);
+
+        if (studentFinance == null)
+        {
+            // If no existing finance record, create a new one
+            studentFinance = new StudentFinance
+            {
+                StudentID = user.Id,
+                TotalFees = course.Fee, // Set initial fee based on this course
+                AmountPaid = 0, // Assuming no payment initially
+                LastUpdated = DateTime.Now
+            };
+            _context.StudentFinances.Add(studentFinance);
+        }
+        else
+        {
+            // If student finance exists, add the course fee to the total
+            studentFinance.TotalFees += course.Fee;
+            studentFinance.LastUpdated = DateTime.Now;
+        }
+
+        await _context.SaveChangesAsync(); // Save changes to both Enrollments and StudentFinance tables
 
         TempData["Success"] = "Successfully enrolled in the course.";
         return RedirectToAction(nameof(Index));

@@ -22,6 +22,8 @@ public class Course
     [Required]
     [Range(0, 120)]
     public int Credits { get; set; }
+
+    public decimal Fee { get; set; }
     
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 } 

@@ -1,0 +1,47 @@
+@model USPEducation.Models.StudentFinance
+
+@{
+    var noFinanceRecord = ViewBag.NoFinanceRecord as bool? ?? false;
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Finance Menu</h1>
+    
+    @if (noFinanceRecord)
+    {
+        <div class="alert alert-warning">
+            No financial record found.
+        </div>
+    }
+    else
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-credit-card me-1"></i>
+                        Finance Details
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Total Fees</th>
+                            <th>Amount Paid</th>
+                            <th>Outstanding Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Model.TotalFees.ToString("C")</td>
+                            <td>@Model.AmountPaid.ToString("C")</td>
+                            <td>@Model.OutstandingBalance.ToString("C")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
