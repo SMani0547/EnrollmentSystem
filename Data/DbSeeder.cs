@@ -184,21 +184,24 @@ public static class DbSeeder
                     CourseCode = "CS101",
                     Title = "Introduction to Programming",
                     Description = "Basic concepts of programming using Python",
-                    Credits = 15
+                    Credits = 15,
+                    Fee = 500
                 },
                 new Course
                 {
                     CourseCode = "CS102",
                     Title = "Data Structures",
                     Description = "Fundamental data structures and algorithms",
-                    Credits = 15
+                    Credits = 15,
+                    Fee = 200
                 },
                 new Course
                 {
                     CourseCode = "CS103",
                     Title = "Database Systems",
                     Description = "Introduction to database design and SQL",
-                    Credits = 15
+                    Credits = 15,
+                    Fee = 300
                 }
             };
 

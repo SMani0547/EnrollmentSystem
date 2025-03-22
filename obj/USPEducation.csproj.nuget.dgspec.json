@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\avishekr\\Documents\\USPEducation\\USPEducation.csproj": {}
+    "c:\\Users\\smg05\\Documents\\GitHub\\EnrollmentSystem\\USPEducation.csproj": {}
   },
   "projects": {
-    "C:\\Users\\avishekr\\Documents\\USPEducation\\USPEducation.csproj": {
+    "c:\\Users\\smg05\\Documents\\GitHub\\EnrollmentSystem\\USPEducation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\avishekr\\Documents\\USPEducation\\USPEducation.csproj",
+        "projectUniqueName": "c:\\Users\\smg05\\Documents\\GitHub\\EnrollmentSystem\\USPEducation.csproj",
         "projectName": "USPEducation",
-        "projectPath": "C:\\Users\\avishekr\\Documents\\USPEducation\\USPEducation.csproj",
-        "packagesPath": "C:\\Users\\avishekr\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\avishekr\\Documents\\USPEducation\\obj\\",
+        "projectPath": "c:\\Users\\smg05\\Documents\\GitHub\\EnrollmentSystem\\USPEducation.csproj",
+        "packagesPath": "C:\\Users\\smg05\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\smg05\\Documents\\GitHub\\EnrollmentSystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\avishekr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\smg05\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -78,24 +76,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.14, 8.0.14]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.14, 8.0.14]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.14, 8.0.14]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.14, 8.0.14]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"

@@ -1,0 +1,60 @@
+@model IEnumerable<USPEducation.Models.StudentFinance>
+
+
+@{
+    ViewData["Title"] = "Student Finance Management";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Student Finance Management</h1>
+
+    <!-- Table for displaying student finance details -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-credit-card me-1"></i>
+            Student Finance Details
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Total Fees</th>
+                        <th>Amount Paid</th>
+                        <th>Outstanding Balance</th>
+                        <th>Last Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var studentFinance in Model)
+                    {
+                        <tr>
+                            <!-- Display StudentID -->
+                            <td>@studentFinance.StudentID</td>
+                            <!-- Display TotalFees, AmountPaid, OutstandingBalance, and LastUpdated -->
+                            <td>@studentFinance.TotalFees.ToString("C")</td>
+                            <td>@studentFinance.AmountPaid.ToString("C")</td>
+                            <td>@studentFinance.OutstandingBalance.ToString("C")</td>
+                            <td>@studentFinance.LastUpdated.ToString("MM/dd/yyyy")</td>
+                            
+                            <td>
+                                <!-- Edit Button for Updating Finance Details -->
+                                <a href="@Url.Action("Edit", "AdminFinance", new { id = studentFinance.Id })" class="btn btn-warning btn-sm">Edit</a>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Bootstrap JS or your custom JS if needed for confirmation dialogs -->
+<script>
+    // Example: Confirmation prompt for deleting or updating
+    function confirmAction(message) {
+        return confirm(message);
+    }
+</script>

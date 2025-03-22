@@ -118,6 +118,16 @@
                                         Courses
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/AdminFinance/FinanceMenu") == true ? "active" : "")"
+                                    asp-controller="AdminFinance" asp-action="FinanceMenu">
+                                        <i class="bi bi-credit-card"></i>
+                                        Finance Menu
+                                    </a>
+                                </li>
+
+
+
                             }
                             else if (User.IsInRole("Student"))
                             {
@@ -142,6 +152,16 @@
                                         Enroll in Course
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/StudentFinance/FinanceMenu") == true ? "active" : "")"
+                                    asp-controller="StudentFinance" asp-action="FinanceMenu">
+                                        <i class="bi bi-credit-card"></i>
+                                        Finance Menu
+                                    </a>
+                                </li>
+
+
                             }
                         </ul>
                     </div>
