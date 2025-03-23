@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using USPSystem.Data;
 using USPSystem.Models;
 using USPSystem.Services;
-using USPSystem.Data.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,13 +63,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
-
-// Seed the database
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ApplicationDbContext>();
-    await DbSeeder.SeedData(context, services);
-}
 
 app.Run(); 
