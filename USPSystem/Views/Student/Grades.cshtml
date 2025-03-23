@@ -1,0 +1,45 @@
+@model List<USPSystem.Models.GradeViewModel>
+@{
+    ViewData["Title"] = "My Grades";
+}
+
+<div class="container">
+    <h2 class="mb-4">My Grades</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No grades available.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="bg-teal text-white">
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Course Name</th>
+                        <th>Grade</th>
+                        <th>Marks</th>
+                        <th>Year</th>
+                        <th>Semester</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var grade in Model.OrderByDescending(g => g.Year).ThenByDescending(g => g.Semester))
+                    {
+                        <tr>
+                            <td>@grade.CourseCode</td>
+                            <td>@grade.CourseName</td>
+                            <td>@grade.Grade</td>
+                            <td>@grade.Marks</td>
+                            <td>@grade.Year</td>
+                            <td>@(grade.Semester == 1 ? "Semester 1" : "Semester 2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div> 

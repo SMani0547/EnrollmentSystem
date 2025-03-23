@@ -276,5 +276,31 @@ public class StudentController : Controller
 
         return View(profile);
     }
+
+    [Authorize]
+    public async Task<IActionResult> Grades()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        // Get grades from external grade system
+        var grades = await _gradeService.GetGradesAsync(user.StudentId);
+        if (grades == null)
+            grades = new List<GradeViewModel>();
+
+        // Get course information for each grade
+        foreach (var grade in grades)
+        {
+            var course = await _context.Courses
+                .FirstOrDefaultAsync(c => c.Code == grade.CourseCode);
+            if (course != null)
+            {
+                grade.CourseName = course.Name;
+            }
+        }
+
+        return View(grades);
+    }
 }
 

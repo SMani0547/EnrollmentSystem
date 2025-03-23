@@ -76,6 +76,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Student" asp-action="Index">My Courses</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Student" asp-action="Grades">My Grades</a>
+                                </li>
                             }
                         }
                     </ul>
@@ -144,6 +147,13 @@
                                        asp-controller="Student" asp-action="Index">
                                         <i class="bi bi-journal-text"></i>
                                         My Courses
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/Student/Grades") == true ? "active" : "")"
+                                       asp-controller="Student" asp-action="Grades">
+                                        <i class="bi bi-mortarboard"></i>
+                                        My Grades
                                     </a>
                                 </li>
                             }
