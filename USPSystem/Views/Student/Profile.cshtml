@@ -9,89 +9,81 @@
 
     <div class="card mb-4">
         <div class="card-header">
-            <i class="fas fa-user me-1"></i>
+            <i class="bi bi-person"></i>
             Personal Information
         </div>
         <div class="card-body">
-            <form asp-action="UpdateProfile" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <dl class="row">
+                <dt class="col-sm-3">Student ID</dt>
+                <dd class="col-sm-9">@Model.StudentId</dd>
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="FirstName" class="control-label">First Name</label>
-                            <input asp-for="FirstName" class="form-control" />
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="LastName" class="control-label">Last Name</label>
-                            <input asp-for="LastName" class="form-control" />
-                            <span asp-validation-for="LastName" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
+                <dt class="col-sm-3">Name</dt>
+                <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="Email" class="control-label">Email</label>
-                            <input asp-for="Email" class="form-control" readonly />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="UserName" class="control-label">Student ID</label>
-                            <input asp-for="UserName" class="form-control" readonly />
-                        </div>
-                    </div>
-                </div>
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="MajorType" class="control-label">Program Structure</label>
-                            <select asp-for="MajorType" class="form-select" asp-items="Html.GetEnumSelectList<MajorType>()">
-                            </select>
-                            <span asp-validation-for="MajorType" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="MajorI" class="control-label">First Major</label>
-                            <input asp-for="MajorI" class="form-control" />
-                            <span asp-validation-for="MajorI" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
+                <dt class="col-sm-3">Admission Year</dt>
+                <dd class="col-sm-9">@Model.AdmissionYear</dd>
 
-                <div class="row mb-3" id="secondMajorRow">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="MajorII" class="control-label">Second Major</label>
-                            <input asp-for="MajorII" class="form-control" />
-                            <span asp-validation-for="MajorII" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
+                <dt class="col-sm-3">Program Structure</dt>
+                <dd class="col-sm-9">@Model.MajorType</dd>
 
-                <div class="row mb-3" id="minorRow">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="MinorI" class="control-label">Minor</label>
-                            <input asp-for="MinorI" class="form-control" />
-                            <span asp-validation-for="MinorI" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
+                <dt class="col-sm-3">First Major</dt>
+                <dd class="col-sm-9">@Model.MajorI</dd>
 
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i>Save Changes
-                    </button>
+                @if (Model.MajorType == MajorType.DoubleMajor)
+                {
+                    <dt class="col-sm-3">Second Major</dt>
+                    <dd class="col-sm-9">@Model.MajorII</dd>
+                }
+                else if (Model.MajorType == MajorType.MajorMinor)
+                {
+                    <dt class="col-sm-3">Minor</dt>
+                    <dd class="col-sm-9">@Model.MinorI</dd>
+                }
+            </dl>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-journal-text"></i>
+            Current Enrollments
+        </div>
+        <div class="card-body">
+            @if (!Model.Enrollments.Any())
+            {
+                <div class="alert alert-info">
+                    You are not currently enrolled in any courses.
                 </div>
-            </form>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Year</th>
+                                <th>Semester</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var enrollment in Model.Enrollments.OrderByDescending(e => e.Year).ThenByDescending(e => e.Semester))
+                            {
+                                <tr>
+                                    <td>@enrollment.Course.Code</td>
+                                    <td>@enrollment.Course.Name</td>
+                                    <td>@enrollment.Year</td>
+                                    <td>@enrollment.Semester</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
 </div>

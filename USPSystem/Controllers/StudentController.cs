@@ -257,5 +257,24 @@ public class StudentController : Controller
             _ => Semester.Semester1
         };
     }
+
+    [Authorize]
+    public async Task<IActionResult> Profile()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        // Load the complete user profile with related data
+        var profile = await _context.Users
+            .Include(u => u.Enrollments)
+                .ThenInclude(e => e.Course)
+            .FirstOrDefaultAsync(u => u.Id == user.Id);
+
+        if (profile == null)
+            return NotFound();
+
+        return View(profile);
+    }
 }
 
