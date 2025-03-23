@@ -1,0 +1,85 @@
+@model IEnumerable<StudentEnrollment>
+
+@{
+    ViewData["Title"] = "Student Enrollments";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Student Enrollments</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            All Enrollments
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    No enrollments found.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="enrollmentsTable">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Course</th>
+                                <th>Year</th>
+                                <th>Semester</th>
+                                <th>Grade</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var enrollment in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-action="StudentDetails" asp-route-id="@enrollment.StudentId">
+                                            @enrollment.Student.FirstName @enrollment.Student.LastName
+                                        </a>
+                                    </td>
+                                    <td>@enrollment.Course.Code - @enrollment.Course.Name</td>
+                                    <td>@enrollment.Year</td>
+                                    <td>@enrollment.Semester</td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-control-sm" value="@enrollment.Grade" id="grade-@enrollment.Id" />
+                                            <button class="btn btn-outline-primary btn-sm" onclick="updateGrade(@enrollment.Id)">
+                                                <i class="fas fa-save"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a asp-action="StudentDetails" asp-route-id="@enrollment.StudentId" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-user me-1"></i>View Student
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updateGrade(enrollmentId) {
+            var grade = document.getElementById('grade-' + enrollmentId).value;
+            window.location.href = '/Manager/UpdateGrade?enrollmentId=' + enrollmentId + '&grade=' + grade;
+        }
+
+        $(document).ready(function () {
+            $('#enrollmentsTable').DataTable({
+                order: [[2, 'desc'], [3, 'desc']]
+            });
+        });
+    </script>
+} 
+

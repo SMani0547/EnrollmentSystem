@@ -1,0 +1,93 @@
+@model USPSystem.Models.AcademicProgram
+
+@{
+    ViewData["Title"] = "Edit Program";
+}
+
+<div class="container mt-4">
+    <h2>Edit Program</h2>
+
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Code" class="control-label"></label>
+                    <input asp-for="Code" class="form-control" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Level" class="control-label"></label>
+                    <select asp-for="Level" class="form-select" asp-items="Html.GetEnumSelectList<ProgramLevel>()">
+                        <option value="">Select Level</option>
+                    </select>
+                    <span asp-validation-for="Level" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Duration" class="control-label"></label>
+                    <input asp-for="Duration" class="form-control" type="number" min="1" max="6" />
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="CreditPoints" class="control-label"></label>
+                    <input asp-for="CreditPoints" class="form-control" type="number" min="0" max="480" />
+                    <span asp-validation-for="CreditPoints" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="OfferingYear" class="control-label"></label>
+                    <input asp-for="OfferingYear" class="form-control" type="number" min="2024" max="2100" />
+                    <span asp-validation-for="OfferingYear" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="MajorCreditsRequired" class="control-label"></label>
+                    <input asp-for="MajorCreditsRequired" class="form-control" type="number" min="0" max="480" />
+                    <span asp-validation-for="MajorCreditsRequired" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="MinorCreditsRequired" class="control-label"></label>
+                    <input asp-for="MinorCreditsRequired" class="form-control" type="number" min="0" max="480" />
+                    <span asp-validation-for="MinorCreditsRequired" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <div class="form-check">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label asp-for="IsActive" class="form-check-label"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
+

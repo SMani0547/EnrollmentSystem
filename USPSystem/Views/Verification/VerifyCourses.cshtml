@@ -1,0 +1,36 @@
+@model IEnumerable<USPSystem.Models.Course>
+
+@{
+    ViewData["Title"] = "Course Verification";
+}
+
+<h1>Course Verification</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Subject Area</th>
+                <th>Credit Points</th>
+                <th>Level</th>
+                <th>Semester</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in Model)
+            {
+                <tr>
+                    <td>@course.Code</td>
+                    <td>@course.Name</td>
+                    <td>@course.SubjectArea.Name</td>
+                    <td>@course.CreditPoints</td>
+                    <td>@course.Level</td>
+                    <td>@course.Semester</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div> 
+

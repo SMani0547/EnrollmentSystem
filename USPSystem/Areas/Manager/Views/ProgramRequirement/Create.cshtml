@@ -1,0 +1,85 @@
+@model ProgramRequirement
+
+@{
+    ViewData["Title"] = "Create Requirement";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Create Requirement</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">New Program Requirement</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="SubjectAreaId" class="control-label">Subject Area</label>
+                    <select asp-for="SubjectAreaId" class="form-control" asp-items="ViewBag.SubjectAreas"></select>
+                    <span asp-validation-for="SubjectAreaId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Type" class="control-label">Requirement Type</label>
+                    <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<RequirementType>()"></select>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Year" class="control-label">Effective From Year</label>
+                    <input asp-for="Year" class="form-control" />
+                    <span asp-validation-for="Year" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CreditPointsRequired" class="control-label">Credit Points Required</label>
+                    <input asp-for="CreditPointsRequired" class="form-control" />
+                    <span asp-validation-for="CreditPointsRequired" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="MinimumGrade" class="control-label">Minimum Grade</label>
+                    <input asp-for="MinimumGrade" class="form-control" />
+                    <span asp-validation-for="MinimumGrade" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Description</label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Notes" class="control-label">Notes</label>
+                    <textarea asp-for="Notes" class="form-control"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Required Courses</label>
+                    <select id="RequiredCourses" name="RequiredCourseIds" class="form-control" multiple asp-items="ViewBag.Courses"></select>
+                </div>
+
+                <div class="form-group mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            $('#RequiredCourses').select2({
+                placeholder: "Select required courses",
+                allowClear: true
+            });
+        });
+    </script>
+} 
+

@@ -1,0 +1,104 @@
+@model USPSystem.Models.Course
+
+@{
+    ViewData["Title"] = "Enroll in Course";
+    var userCompletedCourses = ViewBag.CompletedCourses as HashSet<int> ?? new HashSet<int>();
+    var hasPrerequisites = Model.Prerequisites != null && Model.Prerequisites.Any();
+    var prerequisitesMet = !hasPrerequisites || Model.Prerequisites.All(p => userCompletedCourses.Contains(p.Id));
+}
+
+<div class="container-fluid px-4">
+    <h1>Course Enrollment</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>@Model.Code - @Model.Name</h4>
+        </div>
+        <div class="card-body">
+            @if (hasPrerequisites && !prerequisitesMet)
+            {
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Prerequisites Not Met</strong>
+                    <p class="mb-0">You must complete the following courses before enrolling:</p>
+                    <ul class="mb-0">
+                        @foreach (var prereq in Model.Prerequisites.Where(p => !userCompletedCourses.Contains(p.Id)))
+                        {
+                            <li>@prereq.Code - @prereq.Name</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <dl class="row">
+                <dt class="col-sm-3">Credit Points:</dt>
+                <dd class="col-sm-9">@Model.CreditPoints</dd>
+
+                <dt class="col-sm-3">Semester:</dt>
+                <dd class="col-sm-9">@Model.Semester</dd>
+
+                <dt class="col-sm-3">Level:</dt>
+                <dd class="col-sm-9">@Model.Level</dd>
+
+                <dt class="col-sm-3">Description:</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
+
+                <dt class="col-sm-3">Prerequisites:</dt>
+                <dd class="col-sm-9">
+                    @if (hasPrerequisites)
+                    {
+                        <div>
+                            @foreach (var prereq in Model.Prerequisites)
+                            {
+                                <div class="mb-1">
+                                    @prereq.Code - @prereq.Name
+                                    @if (userCompletedCourses.Contains(prereq.Id))
+                                    {
+                                        <span class="badge bg-success" title="Completed">
+                                            <i class="bi bi-check-circle"></i> Completed
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning" title="Not completed">
+                                            <i class="bi bi-exclamation-triangle"></i> Not Completed
+                                        </span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No prerequisites required</span>
+                    }
+                </dd>
+            </dl>
+
+            <div class="alert alert-info">
+                Please review the course details above before enrolling.
+            </div>
+
+            <form asp-action="Enroll" method="post">
+                <input type="hidden" name="courseId" value="@Model.Id" />
+                <div class="form-group">
+                    @if (prerequisitesMet)
+                    {
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Confirm Enrollment
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary" disabled title="Prerequisites not met">
+                            <i class="bi bi-plus-circle"></i> Confirm Enrollment
+                        </button>
+                    }
+                    <a asp-action="AvailableCourses" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Available Courses
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,48 @@
+@model USPSystem.Models.AcademicProgram
+
+@{
+    ViewData["Title"] = "Delete Program";
+}
+
+<div class="container mt-4">
+    <h2>Delete Program</h2>
+
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Warning!</h4>
+        <p>Are you sure you want to delete this program? This action cannot be undone.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Code)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Code)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Level)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Level)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Duration)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Duration) years</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreditPoints)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.CreditPoints)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.OfferingYear)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.OfferingYear)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Description)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Description)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-action="Delete" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </form>
+</div> 
+
