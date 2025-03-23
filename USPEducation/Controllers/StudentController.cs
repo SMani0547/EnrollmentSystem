@@ -212,6 +212,27 @@ public class StudentController : Controller
         return View(course);
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Unenroll(int enrollmentId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        var enrollment = await _context.StudentEnrollments
+            .FirstOrDefaultAsync(e => e.Id == enrollmentId && e.StudentId == user.Id);
+
+        if (enrollment == null)
+            return NotFound();
+
+        _context.StudentEnrollments.Remove(enrollment);
+        await _context.SaveChangesAsync();
+
+        TempData["Success"] = "Successfully unenrolled from the course.";
+        return RedirectToAction(nameof(Index));
+    }
+
     private static Semester GetCurrentSemester()
     {
         var month = DateTime.Now.Month;
