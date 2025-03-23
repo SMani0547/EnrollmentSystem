@@ -40,6 +40,11 @@ public class StudentController : Controller
         return View(enrollments);
     }
 
+    public IActionResult Enroll()
+    {
+        return RedirectToAction(nameof(AvailableCourses));
+    }
+
     public async Task<IActionResult> Requirements()
     {
         var user = await _userManager.GetUserAsync(User);

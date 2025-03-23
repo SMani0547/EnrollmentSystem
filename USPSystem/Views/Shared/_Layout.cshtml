@@ -76,9 +76,6 @@
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Student" asp-action="Index">My Courses</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Student" asp-action="Enroll">Enroll</a>
-                                </li>
                             }
                         }
                     </ul>
@@ -147,13 +144,6 @@
                                        asp-controller="Student" asp-action="Index">
                                         <i class="bi bi-journal-text"></i>
                                         My Courses
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/Student/Enroll") == true ? "active" : "")"
-                                       asp-controller="Student" asp-action="Enroll">
-                                        <i class="bi bi-plus-circle"></i>
-                                        Enroll in Course
                                     </a>
                                 </li>
                             }
