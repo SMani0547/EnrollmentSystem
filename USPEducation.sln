@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "USPSystem", "USPSystem\USPEducation.csproj", "{A5D60204-6A7C-B47A-4D15-EDCC664D1D53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "USPSystem", "USPSystem\USPSystem.csproj", "{A5D60204-6A7C-B47A-4D15-EDCC664D1D53}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "USPGradeSystem", "USPGradeSystem\USPGradeSystem.csproj", "{FDE7065F-87D8-4D03-A82B-B61105913007}"
 EndProject
