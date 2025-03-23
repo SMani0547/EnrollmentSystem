@@ -1,9 +1,20 @@
 @model USPEducation.Models.StudentFinance
 
+<<<<<<< HEAD
 <div class="container-fluid px-4">
     <h1 class="mt-4">Finance Menu</h1>
     
     @if (Model == null)
+=======
+@{
+    var noFinanceRecord = ViewBag.NoFinanceRecord as bool? ?? false;
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Finance Menu</h1>
+    
+    @if (noFinanceRecord)
+>>>>>>> 4aff433aeecf0219a7a0571f5247c29a9e2e09f4
     {
         <div class="alert alert-warning">
             No financial record found.
@@ -39,6 +50,7 @@
                 </table>
             </div>
         </div>
+<<<<<<< HEAD
 
        <div class="card-body">
                 <p>Click the button below to generate your invoice</p>
@@ -49,5 +61,7 @@
 </a>
 
             </div>
+=======
+>>>>>>> 4aff433aeecf0219a7a0571f5247c29a9e2e09f4
     }
 </div>
