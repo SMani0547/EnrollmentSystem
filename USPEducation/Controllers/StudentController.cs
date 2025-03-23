@@ -8,7 +8,6 @@ using USPEducation.Services;
 
 namespace USPEducation.Controllers;
 
-[Authorize(Roles = "Student")]
 public class StudentController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -99,7 +98,7 @@ public class StudentController : Controller
             return NotFound();
 
         // Get completed courses from external grade system
-        var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.Id);
+        var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.StudentId);
 
         ViewBag.CompletedCourses = completedCourseIds;
 
@@ -111,6 +110,7 @@ public class StudentController : Controller
         var availableCourses = await _context.Courses
             .Include(c => c.Prerequisites)
             .Where(c => !enrolledCourseIds.Contains(c.Id))
+            .Where(p => !completedCourseIds.Contains(p.Id))
             .OrderBy(c => c.Code)
             .ToListAsync();
 
@@ -166,7 +166,7 @@ public class StudentController : Controller
         // Check prerequisites using external grade system
         if (course.Prerequisites.Any())
         {
-            var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.Id);
+            var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.StudentId);
             var prerequisiteIds = course.Prerequisites.Select(p => p.Id).ToList();
             var completedPrerequisites = prerequisiteIds.Count(id => completedCourseIds.Contains(id));
 
@@ -205,7 +205,7 @@ public class StudentController : Controller
             return NotFound();
 
         // Get completed courses from external grade system
-        var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.Id);
+        var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.StudentId);
 
         ViewBag.CompletedCourses = completedCourseIds;
 
@@ -222,4 +222,4 @@ public class StudentController : Controller
             _ => Semester.Semester1
         };
     }
-} 
+}
