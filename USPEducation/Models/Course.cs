@@ -53,6 +53,11 @@ public class Course
     [Required]
     [Display(Name = "Active")]
     public bool IsActive { get; set; } = true;
+
+    [Display(Name = "Course Fees")]
+    [Column(TypeName = "decimal(18,2)")]
+    [Range(0, double.MaxValue, ErrorMessage = "Course fees must be a positive value")]
+    public decimal? Fees { get; set; }
     
     // Navigation properties for program relationships
     public virtual ICollection<AcademicProgram> IsCoreCourseFor { get; set; } = new List<AcademicProgram>();

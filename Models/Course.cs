@@ -54,6 +54,10 @@ public class Course
     [Display(Name = "Active")]
     public bool IsActive { get; set; } = true;
     
+    [Display(Name = "Course Fees")]
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal? Fees { get; set; }
+    
     // Navigation properties for program relationships
     public virtual ICollection<AcademicProgram> IsCoreCourseFor { get; set; } = new List<AcademicProgram>();
     public virtual ICollection<AcademicProgram> IsElectiveCourseFor { get; set; } = new List<AcademicProgram>();
