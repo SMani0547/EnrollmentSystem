@@ -1,0 +1,6 @@
+@USPFinance_HostAddress = http://localhost:5291
+
+GET {{USPFinance_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

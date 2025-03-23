@@ -36,6 +36,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 // Add HttpClient
 builder.Services.AddHttpClient<IStudentGradeService, StudentGradeService>();
+builder.Services.AddHttpClient<IStudentFinanceService, StudentFinanceService>();
 
 var app = builder.Build();
 

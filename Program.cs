@@ -64,4 +64,8 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
+// Configure URL and Port
+app.Urls.Clear();
+app.Urls.Add("http://localhost:5261");
+
 app.Run(); 

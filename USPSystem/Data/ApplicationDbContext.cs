@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<StudentEnrollment> StudentEnrollments { get; set; }
     public DbSet<AcademicProgram> Programs { get; set; }
     public DbSet<ProgramRequirement> ProgramRequirements { get; set; }
+    public DbSet<StudentFinance> StudentFinances { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -68,6 +69,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasMany(r => r.RequiredCourses)
             .WithMany()
             .UsingEntity(j => j.ToTable("ProgramRequirementCourses"));
+
+        // Configure StudentFinance relationship
+        builder.Entity<StudentFinance>()
+            .HasOne(sf => sf.Student)
+            .WithMany()
+            .HasForeignKey(sf => sf.StudentID)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 } 
 
