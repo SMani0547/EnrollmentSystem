@@ -156,6 +156,13 @@
                                         My Grades
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/StudentFinance") == true ? "active" : "")"
+                                       asp-controller="StudentFinance" asp-action="Index">
+                                        <i class="bi bi-cash-coin"></i>
+                                        My Finance
+                                    </a>
+                                </li>
                             }
                         </ul>
                     </div>

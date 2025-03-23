@@ -29,6 +29,14 @@ public class InvoiceController : Controller
     {
         string studentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        var currentUser = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == studentId);
+
+        if (currentUser == null)
+        {
+            return NotFound("User not found");
+        }
+
         var studentFinance = await _financeService.GetStudentFinanceWithDetailsAsync(studentId);
 
         if (studentFinance == null)
@@ -85,7 +93,7 @@ public class InvoiceController : Controller
             studentInfoTable.SetWidths(new float[] { 30f, 70f });
 
             studentInfoTable.AddCell(new PdfPCell(new Phrase("Student ID:", headerFont)) { BackgroundColor = new BaseColor(0, 51, 102), Padding = 8 });
-            studentInfoTable.AddCell(new PdfPCell(new Phrase(studentFinance.StudentID, FontFactory.GetFont(FontFactory.HELVETICA, 14))) { Padding = 8 });
+            studentInfoTable.AddCell(new PdfPCell(new Phrase(currentUser.StudentId, FontFactory.GetFont(FontFactory.HELVETICA, 14))) { Padding = 8 });
 
             studentInfoTable.AddCell(new PdfPCell(new Phrase("Last Updated:", headerFont)) { BackgroundColor = new BaseColor(0, 51, 102), Padding = 8 });
             studentInfoTable.AddCell(new PdfPCell(new Phrase(DateTime.Now.ToString("dd-MM-yyyy"), FontFactory.GetFont(FontFactory.HELVETICA, 14))) { Padding = 8 });

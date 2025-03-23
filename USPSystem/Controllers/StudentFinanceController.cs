@@ -18,6 +18,12 @@ public class StudentFinanceController : Controller
         _userManager = userManager;
     }
 
+    // Adding Index action to handle the root controller URL
+    public IActionResult Index()
+    {
+        return RedirectToAction(nameof(FinanceMenu));
+    }
+
     public async Task<IActionResult> FinanceMenu()
     {
         var user = await _userManager.GetUserAsync(User);

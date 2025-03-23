@@ -54,7 +54,8 @@ app.MapControllers();
 
 // 🔹 Configure URL and Port
 app.Urls.Clear();
-app.Urls.Add("http://localhost:5260");
+app.Urls.Add("http://localhost:5291");
+app.Urls.Add("https://localhost:7235");
 
 // 🔹 Run Application
 app.Run();

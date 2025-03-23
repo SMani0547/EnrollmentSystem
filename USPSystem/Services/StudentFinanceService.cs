@@ -12,7 +12,7 @@ public class StudentFinanceService : IStudentFinanceService
     {
         _httpClient = httpClient;
         _configuration = configuration;
-        _httpClient.BaseAddress = new Uri(_configuration["USPFinance:BaseUrl"] ?? "https://localhost:5291/");
+        _httpClient.BaseAddress = new Uri(_configuration["USPFinance:BaseUrl"] ?? "https://localhost:7235/");
     }
 
     public async Task<StudentFinance?> GetStudentFinanceAsync(string studentId)
