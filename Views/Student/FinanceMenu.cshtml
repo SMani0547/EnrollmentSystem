@@ -1,13 +1,9 @@
 @model USPEducation.Models.StudentFinance
 
-@{
-    var noFinanceRecord = ViewBag.NoFinanceRecord as bool? ?? false;
-}
-
 <div class="container-fluid px-4">
     <h1 class="mt-4">Finance Menu</h1>
     
-    @if (noFinanceRecord)
+    @if (Model == null)
     {
         <div class="alert alert-warning">
             No financial record found.
@@ -43,5 +39,15 @@
                 </table>
             </div>
         </div>
+
+       <div class="card-body">
+                <p>Click the button below to generate your invoice</p>
+
+                <!-- Generate Invoice Button to trigger PDF generation -->
+             <a href="@Url.Action("DownloadFinanceReport", "Finance")" class="btn btn-primary">
+    Generate Invoice
+</a>
+
+            </div>
     }
 </div>

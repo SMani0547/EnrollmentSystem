@@ -16,7 +16,7 @@
                 <div class="form-group row">
                     <label asp-for="StudentID" class="col-sm-2 col-form-label">Student ID</label>
                     <div class="col-sm-10">
-                        <input asp-for="StudentID" class="form-control" readonly title="Access Denied" />
+                        <input asp-for="StudentID" class="form-control" readonly />
                         <span asp-validation-for="StudentID" class="text-danger"></span>
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                 <div class="form-group row">
                     <label asp-for="TotalFees" class="col-sm-2 col-form-label">Total Fees</label>
                     <div class="col-sm-10">
-                        <input asp-for="TotalFees" class="form-control" readonly title="Access Denied" id="totalFees" />
+                        <input asp-for="TotalFees" class="form-control" readonly id="totalFees" />
                         <span asp-validation-for="TotalFees" class="text-danger"></span>
                     </div>
                 </div>
@@ -32,24 +32,23 @@
                 <div class="form-group row">
                     <label asp-for="AmountPaid" class="col-sm-2 col-form-label">Amount Paid</label>
                     <div class="col-sm-10">
-                        <input asp-for="AmountPaid" class="form-control" type="number" step="0.01" id="amountPaid" />
+                        <input asp-for="AmountPaid" class="form-control" readonly id="amountPaid" />
                         <span asp-validation-for="AmountPaid" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="newPayment" class="col-sm-2 col-form-label">New Payment</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="newPayment" name="NewPayment" step="0.01" />
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label asp-for="OutstandingBalance" class="col-sm-2 col-form-label">Outstanding Balance</label>
                     <div class="col-sm-10">
-                        <input asp-for="OutstandingBalance" class="form-control" readonly title="Access Denied" id="outstandingBalance" />
+                        <input asp-for="OutstandingBalance" class="form-control" readonly id="outstandingBalance" />
                         <span asp-validation-for="OutstandingBalance" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label asp-for="LastUpdated" class="col-sm-2 col-form-label">Last Updated</label>
-                    <div class="col-sm-10">
-                        <input asp-for="LastUpdated" class="form-control" type="datetime-local" readonly title="Access Denied" />
-                        <span asp-validation-for="LastUpdated" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -66,19 +65,29 @@
 
 @section Scripts {
     <script>
-        // Function to calculate Outstanding Balance dynamically
-        function calculateOutstandingBalance() {
-            var totalFees = parseFloat(document.getElementById('totalFees').value) || 0;
-            var amountPaid = parseFloat(document.getElementById('amountPaid').value) || 0;
-            var outstandingBalance = totalFees - amountPaid;
+        // Function to update AmountPaid and Outstanding Balance before submitting
+        function updateAmountPaidAndBalance() {
+            var totalFees = parseFloat(document.getElementById('totalFees').value) || 0;  // Total Fees from the form
+            var amountPaid = parseFloat(document.getElementById('amountPaid').value) || 0;  // Current Amount Paid from the form
+            var newPayment = parseFloat(document.getElementById('newPayment').value) || 0;  // New Payment entered by the user
+
+            // Update the AmountPaid field by adding the new payment
+            var updatedAmountPaid = amountPaid + newPayment;
+            document.getElementById('amountPaid').value = updatedAmountPaid.toFixed(2);  // Update Amount Paid
+
+            // Calculate the new Outstanding Balance
+            var outstandingBalance = totalFees - updatedAmountPaid;
+
+            // Update the Outstanding Balance field
             document.getElementById('outstandingBalance').value = outstandingBalance.toFixed(2);  // Update Outstanding Balance
         }
 
-        // Event listeners to recalculate Outstanding Balance when Amount Paid is changed
-        document.getElementById('amountPaid').addEventListener('input', calculateOutstandingBalance);
-
-        // Call the function on page load to initialize the Outstanding Balance
-        window.onload = calculateOutstandingBalance;
+        // Call the function when the user submits the form
+        document.getElementById('financeForm').addEventListener('submit', function(event) {
+            // Update the Amount Paid and Outstanding Balance before submitting the form
+            updateAmountPaidAndBalance();
+        });
     </script>
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
