@@ -46,6 +46,10 @@ public class StudentController : Controller
         if (user == null)
             return NotFound();
 
+        // Get completed courses from external grade system
+        var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.StudentId);
+        ViewBag.CompletedCourses = completedCourseIds;
+
         var requirements = await _context.ProgramRequirements
             .Include(r => r.SubjectArea)
             .Include(r => r.RequiredCourses)
@@ -89,6 +93,11 @@ public class StudentController : Controller
         ViewBag.AdmissionYear = user.AdmissionYear;
 
         return View(majorRequirements);
+    }
+
+    private bool IsCourseCompleted(int courseId)
+    {
+        return ViewBag.CompletedCourses?.Contains(courseId) ?? false;
     }
 
     public async Task<IActionResult> AvailableCourses()

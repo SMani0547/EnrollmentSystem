@@ -67,9 +67,14 @@
                                 <ul class="list-group">
                                     @foreach (var course in requirement.RequiredCourses)
                                     {
-                                        <li class="list-group-item">
+                                        var isCompleted = ViewBag.CompletedCourses.Contains(course.Id);
+                                        <li class="list-group-item @(isCompleted ? "bg-light" : "")">
                                             @course.Code - @course.Name
                                             <span class="badge bg-secondary float-end">@course.CreditPoints CP</span>
+                                            @if (isCompleted)
+                                            {
+                                                <span class="badge bg-success ms-2">Completed</span>
+                                            }
                                         </li>
                                     }
                                 </ul>
