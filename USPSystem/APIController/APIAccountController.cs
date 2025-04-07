@@ -8,17 +8,17 @@ namespace USPSystem.APIController;
 
 [ApiController] // Indicates that this is an API controller
 [Route("api/[controller]")] // Defines the route for the controller (e.g., api/account)
-public class AccountController : ControllerBase
+public class APIAccountController : ControllerBase
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ILogger<AccountController> _logger;
+    private readonly ILogger<APIAccountController> _logger;
 
     // Constructor to initialize dependencies
-    public AccountController(
+    public APIAccountController(
         SignInManager<ApplicationUser> signInManager,
         UserManager<ApplicationUser> userManager,
-        ILogger<AccountController> logger)
+        ILogger<APIAccountController> logger)
     {
         _signInManager = signInManager;
         _userManager = userManager;

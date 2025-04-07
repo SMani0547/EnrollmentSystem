@@ -10,13 +10,13 @@ namespace USPSystem.APIController;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StudentController : ControllerBase
+public class APIStudentController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IStudentGradeService _gradeService;
 
-    public StudentController(
+    public APIStudentController(
         ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
         IStudentGradeService gradeService)
