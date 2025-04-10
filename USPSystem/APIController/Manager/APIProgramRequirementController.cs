@@ -6,6 +6,9 @@ using USPSystem.Models;
 
 namespace USPEducation.ApiController.Manager;
 
+/// <summary>
+/// API controller for managing program requirements
+/// </summary>
 [Authorize(Roles = "Manager")]
 [ApiController]
 [Route("api/[controller]")]
@@ -18,19 +21,28 @@ public class ProgramRequirementController : ControllerBase
         _context = context;
     }
 
-    // GET: api/programrequirement/program/5
-    [HttpGet("program/{programId}")]
-    public async Task<ActionResult<IEnumerable<ProgramRequirement>>> GetRequirementsForProgram(int programId)
+    /// <summary>
+    /// Retrieves all program requirements
+    /// </summary>
+    /// <returns>List of all program requirements</returns>
+    /// <response code="200">Returns the list of requirements</response>
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ProgramRequirement>>> GetRequirements()
     {
         var requirements = await _context.ProgramRequirements
-            .Where(r => r.ProgramId == programId)
             .OrderBy(r => r.Year)
             .ToListAsync();
 
         return Ok(requirements);
     }
 
-    // GET: api/programrequirement/5
+    /// <summary>
+    /// Retrieves a specific program requirement by ID
+    /// </summary>
+    /// <param name="id">The requirement ID</param>
+    /// <returns>The program requirement details</returns>
+    /// <response code="200">Returns the requirement details</response>
+    /// <response code="404">If the requirement is not found</response>
     [HttpGet("{id}")]
     public async Task<ActionResult<ProgramRequirement>> GetRequirement(int id)
     {
@@ -41,7 +53,13 @@ public class ProgramRequirementController : ControllerBase
         return Ok(requirement);
     }
 
-    // POST: api/programrequirement
+    /// <summary>
+    /// Creates a new program requirement
+    /// </summary>
+    /// <param name="requirement">The requirement details to create</param>
+    /// <returns>The created requirement with its ID</returns>
+    /// <response code="201">Returns the created requirement</response>
+    /// <response code="400">If the requirement data is invalid</response>
     [HttpPost]
     public async Task<ActionResult<ProgramRequirement>> CreateRequirement(ProgramRequirement requirement)
     {
@@ -50,7 +68,15 @@ public class ProgramRequirementController : ControllerBase
         return CreatedAtAction(nameof(GetRequirement), new { id = requirement.Id }, requirement);
     }
 
-    // PUT: api/programrequirement/5
+    /// <summary>
+    /// Updates an existing program requirement
+    /// </summary>
+    /// <param name="id">The requirement ID</param>
+    /// <param name="requirement">The updated requirement details</param>
+    /// <returns>No content if successful</returns>
+    /// <response code="204">If the update is successful</response>
+    /// <response code="400">If the requirement data is invalid</response>
+    /// <response code="404">If the requirement is not found</response>
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateRequirement(int id, ProgramRequirement requirement)
     {

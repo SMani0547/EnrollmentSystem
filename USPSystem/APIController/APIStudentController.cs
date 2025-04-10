@@ -8,6 +8,9 @@ using USPSystem.Services;
 
 namespace USPSystem.APIController;
 
+/// <summary>
+/// API controller for student-related operations
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class APIStudentController : ControllerBase
@@ -26,6 +29,12 @@ public class APIStudentController : ControllerBase
         _gradeService = gradeService;
     }
 
+    /// <summary>
+    /// Gets all enrollments for the current student
+    /// </summary>
+    /// <returns>A list of student enrollments with course details</returns>
+    /// <response code="200">Returns the list of enrollments</response>
+    /// <response code="404">If the student is not found</response>
     [HttpGet("enrollments")]
     public async Task<IActionResult> GetEnrollments()
     {
@@ -42,6 +51,12 @@ public class APIStudentController : ControllerBase
         return Ok(enrollments);
     }
 
+    /// <summary>
+    /// Gets program requirements for the current student
+    /// </summary>
+    /// <returns>Program requirements including major, minor, and completed courses</returns>
+    /// <response code="200">Returns the program requirements</response>
+    /// <response code="404">If the student is not found</response>
     [HttpGet("requirements")]
     public async Task<IActionResult> GetRequirements()
     {
@@ -90,6 +105,12 @@ public class APIStudentController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Gets available courses for enrollment
+    /// </summary>
+    /// <returns>A list of courses that the student can enroll in</returns>
+    /// <response code="200">Returns the list of available courses</response>
+    /// <response code="404">If the student is not found</response>
     [HttpGet("available-courses")]
     public async Task<IActionResult> GetAvailableCourses()
     {
@@ -112,6 +133,13 @@ public class APIStudentController : ControllerBase
         return Ok(availableCourses);
     }
 
+    /// <summary>
+    /// Gets detailed information about a specific course
+    /// </summary>
+    /// <param name="id">The course ID</param>
+    /// <returns>Course details including prerequisites</returns>
+    /// <response code="200">Returns the course details</response>
+    /// <response code="404">If the course or student is not found</response>
     [HttpGet("course/{id}")]
     public async Task<IActionResult> GetCourseDetails(int id)
     {
@@ -129,6 +157,14 @@ public class APIStudentController : ControllerBase
         return Ok(new { course, CompletedCourses = completedCourseIds });
     }
 
+    /// <summary>
+    /// Enrolls the student in a course
+    /// </summary>
+    /// <param name="courseId">The ID of the course to enroll in</param>
+    /// <returns>Success message if enrollment is successful</returns>
+    /// <response code="200">Returns success message</response>
+    /// <response code="400">If already enrolled or prerequisites not met</response>
+    /// <response code="404">If the course or student is not found</response>
     [HttpPost("enroll")]
     public async Task<IActionResult> EnrollCourse([FromBody] int courseId)
     {
@@ -171,6 +207,13 @@ public class APIStudentController : ControllerBase
         return Ok("Successfully enrolled.");
     }
 
+    /// <summary>
+    /// Unenrolls the student from a course
+    /// </summary>
+    /// <param name="enrollmentId">The ID of the enrollment to remove</param>
+    /// <returns>Success message if unenrollment is successful</returns>
+    /// <response code="200">Returns success message</response>
+    /// <response code="404">If the enrollment or student is not found</response>
     [HttpDelete("unenroll/{enrollmentId}")]
     public async Task<IActionResult> Unenroll(int enrollmentId)
     {
@@ -188,6 +231,12 @@ public class APIStudentController : ControllerBase
         return Ok("Successfully unenrolled.");
     }
 
+    /// <summary>
+    /// Gets the student's profile information
+    /// </summary>
+    /// <returns>Student profile details including enrollments</returns>
+    /// <response code="200">Returns the student profile</response>
+    /// <response code="404">If the student is not found</response>
     [HttpGet("profile")]
     [Authorize]
     public async Task<IActionResult> GetProfile()
@@ -205,6 +254,12 @@ public class APIStudentController : ControllerBase
         return Ok(profile);
     }
 
+    /// <summary>
+    /// Gets the student's grades
+    /// </summary>
+    /// <returns>A list of grades with course information</returns>
+    /// <response code="200">Returns the list of grades</response>
+    /// <response code="404">If the student is not found</response>
     [HttpGet("grades")]
     [Authorize]
     public async Task<IActionResult> GetGrades()

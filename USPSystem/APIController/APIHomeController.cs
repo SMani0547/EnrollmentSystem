@@ -6,6 +6,9 @@ using USPSystem.Models;
 
 namespace USPSystem.APIController;
 
+/// <summary>
+/// API controller for home and general application operations
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class HomeController : ControllerBase
@@ -19,7 +22,12 @@ public class HomeController : ControllerBase
         _logger = logger;
     }
 
-    // GET: api/home
+    /// <summary>
+    /// Gets the initial application state and redirect information
+    /// </summary>
+    /// <returns>User role and redirect information</returns>
+    /// <response code="200">Returns role and redirect information for authenticated users</response>
+    /// <response code="401">If the user is not authenticated</response>
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Index()
@@ -43,7 +51,12 @@ public class HomeController : ControllerBase
         return Unauthorized(new { message = "User not authenticated", redirect = "/account/login" });
     }
 
-    // GET: api/home/privacy
+    /// <summary>
+    /// Gets privacy information
+    /// </summary>
+    /// <returns>Privacy information</returns>
+    /// <response code="200">Returns privacy information</response>
+    /// <response code="401">If the user is not authenticated</response>
     [Authorize]
     [HttpGet("privacy")]
     public IActionResult Privacy()
@@ -51,7 +64,11 @@ public class HomeController : ControllerBase
         return Ok(new { message = "Privacy information (static or future content)" });
     }
 
-    // GET: api/home/error
+    /// <summary>
+    /// Handles application errors
+    /// </summary>
+    /// <returns>Error information</returns>
+    /// <response code="500">Returns error details</response>
     [HttpGet("error")]
     public IActionResult Error()
     {

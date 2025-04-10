@@ -6,6 +6,9 @@ using USPSystem.Models.ViewModels;
 
 namespace USPSystem.APIController;
 
+/// <summary>
+/// API controller for account-related operations such as login, registration, and profile management
+/// </summary>
 [ApiController] // Indicates that this is an API controller
 [Route("api/[controller]")] // Defines the route for the controller (e.g., api/account)
 public class APIAccountController : ControllerBase
@@ -25,46 +28,58 @@ public class APIAccountController : ControllerBase
         _logger = logger;
     }
 
-    // Login action: Handles user login with username and password        // POST api/login
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+    /// <summary>
+    /// Authenticates a user and creates a session
+    /// </summary>
+    /// <param name="model">Login credentials including username/email and password</param>
+    /// <returns>Success status and message</returns>
+    /// <response code="200">Returns success message if login is successful</response>
+    /// <response code="400">If the login data is invalid</response>
+    /// <response code="401">If the credentials are incorrect</response>
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new { success = false, message = "Invalid data provided." });
-            }
-
-            string userName = model.Login;
-            if (!userName.Contains("@"))
-            {
-                userName = userName.ToUpper(); // Convert student ID to uppercase
-            }
-
-            var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
-
-            if (result.Succeeded)
-            {
-                _logger.LogInformation("User logged in.");
-                return Ok(new { success = true, message = "Login successful!" });
-            }
-
-            if (result.RequiresTwoFactor)
-            {
-                return BadRequest(new { success = false, message = "Two-factor authentication required." });
-            }
-
-            if (result.IsLockedOut)
-            {
-                _logger.LogWarning("User account locked out.");
-                return BadRequest(new { success = false, message = "Account locked out." });
-            }
-            else
-            {
-                return Unauthorized(new { success = false, message = "Invalid login attempt." });
-            }
+            return BadRequest(new { success = false, message = "Invalid data provided." });
         }
 
-    // Logout action: Handles user logout
+        string userName = model.Login;
+        if (!userName.Contains("@"))
+        {
+            userName = userName.ToUpper(); // Convert student ID to uppercase
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+        if (result.Succeeded)
+        {
+            _logger.LogInformation("User logged in.");
+            return Ok(new { success = true, message = "Login successful!" });
+        }
+
+        if (result.RequiresTwoFactor)
+        {
+            return BadRequest(new { success = false, message = "Two-factor authentication required." });
+        }
+
+        if (result.IsLockedOut)
+        {
+            _logger.LogWarning("User account locked out.");
+            return BadRequest(new { success = false, message = "Account locked out." });
+        }
+        else
+        {
+            return Unauthorized(new { success = false, message = "Invalid login attempt." });
+        }
+    }
+
+    /// <summary>
+    /// Logs out the current user and ends their session
+    /// </summary>
+    /// <returns>Success message</returns>
+    /// <response code="200">Returns success message</response>
+    /// <response code="401">If the user is not authenticated</response>
     [Authorize] // Requires authentication
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
@@ -74,7 +89,13 @@ public class APIAccountController : ControllerBase
         return Ok(new { message = "Logout successful" }); // Success response after logging out
     }
 
-    // Register action: Handles user registration (new account creation)
+    /// <summary>
+    /// Registers a new user account
+    /// </summary>
+    /// <param name="model">User registration details</param>
+    /// <returns>Success message if registration is successful</returns>
+    /// <response code="200">Returns success message</response>
+    /// <response code="400">If the registration data is invalid</response>
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
     {
@@ -109,7 +130,13 @@ public class APIAccountController : ControllerBase
         return BadRequest(result.Errors.Select(e => e.Description)); // Return error if registration fails
     }
 
-    // GetProfile action: Retrieves the user's profile details
+    /// <summary>
+    /// Retrieves the current user's profile information
+    /// </summary>
+    /// <returns>User profile details</returns>
+    /// <response code="200">Returns the user profile</response>
+    /// <response code="401">If the user is not authenticated</response>
+    /// <response code="404">If the user is not found</response>
     [Authorize] // Requires authentication
     [HttpGet("profile")]
     public async Task<IActionResult> GetProfile()
@@ -131,7 +158,20 @@ public class APIAccountController : ControllerBase
         return Ok(model); // Return profile data in response
     }
 
-    // UpdateProfile action: Allows the user to update their profile
+    /// <summary>
+    /// Updates the current user's profile information
+    /// </summary>
+    /// <param name="firstName">User's first name</param>
+    /// <param name="lastName">User's last name</param>
+    /// <param name="majorI">Primary major</param>
+    /// <param name="majorII">Secondary major (if applicable)</param>
+    /// <param name="minorI">Minor (if applicable)</param>
+    /// <param name="majorType">Type of major program</param>
+    /// <returns>Success message if update is successful</returns>
+    /// <response code="200">Returns success message</response>
+    /// <response code="400">If the update data is invalid</response>
+    /// <response code="401">If the user is not authenticated</response>
+    /// <response code="404">If the user is not found</response>
     [Authorize] // Requires authentication
     [HttpPost("profile/update")]
     public async Task<IActionResult> UpdateProfile([FromForm] string firstName, [FromForm] string lastName,

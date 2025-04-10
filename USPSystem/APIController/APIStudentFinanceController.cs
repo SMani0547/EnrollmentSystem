@@ -6,6 +6,9 @@ using USPSystem.Services;
 
 namespace USPSystem.APIController;
 
+/// <summary>
+/// API controller for student finance-related operations
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Roles = "Student")]
@@ -20,7 +23,10 @@ public class StudentFinanceController : ControllerBase
         _userManager = userManager;
     }
 
-    // GET: api/studentfinance
+    /// <summary>
+    /// Redirects to the finance menu endpoint
+    /// </summary>
+    /// <returns>Redirect response to finance menu</returns>
     [HttpGet]
     public IActionResult Index()
     {
@@ -28,7 +34,12 @@ public class StudentFinanceController : ControllerBase
         return RedirectToAction(nameof(FinanceMenu));
     }
 
-    // GET: api/studentfinance/finance-menu
+    /// <summary>
+    /// Retrieves the student's financial information and menu options
+    /// </summary>
+    /// <returns>Student's financial record and menu options</returns>
+    /// <response code="200">Returns the student's financial information</response>
+    /// <response code="404">If the student is not found or has no financial record</response>
     [HttpGet("finance-menu")]
     public async Task<ActionResult<object>> FinanceMenu()
     {

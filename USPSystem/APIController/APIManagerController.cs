@@ -7,6 +7,9 @@ using USPSystem.Models;
 
 namespace USPSystem.ApiController;
 
+/// <summary>
+/// API controller for manager-specific operations
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Roles = "Manager")]
@@ -21,7 +24,11 @@ public class ManagerController : ControllerBase
         _userManager = userManager;
     }
 
-    // GET: api/manager/enrollments
+    /// <summary>
+    /// Retrieves all student enrollments in the system
+    /// </summary>
+    /// <returns>List of all student enrollments with student and course details</returns>
+    /// <response code="200">Returns the list of enrollments</response>
     [HttpGet("enrollments")]
     public async Task<IActionResult> GetAllEnrollments()
     {
@@ -35,7 +42,13 @@ public class ManagerController : ControllerBase
         return Ok(enrollments);
     }
 
-    // GET: api/manager/student/{id}
+    /// <summary>
+    /// Retrieves detailed information about a specific student
+    /// </summary>
+    /// <param name="id">The student's ID</param>
+    /// <returns>Student details including enrollments</returns>
+    /// <response code="200">Returns the student details</response>
+    /// <response code="404">If the student is not found</response>
     [HttpGet("student/{id}")]
     public async Task<IActionResult> GetStudentDetails(string id)
     {
@@ -50,7 +63,15 @@ public class ManagerController : ControllerBase
         return Ok(user);
     }
 
-    // PUT: api/manager/update-grade?enrollmentId=5&grade=B+
+    /// <summary>
+    /// Updates a student's grade for a specific enrollment
+    /// </summary>
+    /// <param name="enrollmentId">The enrollment ID</param>
+    /// <param name="grade">The new grade to assign</param>
+    /// <returns>Success message if grade is updated</returns>
+    /// <response code="200">Returns success message</response>
+    /// <response code="400">If the grade is invalid</response>
+    /// <response code="404">If the enrollment is not found</response>
     [HttpPut("updategrade")]
     public async Task<IActionResult> UpdateGrade(int enrollmentId, string grade)
     {

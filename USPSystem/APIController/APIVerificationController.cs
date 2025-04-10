@@ -5,6 +5,9 @@ using USPSystem.Models;
 
 namespace USPEducation.ApiController;
 
+/// <summary>
+/// API controller for course verification operations
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class VerificationController : ControllerBase
@@ -16,7 +19,11 @@ public class VerificationController : ControllerBase
         _context = context;
     }
 
-    // GET: api/verification/verifycourses
+    /// <summary>
+    /// Retrieves all courses for verification purposes
+    /// </summary>
+    /// <returns>List of all courses with their subject areas</returns>
+    /// <response code="200">Returns the list of courses</response>
     [HttpGet("verifycourses")]
     public async Task<ActionResult<IEnumerable<Course>>> VerifyCourses()
     {

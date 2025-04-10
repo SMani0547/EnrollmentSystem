@@ -6,6 +6,9 @@ using USPSystem.Models;
 
 namespace USPEducation.ApiController.Manager;
 
+/// <summary>
+/// API controller for managing academic programs
+/// </summary>
 [Authorize(Roles = "Manager")]
 [ApiController]
 [Route("api/[controller]")]
@@ -18,7 +21,11 @@ public class ProgramController : ControllerBase
         _context = context;
     }
 
-    // GET: api/program
+    /// <summary>
+    /// Retrieves all academic programs
+    /// </summary>
+    /// <returns>List of all academic programs with their requirements and courses</returns>
+    /// <response code="200">Returns the list of programs</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AcademicProgram>>> GetPrograms()
     {
@@ -32,7 +39,13 @@ public class ProgramController : ControllerBase
         return Ok(programs);
     }
 
-    // GET: api/program/{id}
+    /// <summary>
+    /// Retrieves a specific academic program by ID
+    /// </summary>
+    /// <param name="id">The program ID</param>
+    /// <returns>The academic program details</returns>
+    /// <response code="200">Returns the program details</response>
+    /// <response code="404">If the program is not found</response>
     [HttpGet("{id}")]
     public async Task<ActionResult<AcademicProgram>> GetProgram(int id)
     {
@@ -48,7 +61,13 @@ public class ProgramController : ControllerBase
         return Ok(program);
     }
 
-    // POST: api/program
+    /// <summary>
+    /// Creates a new academic program
+    /// </summary>
+    /// <param name="program">The program details to create</param>
+    /// <returns>The created program with its ID</returns>
+    /// <response code="201">Returns the created program</response>
+    /// <response code="400">If the program data is invalid</response>
     [HttpPost]
     public async Task<ActionResult<AcademicProgram>> CreateProgram(AcademicProgram program)
     {
@@ -57,7 +76,15 @@ public class ProgramController : ControllerBase
         return CreatedAtAction(nameof(GetProgram), new { id = program.Id }, program);
     }
 
-    // PUT: api/program/{id}
+    /// <summary>
+    /// Updates an existing academic program
+    /// </summary>
+    /// <param name="id">The program ID</param>
+    /// <param name="program">The updated program details</param>
+    /// <returns>No content if successful</returns>
+    /// <response code="204">If the update is successful</response>
+    /// <response code="400">If the program data is invalid</response>
+    /// <response code="404">If the program is not found</response>
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProgram(int id, AcademicProgram program)
     {
