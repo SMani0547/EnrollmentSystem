@@ -298,9 +298,90 @@ public class StudentController : Controller
             {
                 grade.CourseName = course.Name;
             }
+            // Check if recheck has been applied
+            grade.HasAppliedForRecheck = await _gradeService.HasAppliedForRecheckAsync(user.StudentId, grade.CourseCode, grade.Year, grade.Semester);
         }
 
         return View(grades);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> ApplyForRecheck(string courseCode, int year, int semester)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        // Get the grade information
+        var grades = await _gradeService.GetGradesAsync(user.StudentId);
+        var grade = grades?.FirstOrDefault(g => 
+            g.CourseCode == courseCode && 
+            g.Year == year && 
+            g.Semester == semester);
+
+        if (grade == null)
+            return NotFound();
+
+        // Check if already applied
+        if (await _gradeService.HasAppliedForRecheckAsync(user.StudentId, courseCode, year, semester))
+        {
+            TempData["ErrorMessage"] = "You have already applied for a recheck for this course.";
+            return RedirectToAction(nameof(Grades));
+        }
+
+        var model = new RecheckApplicationModel
+        {
+            CourseCode = grade.CourseCode,
+            CourseName = grade.CourseName,
+            Year = grade.Year,
+            Semester = grade.Semester,
+            CurrentGrade = grade.Grade
+        };
+
+        return View("RecheckApplication", model);
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SubmitRecheckApplication(RecheckApplicationModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View("RecheckApplication", model);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        try
+        {
+            var result = await _gradeService.ApplyForRecheckAsync(
+                user.StudentId, 
+                model.CourseCode,
+                model.Year,
+                model.Semester,
+                model.Reason,
+                model.AdditionalComments);
+
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Your recheck application has been submitted successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to submit recheck application. Please try again later.";
+                return View("RecheckApplication", model);
+            }
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = "An error occurred while processing your request: " + ex.Message;
+            return View("RecheckApplication", model);
+        }
+
+        return RedirectToAction(nameof(Grades));
     }
 }
 

@@ -53,6 +53,45 @@ namespace USPEducation.Services
                 .Select(g => int.Parse(g.CourseId))
                 .ToHashSet() ?? new HashSet<int>();
         }
+
+        public async Task<bool> ApplyForRecheckAsync(string studentId, string courseCode, int year, int semester, string reason, string? additionalComments)
+        {
+            var recheckRequest = new
+            {
+                StudentId = studentId,
+                CourseCode = courseCode,
+                Year = year,
+                Semester = semester,
+                Reason = reason,
+                AdditionalComments = additionalComments,
+                RequestDate = DateTime.UtcNow
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(recheckRequest), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"{_apiBaseUrl}/grades/recheck", content);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> HasAppliedForRecheckAsync(string studentId, string courseCode, int year, int semester)
+        {
+            var response = await _httpClient.GetAsync(
+                $"{_apiBaseUrl}/grades/recheck/status?studentId={studentId}&courseCode={courseCode}&year={year}&semester={semester}");
+            
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var content = await response.Content.ReadAsStringAsync();
+            var status = JsonSerializer.Deserialize<RecheckStatus>(content);
+            return status?.HasApplied ?? false;
+        }
+    }
+
+    public class RecheckStatus
+    {
+        public bool HasApplied { get; set; }
+        public DateTime? RequestDate { get; set; }
+        public string? Status { get; set; }
     }
 }
 

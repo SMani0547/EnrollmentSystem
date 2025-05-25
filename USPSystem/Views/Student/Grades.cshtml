@@ -6,6 +6,22 @@
 <div class="container">
     <h2 class="mb-4">My Grades</h2>
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     @if (!Model.Any())
     {
         <div class="alert alert-info">
@@ -24,6 +40,7 @@
                         <th>Marks</th>
                         <th>Year</th>
                         <th>Semester</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,6 +53,22 @@
                             <td>@grade.Marks</td>
                             <td>@grade.Year</td>
                             <td>@(grade.Semester == 1 ? "Semester 1" : "Semester 2")</td>
+                            <td>
+                                @if (grade.HasAppliedForRecheck)
+                                {
+                                    <span class="badge bg-secondary">Recheck Requested</span>
+                                }
+                                else
+                                {
+                                    <a asp-action="ApplyForRecheck" 
+                                       asp-route-courseCode="@grade.CourseCode"
+                                       asp-route-year="@grade.Year"
+                                       asp-route-semester="@grade.Semester"
+                                       class="btn btn-primary btn-sm">
+                                        Apply for Recheck
+                                    </a>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>

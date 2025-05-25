@@ -1,0 +1,93 @@
+@model USPSystem.Models.RecheckApplicationModel
+@{
+    ViewData["Title"] = "Grade Recheck Application";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Grade Recheck Application</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+                    }
+
+                    <form asp-action="SubmitRecheckApplication" method="post">
+                        <input type="hidden" asp-for="CourseCode" />
+                        <input type="hidden" asp-for="Year" />
+                        <input type="hidden" asp-for="Semester" />
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Course Code</label>
+                                <p class="form-control-static">@Model.CourseCode</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Course Name</label>
+                                <p class="form-control-static">@Model.CourseName</p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Current Grade</label>
+                                <p class="form-control-static">@Model.CurrentGrade</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Year</label>
+                                <p class="form-control-static">@Model.Year</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Semester</label>
+                                <p class="form-control-static">@(Model.Semester == 1 ? "Semester 1" : "Semester 2")</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Reason" class="form-label"></label>
+                            <textarea asp-for="Reason" class="form-control" rows="5" 
+                                    placeholder="Please provide a detailed explanation of why you are requesting a grade recheck..."></textarea>
+                            <span asp-validation-for="Reason" class="text-danger"></span>
+                            <div class="form-text">Minimum 50 characters required. Please be specific about which aspects of your assessment you believe need to be rechecked.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AdditionalComments" class="form-label"></label>
+                            <textarea asp-for="AdditionalComments" class="form-control" rows="3"
+                                    placeholder="Any additional information you would like to provide..."></textarea>
+                            <span asp-validation-for="AdditionalComments" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input asp-for="AgreesToTerms" class="form-check-input" type="checkbox" />
+                                <label asp-for="AgreesToTerms" class="form-check-label">
+                                    I understand and agree that:
+                                    <ul class="mt-2">
+                                        <li>This recheck may result in my grade being increased, decreased, or remaining the same</li>
+                                        <li>The decision after the recheck is final</li>
+                                        <li>Processing this request may take up to 10 working days</li>
+                                    </ul>
+                                </label>
+                                <span asp-validation-for="AgreesToTerms" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Grades" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
