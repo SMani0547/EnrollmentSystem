@@ -16,34 +16,71 @@
                         <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
                     }
 
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">Important Information</h5>
+                        <p>Grade recheck requests require a payment of $@USPSystem.Models.RecheckApplicationModel.RecheckFee.ToString("0.00").</p>
+                        <p>Please make the payment at the finance office or through the online payment portal and provide the receipt number below.</p>
+                        <p>Receipt numbers are in the format: RCPxxxxxxxx (e.g., RCP12345678)</p>
+                    </div>
+
                     <form asp-action="SubmitRecheckApplication" method="post">
-                        <input type="hidden" asp-for="CourseCode" />
-                        <input type="hidden" asp-for="Year" />
-                        <input type="hidden" asp-for="Semester" />
+                        <input type="hidden" asp-for="GradeId" />
                         
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Course Code</label>
-                                <p class="form-control-static">@Model.CourseCode</p>
+                                <label asp-for="CourseCode" class="form-label">Course Code</label>
+                                <input asp-for="CourseCode" class="form-control" readonly />
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Course Name</label>
-                                <p class="form-control-static">@Model.CourseName</p>
+                                <label asp-for="CourseName" class="form-label">Course Name</label>
+                                <input asp-for="CourseName" class="form-control" readonly />
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <label class="form-label">Current Grade</label>
-                                <p class="form-control-static">@Model.CurrentGrade</p>
+                                <label asp-for="CurrentGrade" class="form-label">Current Grade</label>
+                                <input asp-for="CurrentGrade" class="form-control" readonly />
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">Year</label>
-                                <p class="form-control-static">@Model.Year</p>
+                                <label asp-for="Year" class="form-label">Year</label>
+                                <select asp-for="Year" class="form-select">
+                                    @{
+                                        var currentYear = DateTime.Now.Year;
+                                        for (int year = currentYear - 2; year <= currentYear; year++)
+                                        {
+                                            <option value="@year">@year</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="Year" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">Semester</label>
-                                <p class="form-control-static">@(Model.Semester == 1 ? "Semester 1" : "Semester 2")</p>
+                                <label asp-for="Semester" class="form-label">Semester</label>
+                                <select asp-for="Semester" class="form-select">
+                                    <option value="1">Semester 1</option>
+                                    <option value="2">Semester 2</option>
+                                </select>
+                                <span asp-validation-for="Semester" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="form-label"></label>
+                                    <input asp-for="Email" class="form-control" placeholder="Enter your contact email" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                    <div class="form-text">We will use this email to contact you about your recheck request.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="PaymentReceiptNumber" class="form-label"></label>
+                                    <input asp-for="PaymentReceiptNumber" class="form-control" placeholder="Enter your receipt number" />
+                                    <span asp-validation-for="PaymentReceiptNumber" class="text-danger"></span>
+                                    <div class="form-text">Enter the receipt number from your $@USPSystem.Models.RecheckApplicationModel.RecheckFee.ToString("0.00") payment.</div>
+                                </div>
                             </div>
                         </div>
 
@@ -68,9 +105,11 @@
                                 <label asp-for="AgreesToTerms" class="form-check-label">
                                     I understand and agree that:
                                     <ul class="mt-2">
+                                        <li>I have paid the required fee of $@USPSystem.Models.RecheckApplicationModel.RecheckFee.ToString("0.00") for this recheck request</li>
                                         <li>This recheck may result in my grade being increased, decreased, or remaining the same</li>
                                         <li>The decision after the recheck is final</li>
                                         <li>Processing this request may take up to 10 working days</li>
+                                        <li>The recheck fee is non-refundable regardless of the outcome</li>
                                     </ul>
                                 </label>
                                 <span asp-validation-for="AgreesToTerms" class="text-danger"></span>

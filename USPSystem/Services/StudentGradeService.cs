@@ -63,14 +63,15 @@ public class StudentGradeService : IStudentGradeService
                 {
                     gradeViewModels.Add(new GradeViewModel
                     {
+                        Id = grade.Id,
                         StudentId = grade.StudentId,
                         CourseCode = grade.CourseId,
                         CourseName = course.Name,
                         Grade = grade.GradeLetter,
-                        Marks = grade.Marks,
-                        Year = DateTime.Now.Year, // You might want to store this in the Grade model
-                        Semester = (int)GetCurrentSemester(), // Cast Semester enum to int
-                        GradedDate = DateTime.Now // You might want to store this in the Grade model
+                        Marks = grade.Marks != null ? (decimal?)grade.Marks : null,
+                        Year = DateTime.Now.Year,
+                        Semester = (int)GetCurrentSemester(),
+                        GradedDate = DateTime.Now
                     });
                 }
             }
@@ -84,7 +85,7 @@ public class StudentGradeService : IStudentGradeService
         }
     }
 
-    public async Task<bool> ApplyForRecheckAsync(string studentId, string courseCode, int year, int semester, string reason, string? additionalComments)
+    public async Task<bool> ApplyForRecheckAsync(string studentId, string courseCode, int year, int semester, string reason, string? additionalComments, string email, string paymentReceiptNumber)
     {
         try
         {
@@ -96,6 +97,8 @@ public class StudentGradeService : IStudentGradeService
                 Semester = semester,
                 Reason = reason,
                 AdditionalComments = additionalComments,
+                Email = email,
+                PaymentReceiptNumber = paymentReceiptNumber,
                 RequestDate = DateTime.UtcNow
             };
 

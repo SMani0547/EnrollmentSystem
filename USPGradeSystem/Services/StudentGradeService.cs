@@ -54,36 +54,54 @@ namespace USPEducation.Services
                 .ToHashSet() ?? new HashSet<int>();
         }
 
-        public async Task<bool> ApplyForRecheckAsync(string studentId, string courseCode, int year, int semester, string reason, string? additionalComments)
+        public async Task<bool> ApplyForRecheckAsync(string studentId, string courseCode, int year, int semester, string reason, string? additionalComments, string email, string paymentReceiptNumber)
         {
-            var recheckRequest = new
+            try
             {
-                StudentId = studentId,
-                CourseCode = courseCode,
-                Year = year,
-                Semester = semester,
-                Reason = reason,
-                AdditionalComments = additionalComments,
-                RequestDate = DateTime.UtcNow
-            };
+                var recheckRequest = new
+                {
+                    StudentId = studentId,
+                    CourseCode = courseCode,
+                    Year = year,
+                    Semester = semester,
+                    Reason = reason,
+                    AdditionalComments = additionalComments,
+                    Email = email,
+                    PaymentReceiptNumber = paymentReceiptNumber,
+                    RequestDate = DateTime.UtcNow
+                };
 
-            var content = new StringContent(JsonSerializer.Serialize(recheckRequest), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync($"{_apiBaseUrl}/grades/recheck", content);
+                var content = new StringContent(JsonSerializer.Serialize(recheckRequest), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync($"{_apiBaseUrl}/grades/recheck", content);
 
-            return response.IsSuccessStatusCode;
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception)
+            {
+                // Log the error in production
+                return false;
+            }
         }
 
         public async Task<bool> HasAppliedForRecheckAsync(string studentId, string courseCode, int year, int semester)
         {
-            var response = await _httpClient.GetAsync(
-                $"{_apiBaseUrl}/grades/recheck/status?studentId={studentId}&courseCode={courseCode}&year={year}&semester={semester}");
-            
-            if (!response.IsSuccessStatusCode)
-                return false;
+            try
+            {
+                var response = await _httpClient.GetAsync(
+                    $"{_apiBaseUrl}/grades/recheck/status?studentId={studentId}&courseCode={courseCode}&year={year}&semester={semester}");
 
-            var content = await response.Content.ReadAsStringAsync();
-            var status = JsonSerializer.Deserialize<RecheckStatus>(content);
-            return status?.HasApplied ?? false;
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                var content = await response.Content.ReadAsStringAsync();
+                var status = JsonSerializer.Deserialize<RecheckStatus>(content);
+                return status?.HasApplied ?? false;
+            }
+            catch (Exception)
+            {
+                // Log the error in production
+                return false;
+            }
         }
     }
 

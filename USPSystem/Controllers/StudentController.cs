@@ -306,24 +306,23 @@ public class StudentController : Controller
     }
 
     [Authorize]
-    public async Task<IActionResult> ApplyForRecheck(string courseCode, int year, int semester)
+    public async Task<IActionResult> ApplyForRecheck(int gradeId)
     {
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
             return NotFound();
 
-        // Get the grade information
+        // Get all grades for the student
         var grades = await _gradeService.GetGradesAsync(user.StudentId);
-        var grade = grades?.FirstOrDefault(g => 
-            g.CourseCode == courseCode && 
-            g.Year == year && 
-            g.Semester == semester);
-
+        
+        // Find the specific grade by ID
+        var grade = grades?.FirstOrDefault(g => g.Id == gradeId);
+        
         if (grade == null)
             return NotFound();
 
         // Check if already applied
-        if (await _gradeService.HasAppliedForRecheckAsync(user.StudentId, courseCode, year, semester))
+        if (await _gradeService.HasAppliedForRecheckAsync(user.StudentId, grade.CourseCode, grade.Year, grade.Semester))
         {
             TempData["ErrorMessage"] = "You have already applied for a recheck for this course.";
             return RedirectToAction(nameof(Grades));
@@ -331,11 +330,13 @@ public class StudentController : Controller
 
         var model = new RecheckApplicationModel
         {
+            GradeId = grade.Id,
             CourseCode = grade.CourseCode,
             CourseName = grade.CourseName,
             Year = grade.Year,
             Semester = grade.Semester,
-            CurrentGrade = grade.Grade
+            CurrentGrade = grade.Grade,
+            Email = user.Email ?? "" // Pre-fill with user's email if available
         };
 
         return View("RecheckApplication", model);
@@ -348,40 +349,66 @@ public class StudentController : Controller
     {
         if (!ModelState.IsValid)
         {
+            // Get the grade information to repopulate the form
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+                
+            var grades = await _gradeService.GetGradesAsync(user.StudentId);
+            var grade = grades?.FirstOrDefault(g => g.Id == model.GradeId);
+            
+            if (grade != null)
+            {
+                // Repopulate the form data
+                model.CourseCode = grade.CourseCode;
+                model.CourseName = grade.CourseName;
+                model.CurrentGrade = grade.Grade;
+                
+                // Keep the submitted year and semester if present
+                if (model.Year <= 0)
+                {
+                    model.Year = grade.Year;
+                }
+                
+                if (model.Semester <= 0)
+                {
+                    model.Semester = grade.Semester;
+                }
+            }
+
             return View("RecheckApplication", model);
         }
 
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser == null)
             return NotFound();
 
         try
         {
             var result = await _gradeService.ApplyForRecheckAsync(
-                user.StudentId, 
+                currentUser.StudentId, 
                 model.CourseCode,
                 model.Year,
                 model.Semester,
                 model.Reason,
-                model.AdditionalComments);
+                model.AdditionalComments,
+                model.Email,
+                model.PaymentReceiptNumber);
 
             if (result)
             {
-                TempData["SuccessMessage"] = "Your recheck application has been submitted successfully.";
+                TempData["SuccessMessage"] = "Your recheck application has been submitted successfully. You will receive updates at " + model.Email;
+                return RedirectToAction(nameof(Grades));
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Failed to submit recheck application. Please try again later.";
-                return View("RecheckApplication", model);
-            }
+            
+            TempData["ErrorMessage"] = "Failed to submit recheck application. Please try again later.";
+            return View("RecheckApplication", model);
         }
         catch (Exception ex)
         {
             TempData["ErrorMessage"] = "An error occurred while processing your request: " + ex.Message;
             return View("RecheckApplication", model);
         }
-
-        return RedirectToAction(nameof(Grades));
     }
 }
 
