@@ -39,6 +39,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+// Application services configuration
+
 // Add HttpClient
 builder.Services.AddHttpClient<IStudentGradeService, StudentGradeService>();
 builder.Services.AddHttpClient<IStudentFinanceService, StudentFinanceService>();

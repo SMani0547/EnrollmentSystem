@@ -11,18 +11,18 @@ namespace USPSystem.Controllers;
 public class StudentController : Controller
 {
     private readonly ApplicationDbContext _context;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IStudentGradeService _gradeService;
+private readonly UserManager<ApplicationUser> _userManager;
+private readonly IStudentGradeService _gradeService;
 
-    public StudentController(
-        ApplicationDbContext context, 
-        UserManager<ApplicationUser> userManager,
-        IStudentGradeService gradeService)
-    {
-        _context = context;
-        _userManager = userManager;
-        _gradeService = gradeService;
-    }
+public StudentController(
+    ApplicationDbContext context, 
+    UserManager<ApplicationUser> userManager,
+    IStudentGradeService gradeService)
+{
+    _context = context;
+    _userManager = userManager;
+    _gradeService = gradeService;
+}
 
     public async Task<IActionResult> Index()
     {
@@ -385,6 +385,7 @@ public class StudentController : Controller
 
         try
         {
+            // Submit to grade system API
             var result = await _gradeService.ApplyForRecheckAsync(
                 currentUser.StudentId, 
                 model.CourseCode,
@@ -402,7 +403,7 @@ public class StudentController : Controller
             }
             
             TempData["ErrorMessage"] = "Failed to submit recheck application. Please try again later.";
-            return View("RecheckApplication", model);
+            return RedirectToAction(nameof(Grades));
         }
         catch (Exception ex)
         {

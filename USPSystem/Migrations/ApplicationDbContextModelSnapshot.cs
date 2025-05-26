@@ -261,7 +261,7 @@ namespace USPSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Programs");
+                    b.ToTable("Programs", (string)null);
                 });
 
             modelBuilder.Entity("USPSystem.Models.ApplicationUser", b =>
@@ -408,7 +408,7 @@ namespace USPSystem.Migrations
 
                     b.HasIndex("SubjectAreaId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("USPSystem.Models.ProgramRequirement", b =>
@@ -460,7 +460,7 @@ namespace USPSystem.Migrations
 
                     b.HasIndex("SubjectAreaId1");
 
-                    b.ToTable("ProgramRequirements");
+                    b.ToTable("ProgramRequirements", (string)null);
                 });
 
             modelBuilder.Entity("USPSystem.Models.StudentEnrollment", b =>
@@ -505,7 +505,7 @@ namespace USPSystem.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("StudentEnrollments");
+                    b.ToTable("StudentEnrollments", (string)null);
                 });
 
             modelBuilder.Entity("USPSystem.Models.StudentFinance", b =>
@@ -533,7 +533,7 @@ namespace USPSystem.Migrations
 
                     b.HasIndex("StudentID");
 
-                    b.ToTable("StudentFinances");
+                    b.ToTable("StudentFinances", (string)null);
                 });
 
             modelBuilder.Entity("USPSystem.Models.SubjectArea", b =>
@@ -570,7 +570,7 @@ namespace USPSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubjectAreas");
+                    b.ToTable("SubjectAreas", (string)null);
                 });
 
             modelBuilder.Entity("AcademicProgramCourse", b =>

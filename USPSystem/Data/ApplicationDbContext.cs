@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<AcademicProgram> Programs { get; set; }
     public DbSet<ProgramRequirement> ProgramRequirements { get; set; }
     public DbSet<StudentFinance> StudentFinances { get; set; }
+    public DbSet<RecheckApplication> RecheckApplications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -75,6 +76,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(sf => sf.Student)
             .WithMany()
             .HasForeignKey(sf => sf.StudentID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Configure RecheckApplication relationship
+        builder.Entity<RecheckApplication>()
+            .HasOne(ra => ra.Student)
+            .WithMany()
+            .HasForeignKey(ra => ra.StudentId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 } 
