@@ -394,6 +394,8 @@ public StudentController(
                 model.Reason,
                 model.AdditionalComments,
                 model.Email,
+                model.CourseName,
+                model.CurrentGrade,
                 model.PaymentReceiptNumber);
 
             if (result)

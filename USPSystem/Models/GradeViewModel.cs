@@ -14,5 +14,12 @@ public class GradeViewModel
     public int Semester { get; set; }
     public DateTime GradedDate { get; set; }
     public bool HasAppliedForRecheck { get; set; }
-} 
+}
 
+public enum GradeRecheckStatus
+{
+    Pending,
+    InProgress, 
+    Completed,
+    Rejected
+}

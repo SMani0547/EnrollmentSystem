@@ -38,7 +38,6 @@ namespace USPGradeSystem.Models
         
         public string? AdditionalComments { get; set; }
         
-        [Required]
         public DateTime ApplicationDate { get; set; } = DateTime.UtcNow;
         
         [Required]

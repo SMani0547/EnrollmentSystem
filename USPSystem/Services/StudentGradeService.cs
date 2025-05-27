@@ -4,6 +4,8 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using USPSystem.Data;
 using USPSystem.Models;
+// Using fully qualified names instead of a direct import to avoid ambiguity
+// using USPGradeSystem.Models;
 
 namespace USPSystem.Services;
 
@@ -25,7 +27,7 @@ public class StudentGradeService : IStudentGradeService
     {
         try
         {
-            var grades = await _httpClient.GetFromJsonAsync<List<Grade>>($"http://localhost:5240/api/grades/student/{studentId}");
+            var grades = await _httpClient.GetFromJsonAsync<List<USPSystem.Models.Grade>>($"http://localhost:5240/api/grades/student/{studentId}");
             if (grades == null) return new HashSet<int>();
             
             foreach(var grade in grades){
@@ -51,7 +53,7 @@ public class StudentGradeService : IStudentGradeService
     {
         try
         {
-            var grades = await _httpClient.GetFromJsonAsync<List<Grade>>($"http://localhost:5240/api/grades/student/{studentId}");
+            var grades = await _httpClient.GetFromJsonAsync<List<USPSystem.Models.Grade>>($"http://localhost:5240/api/grades/student/{studentId}");
             if (grades == null)
                 return new List<GradeViewModel>();
 
@@ -85,33 +87,61 @@ public class StudentGradeService : IStudentGradeService
         }
     }
 
-    public async Task<bool> ApplyForRecheckAsync(string studentId, string courseCode, int year, int semester, string reason, string? additionalComments, string email, string paymentReceiptNumber)
+    public async Task<bool> ApplyForRecheckAsync(string studentId, string courseCode, int year, int semester, string reason, string? additionalComments, string email, string CourseName, string CurrentGrade, string paymentReceiptNumber)
     {
         try
         {
-            var recheckRequest = new
-            {
-                StudentId = studentId,
-                CourseCode = courseCode,
-                Year = year,
-                Semester = semester,
-                Reason = reason,
-                AdditionalComments = additionalComments,
-                Email = email,
-                PaymentReceiptNumber = paymentReceiptNumber,
-                RequestDate = DateTime.UtcNow
-            };
+            // Create a completely simplified JSON object with all fields properly defined
+            var json = $@"{{
+  ""studentId"": ""{studentId}"",
+  ""courseCode"": ""{courseCode}"",
+  ""courseName"": ""{CourseName}"",
+  ""currentGrade"": ""{CurrentGrade}"",
+  ""year"": {year},
+  ""semester"": {semester},
+  ""reason"": ""{EscapeJsonString(reason)}"",
+  ""additionalComments"": ""{EscapeJsonString(additionalComments ?? "")}"",
+  ""email"": ""{email}"",
+  ""paymentReceiptNumber"": ""{paymentReceiptNumber}"",
+  ""applicationDate"": ""2025-07-01T12:00:00.000Z"",
+  ""status"": 0
+}}";
 
-            var content = new StringContent(JsonSerializer.Serialize(recheckRequest), Encoding.UTF8, "application/json");
+            Console.WriteLine($"Request JSON: {json}");
+
+            var content = new StringContent(json, Encoding.UTF8);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            
             var response = await _httpClient.PostAsync($"http://localhost:5240/api/grades/recheck", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error Response: {errorContent}");
+                Console.WriteLine($"Status Code: {response.StatusCode}");
+            }
 
             return response.IsSuccessStatusCode;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Log the error in production
+            Console.WriteLine($"Exception: {ex.Message}");
             return false;
         }
+    }
+
+    private string EscapeJsonString(string str)
+    {
+        if (string.IsNullOrEmpty(str))
+            return string.Empty;
+            
+        return str
+            .Replace("\\", "\\\\")
+            .Replace("\"", "\\\"")
+            .Replace("\n", "\\n")
+            .Replace("\r", "\\r")
+            .Replace("\t", "\\t");
     }
 
     public async Task<bool> HasAppliedForRecheckAsync(string studentId, string courseCode, int year, int semester)
