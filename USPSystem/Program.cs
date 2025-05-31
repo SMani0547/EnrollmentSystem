@@ -26,6 +26,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 errorNumbersToAdd: null);
         }));
 
+// Add GradeSystemDbContext
+builder.Services.AddDbContext<GradeSystemDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("GradeSystemConnection"),
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null);
+        }));
+
 // Add Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -44,6 +55,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // Add HttpClient
 builder.Services.AddHttpClient<IStudentGradeService, StudentGradeService>();
 builder.Services.AddHttpClient<IStudentFinanceService, StudentFinanceService>();
+
+// Register DirectGradeDataService for direct database access
+builder.Services.AddScoped<DirectGradeDataService>();
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
