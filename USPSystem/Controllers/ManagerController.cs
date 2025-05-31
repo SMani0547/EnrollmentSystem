@@ -15,17 +15,20 @@ public class ManagerController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IStudentGradeService _gradeService;
     private readonly GradeSystemDbContext _gradeSystemDbContext;
+    private readonly IEmailService _emailService;
 
     public ManagerController(
         ApplicationDbContext context, 
         UserManager<ApplicationUser> userManager,
         IStudentGradeService gradeService,
-        GradeSystemDbContext gradeSystemDbContext)
+        GradeSystemDbContext gradeSystemDbContext,
+        IEmailService emailService)
     {
         _context = context;
         _userManager = userManager;
         _gradeService = gradeService;
         _gradeSystemDbContext = gradeSystemDbContext;
+        _emailService = emailService;
     }
 
     public async Task<IActionResult> Index()
@@ -109,6 +112,9 @@ public class ManagerController : Controller
                 // Save changes
                 await _gradeSystemDbContext.SaveChangesAsync();
                 
+                // Send email notification to the student
+                await SendStatusUpdateEmailAsync(recheckApplication, status);
+                
                 TempData["SuccessMessage"] = $"Recheck request status updated to {status}";
             }
             else
@@ -122,6 +128,46 @@ public class ManagerController : Controller
         }
         
         return RedirectToAction(nameof(RecheckRequests));
+    }
+    
+    private async Task SendStatusUpdateEmailAsync(GradeRecheckApplication recheckApplication, string status)
+    {
+        try
+        {
+            // Get student details
+            var student = await _context.Users.FirstOrDefaultAsync(u => u.StudentId == recheckApplication.StudentId);
+            if (student != null)
+            {
+                string studentName = $"{student.FirstName} {student.LastName}";
+                string studentEmail = recheckApplication.Email;
+                
+                if (!string.IsNullOrEmpty(studentEmail))
+                {
+                    // Send email notification
+                    bool emailSent = await _emailService.SendRecheckStatusUpdateEmailAsync(
+                        studentEmail,
+                        studentName,
+                        recheckApplication.CourseCode,
+                        recheckApplication.CourseName,
+                        status
+                    );
+                    
+                    if (emailSent)
+                    {
+                        Console.WriteLine($"Status update email sent to {studentEmail} for recheck request {recheckApplication.Id}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to send status update email to {studentEmail} for recheck request {recheckApplication.Id}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error sending email notification: {ex.Message}");
+            // Continue execution, don't throw the exception
+        }
     }
 } 
 

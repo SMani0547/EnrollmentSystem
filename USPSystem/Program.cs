@@ -59,6 +59,9 @@ builder.Services.AddHttpClient<IStudentFinanceService, StudentFinanceService>();
 // Register DirectGradeDataService for direct database access
 builder.Services.AddScoped<DirectGradeDataService>();
 
+// Register Email Service
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
