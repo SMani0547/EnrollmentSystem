@@ -14,15 +14,18 @@ public class ManagerController : Controller
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IStudentGradeService _gradeService;
+    private readonly GradeSystemDbContext _gradeSystemDbContext;
 
     public ManagerController(
         ApplicationDbContext context, 
         UserManager<ApplicationUser> userManager,
-        IStudentGradeService gradeService)
+        IStudentGradeService gradeService,
+        GradeSystemDbContext gradeSystemDbContext)
     {
         _context = context;
         _userManager = userManager;
         _gradeService = gradeService;
+        _gradeSystemDbContext = gradeSystemDbContext;
     }
 
     public async Task<IActionResult> Index()
@@ -86,13 +89,36 @@ public class ManagerController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateRecheckStatus(int id, string status)
     {
-        if (await _gradeService.UpdateRecheckStatusAsync(id, status))
+        try
         {
-            TempData["SuccessMessage"] = $"Recheck request status updated to {status}";
+            // Get the recheck application directly from the database
+            var recheckApplication = await _gradeSystemDbContext.RecheckApplications.FindAsync(id);
+            
+            if (recheckApplication == null)
+            {
+                TempData["ErrorMessage"] = "Recheck request not found";
+                return RedirectToAction(nameof(RecheckRequests));
+            }
+            
+            // Parse the status to enum
+            if (Enum.TryParse<GradeRecheckStatus>(status, out var statusEnum))
+            {
+                // Update the status
+                recheckApplication.Status = (int)statusEnum;
+                
+                // Save changes
+                await _gradeSystemDbContext.SaveChangesAsync();
+                
+                TempData["SuccessMessage"] = $"Recheck request status updated to {status}";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Invalid status value";
+            }
         }
-        else
+        catch (Exception ex)
         {
-            TempData["ErrorMessage"] = "Failed to update recheck request status";
+            TempData["ErrorMessage"] = $"Failed to update recheck request status: {ex.Message}";
         }
         
         return RedirectToAction(nameof(RecheckRequests));

@@ -63,7 +63,7 @@ public class StudentGradeService : IStudentGradeService
                 var course = await _context.Courses.FirstOrDefaultAsync(c => c.Code == grade.CourseId);
                 if (course != null)
                 {
-                    gradeViewModels.Add(new GradeViewModel
+                    var gradeViewModel = new GradeViewModel
                     {
                         Id = grade.Id,
                         StudentId = grade.StudentId,
@@ -74,7 +74,34 @@ public class StudentGradeService : IStudentGradeService
                         Year = DateTime.Now.Year,
                         Semester = (int)GetCurrentSemester(),
                         GradedDate = DateTime.Now
-                    });
+                    };
+                    
+                    // Check if recheck has been applied and get the status
+                    try
+                    {
+                        var requestUrl = $"http://localhost:5240/api/grades/recheck/status?studentId={studentId}&courseCode={grade.CourseId}&year={gradeViewModel.Year}&semester={gradeViewModel.Semester}";
+                        var response = await _httpClient.GetAsync(requestUrl);
+                        
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                            var recheckStatus = JsonSerializer.Deserialize<RecheckStatus>(content, options);
+                            
+                            if (recheckStatus != null)
+                            {
+                                gradeViewModel.HasAppliedForRecheck = recheckStatus.HasApplied;
+                                gradeViewModel.RecheckStatus = recheckStatus.GetStatusText();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error getting recheck status: {ex.Message}");
+                        // Continue processing other grades
+                    }
+                    
+                    gradeViewModels.Add(gradeViewModel);
                 }
             }
 
@@ -304,5 +331,24 @@ public class RecheckStatus
     
     [System.Text.Json.Serialization.JsonPropertyName("status")]
     public string? Status { get; set; }
+    
+    public string GetStatusText()
+    {
+        if (Status == null) return "Pending";
+        
+        if (int.TryParse(Status, out var statusCode))
+        {
+            return statusCode switch
+            {
+                0 => "Pending",
+                1 => "InProgress",
+                2 => "Completed",
+                3 => "Rejected",
+                _ => "Unknown"
+            };
+        }
+        
+        return Status;
+    }
 } 
 

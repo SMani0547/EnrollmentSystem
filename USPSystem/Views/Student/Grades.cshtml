@@ -57,6 +57,10 @@
                                 @if (grade.HasAppliedForRecheck)
                                 {
                                     <span class="badge bg-info">Recheck Requested</span>
+                                    @if (!string.IsNullOrEmpty(grade.RecheckStatus))
+                                    {
+                                        <span class="badge @GetStatusBadgeClass(grade.RecheckStatus)">@grade.RecheckStatus</span>
+                                    }
                                 }
                                 else
                                 {
@@ -73,4 +77,18 @@
             </table>
         </div>
     }
-</div> 
+</div>
+
+@functions {
+    private string GetStatusBadgeClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "pending" => "bg-warning text-dark",
+            "inprogress" => "bg-primary",
+            "completed" => "bg-success",
+            "rejected" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+} 
