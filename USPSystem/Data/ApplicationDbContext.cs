@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ProgramRequirement> ProgramRequirements { get; set; }
     public DbSet<StudentFinance> StudentFinances { get; set; }
     public DbSet<RecheckApplication> RecheckApplications { get; set; }
+    public DbSet<GraduationApplication> GraduationApplications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -84,6 +85,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany()
             .HasForeignKey(ra => ra.StudentId)
             .OnDelete(DeleteBehavior.Cascade);
+            
+        // Configure GraduationApplication relationship - removed due to foreign key constraint change
+        // StudentId now stores the Username instead of the AspNetUsers.Id
     }
 } 
 

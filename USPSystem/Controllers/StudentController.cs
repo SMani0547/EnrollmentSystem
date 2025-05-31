@@ -11,18 +11,18 @@ namespace USPSystem.Controllers;
 public class StudentController : Controller
 {
     private readonly ApplicationDbContext _context;
-private readonly UserManager<ApplicationUser> _userManager;
-private readonly IStudentGradeService _gradeService;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IStudentGradeService _gradeService;
 
-public StudentController(
-    ApplicationDbContext context, 
-    UserManager<ApplicationUser> userManager,
-    IStudentGradeService gradeService)
-{
-    _context = context;
-    _userManager = userManager;
-    _gradeService = gradeService;
-}
+    public StudentController(
+        ApplicationDbContext context, 
+        UserManager<ApplicationUser> userManager,
+        IStudentGradeService gradeService)
+    {
+        _context = context;
+        _userManager = userManager;
+        _gradeService = gradeService;
+    }
 
     public async Task<IActionResult> Index()
     {
@@ -448,7 +448,82 @@ public StudentController(
             ? new DateTime(DateTime.Now.Year, 7, 15) 
             : new DateTime(DateTime.Now.Year + 1, 1, 15);
 
+        // Check if student already has a pending graduation application
+        var existingApplication = await _context.GraduationApplications
+            .FirstOrDefaultAsync(g => g.StudentId == user.UserName && g.Status == ApplicationStatus.Pending);
+
+        if (existingApplication != null)
+        {
+            ViewBag.HasPendingApplication = true;
+            ViewBag.ApplicationDate = existingApplication.ApplicationDate;
+            ViewBag.ApplicationStatus = existingApplication.Status;
+            ViewBag.GraduationCeremony = existingApplication.GraduationCeremony;
+        }
+
         return View();
+    }
+    
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SubmitGraduationApplication(GraduationApplicationViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            // Re-populate the ViewBag data for the view
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+
+            var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.StudentId);
+            
+            ViewBag.CompletedCoursesCount = completedCourseIds.Count;
+            ViewBag.CanGraduate = completedCourseIds.Count >= 24;
+            ViewBag.StudentName = $"{user.FirstName} {user.LastName}";
+            ViewBag.StudentId = user.StudentId;
+            ViewBag.Program = $"{user.MajorI} {(user.MajorType == MajorType.DoubleMajor ? "/ " + user.MajorII : "")}";
+            ViewBag.MajorI = user.MajorI;
+            ViewBag.MajorII = user.MajorII;
+            ViewBag.MinorI = user.MinorI;
+            
+            // Return to the form with validation errors
+            return View("ApplyForGraduation", model);
+        }
+
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser == null)
+            return NotFound();
+
+        // Check for existing application - for display purposes only
+        var existingApplication = await _context.GraduationApplications
+            .FirstOrDefaultAsync(g => g.StudentId == currentUser.UserName && g.Status == ApplicationStatus.Pending);
+
+        // Create new graduation application
+        var application = new GraduationApplication
+        {
+            StudentId = currentUser.UserName, // This should be Id to match the FK constraint, not StudentId
+            FirstName = currentUser.FirstName,
+            Surname = currentUser.LastName,
+            PostalAddress = model.PostalAddress,
+            DateOfBirth = model.DateOfBirth,
+            Telephone = model.Telephone,
+            Email = model.Email,
+            Programme = currentUser.MajorI + (currentUser.MajorType == MajorType.DoubleMajor ? " / " + currentUser.MajorII : ""),
+            MajorI = currentUser.MajorI,
+            MajorII = currentUser.MajorII,
+            Minor = currentUser.MinorI,
+            GraduationCeremony = model.GraduationCeremony,
+            WillAttend = model.WillAttend,
+            DeclarationConfirmed = model.ConfirmDeclaration,
+            ApplicationDate = DateTime.Now,
+            Status = ApplicationStatus.Pending
+        };
+
+        _context.GraduationApplications.Add(application);
+        await _context.SaveChangesAsync();
+
+        TempData["SuccessMessage"] = "Your graduation application has been submitted successfully. You will be notified once it has been processed.";
+        return RedirectToAction(nameof(Index));
     }
 }
 

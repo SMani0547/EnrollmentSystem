@@ -1,3 +1,4 @@
+@model USPSystem.Models.GraduationApplicationViewModel
 @{
     ViewData["Title"] = "Apply For Graduation";
 }
@@ -55,6 +56,16 @@
         </div>
     </div>
 
+    @if (ViewBag.HasPendingApplication == true)
+    {
+        <div class="alert alert-info mb-4">
+            <h5 class="alert-heading">Previous Application Found</h5>
+            <p>You have a graduation application submitted on @ViewBag.ApplicationDate.ToString("MMMM dd, yyyy").</p>
+            <p>Ceremony: @ViewBag.GraduationCeremony</p>
+            <p>Status: @ViewBag.ApplicationStatus</p>
+        </div>
+    }
+
     @if (ViewBag.CanGraduate)
     {
         <div class="alert alert-success mb-4">
@@ -71,7 +82,9 @@
         </div>
     }
 
-    <form method="post" action="#">
+    <form method="post" asp-controller="Student" asp-action="SubmitGraduationApplication">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">SECTION A: PERSONAL DETAILS</h5>
@@ -81,41 +94,42 @@
                     <div class="col-md-6">
                         <label class="form-label">Student ID:</label>
                         <input type="text" class="form-control" value="@ViewBag.StudentId" readonly />
+                        <input type="hidden" asp-for="StudentId" value="@ViewBag.StudentId" />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">First Name:</label>
                         <input type="text" class="form-control" value="@(ViewBag.StudentName?.Split(' ')[0])" readonly />
+                        <input type="hidden" asp-for="FirstName" value="@(ViewBag.StudentName?.Split(' ')[0])" />
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Surname:</label>
                         <input type="text" class="form-control" value="@(ViewBag.StudentName != null && ViewBag.StudentName.ToString().IndexOf(' ') > 0 ? ViewBag.StudentName.ToString().Substring(ViewBag.StudentName.ToString().IndexOf(' ') + 1) : "")" readonly />
+                        <input type="hidden" asp-for="Surname" value="@(ViewBag.StudentName != null && ViewBag.StudentName.ToString().IndexOf(' ') > 0 ? ViewBag.StudentName.ToString().Substring(ViewBag.StudentName.ToString().IndexOf(' ') + 1) : "")" />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Postal Address:</label>
-                        <textarea class="form-control" rows="3" required></textarea>
+                        <textarea class="form-control" asp-for="PostalAddress" rows="3" required></textarea>
+                        <span asp-validation-for="PostalAddress" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">Date of Birth:</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="DD" required style="width: 60px" maxlength="2" />
-                                <span class="input-group-text">/</span>
-                                <input type="text" class="form-control" placeholder="MM" required style="width: 60px" maxlength="2" />
-                                <span class="input-group-text">/</span>
-                                <input type="text" class="form-control" placeholder="YYYY" required style="width: 80px" maxlength="4" />
-                            </div>
+                            <input type="date" class="form-control" asp-for="DateOfBirth" required />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Telephone:</label>
-                            <input type="tel" class="form-control" placeholder="Enter your phone number" required />
+                            <input type="tel" class="form-control" asp-for="Telephone" placeholder="Enter your phone number" required />
+                            <span asp-validation-for="Telephone" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email:</label>
-                            <input type="email" class="form-control" placeholder="Enter your email address" required />
+                            <input type="email" class="form-control" asp-for="Email" placeholder="Enter your email address" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -123,22 +137,26 @@
                     <div class="col-12">
                         <label class="form-label">Programme you are completing?:</label>
                         <input type="text" class="form-control" value="@ViewBag.Program" readonly />
+                        <input type="hidden" asp-for="Programme" value="@ViewBag.Program" />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Major 1:</label>
                         <input type="text" class="form-control" value="@ViewBag.MajorI" readonly />
+                        <input type="hidden" asp-for="MajorI" value="@ViewBag.MajorI" />
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Major 2:</label>
                         <input type="text" class="form-control" value="@ViewBag.MajorII" readonly />
+                        <input type="hidden" asp-for="MajorII" value="@ViewBag.MajorII" />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Minor:</label>
                         <input type="text" class="form-control" value="@ViewBag.MinorI" readonly />
+                        <input type="hidden" asp-for="Minor" value="@ViewBag.MinorI" />
                     </div>
                 </div>
             </div>
@@ -154,37 +172,38 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="graduationCeremony" id="laucalaMarchApril" value="Laucala Campus - March/April">
+                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="laucalaMarchApril" value="Laucala Campus - March/April">
                             <label class="form-check-label" for="laucalaMarchApril">Laucala Campus - March / April</label>
                         </div>
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="graduationCeremony" id="laucalaSeptOct" value="Laucala Campus - September/October">
+                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="laucalaSeptOct" value="Laucala Campus - September/October">
                             <label class="form-check-label" for="laucalaSeptOct">Laucala Campus - September / October</label>
                         </div>
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="graduationCeremony" id="emalusCampus" value="Emalus Campus - April/May">
+                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="emalusCampus" value="Emalus Campus - April/May">
                             <label class="form-check-label" for="emalusCampus">Emalus Campus - April / May</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="graduationCeremony" id="samoaCampus" value="Samoa Campus - April/May">
+                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="samoaCampus" value="Samoa Campus - April/May">
                             <label class="form-check-label" for="samoaCampus">Samoa Campus - April / May</label>
                         </div>
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="graduationCeremony" id="solomonCampus" value="Solomon Campus - September/October">
+                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="solomonCampus" value="Solomon Campus - September/October">
                             <label class="form-check-label" for="solomonCampus">Solomon Campus - September / October</label>
                         </div>
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="graduationCeremony" id="tongaCampus" value="Tonga Campus - October/November">
+                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="tongaCampus" value="Tonga Campus - October/November">
                             <label class="form-check-label" for="tongaCampus">Tonga Campus - October / November</label>
                         </div>
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="graduationCeremony" id="foundation" value="Foundation">
+                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="foundation" value="Foundation">
                             <label class="form-check-label" for="foundation">Foundation</label>
                         </div>
                     </div>
                 </div>
+                <span asp-validation-for="GraduationCeremony" class="text-danger"></span>
             </div>
         </div>
 
@@ -194,13 +213,14 @@
             </div>
             <div class="card-body">
                 <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="attendanceOption" id="willAttend" value="attend">
+                    <input class="form-check-input" type="radio" asp-for="AttendanceOption" id="willAttend" value="attend">
                     <label class="form-check-label" for="willAttend">I will attend the graduation ceremony</label>
                 </div>
                 <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="attendanceOption" id="willNotAttend" value="notAttend">
+                    <input class="form-check-input" type="radio" asp-for="AttendanceOption" id="willNotAttend" value="notAttend">
                     <label class="form-check-label" for="willNotAttend">I will NOT attend the graduation ceremony</label>
                 </div>
+                <span asp-validation-for="AttendanceOption" class="text-danger"></span>
             </div>
         </div>
 
@@ -212,10 +232,11 @@
                 <p>I certify that the particulars in this form are correct, I have read the notes at the back of this form, and I will abide by the rules set out in the Statutes, Ordinances, Regulations and the Charter of the University of the South Pacific.</p>
                 
                 <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="confirmDeclaration" required>
+                    <input class="form-check-input" type="checkbox" asp-for="ConfirmDeclaration" id="confirmDeclaration" required>
                     <label class="form-check-label" for="confirmDeclaration">
                         I confirm the above declaration
                     </label>
+                    <span asp-validation-for="ConfirmDeclaration" class="text-danger"></span>
                 </div>
 
                 <div class="mt-4">
@@ -239,4 +260,8 @@
     .card-header {
         background-color: #008080 !important;
     }
-</style> 
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} 
