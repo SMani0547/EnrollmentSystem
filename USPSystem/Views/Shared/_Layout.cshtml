@@ -173,6 +173,13 @@
                                         My Finance
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/Student/ApplyForGraduation") == true ? "active" : "")"
+                                       asp-controller="Student" asp-action="ApplyForGraduation">
+                                        <i class="bi bi-mortarboard-fill"></i>
+                                        Apply For Graduation
+                                    </a>
+                                </li>
                             }
                         </ul>
                     </div>

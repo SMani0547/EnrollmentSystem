@@ -422,5 +422,33 @@ public StudentController(
             return View("RecheckApplication", model);
         }
     }
+
+    [Authorize]
+    public async Task<IActionResult> ApplyForGraduation()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        // Check if the student has completed enough courses to graduate
+        var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.StudentId);
+        
+        // For now, just display a simple view
+        ViewBag.CompletedCoursesCount = completedCourseIds.Count;
+        ViewBag.CanGraduate = completedCourseIds.Count >= 24; // Example threshold
+        ViewBag.StudentName = $"{user.FirstName} {user.LastName}";
+        ViewBag.StudentId = user.StudentId;
+        ViewBag.Program = $"{user.MajorI} {(user.MajorType == MajorType.DoubleMajor ? "/ " + user.MajorII : "")}";
+        ViewBag.MajorI = user.MajorI;
+        ViewBag.MajorII = user.MajorII;
+        ViewBag.MinorI = user.MinorI;
+        
+        // Calculate expected graduation date (example: next semester end)
+        ViewBag.ExpectedGraduationDate = DateTime.Now.Month < 6 
+            ? new DateTime(DateTime.Now.Year, 7, 15) 
+            : new DateTime(DateTime.Now.Year + 1, 1, 15);
+
+        return View();
+    }
 }
 
