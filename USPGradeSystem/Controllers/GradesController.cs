@@ -56,6 +56,18 @@ namespace USPEducation.Controllers
             return grade;
         }
 
+        // 🔹 GET: api/grades/recheck-status
+        [HttpGet("recheck-status")]
+        public async Task<ActionResult<object>> GetRecheckStatus(
+            [FromQuery] string studentId, 
+            [FromQuery] string courseId)
+        {
+            var hasApplied = await _context.RecheckApplications
+                .AnyAsync(r => r.StudentId == studentId && r.CourseCode == courseId);
+
+            return new { hasApplied = hasApplied };
+        }
+
         // 🔹 POST: api/grades
         [HttpPost]
         public async Task<ActionResult<Grade>> PostGrade(Grade grade)

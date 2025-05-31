@@ -148,19 +148,52 @@ public class StudentGradeService : IStudentGradeService
     {
         try
         {
-            var response = await _httpClient.GetAsync(
-                $"http://localhost:5240/api/grades/recheck/status?studentId={studentId}&courseCode={courseCode}&year={year}&semester={semester}");
+            var requestUrl = $"http://localhost:5240/api/grades/recheck/status?studentId={studentId}&courseCode={courseCode}&year={year}&semester={semester}";
+            Console.WriteLine($"Checking recheck status: {requestUrl}");
+            
+            var response = await _httpClient.GetAsync(requestUrl);
 
             if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error checking recheck status: {response.StatusCode}, {errorContent}");
+                
+                // Try alternate endpoint
+                var altResponse = await _httpClient.GetAsync($"http://localhost:5240/api/grades/recheck-status?studentId={studentId}&courseId={courseCode}");
+                if (altResponse.IsSuccessStatusCode)
+                {
+                    var altContent = await altResponse.Content.ReadAsStringAsync();
+                    var altStatus = JsonSerializer.Deserialize<Dictionary<string, bool>>(altContent);
+                    return altStatus != null && altStatus.TryGetValue("hasApplied", out bool hasApplied) && hasApplied;
+                }
+                
                 return false;
+            }
 
             var content = await response.Content.ReadAsStringAsync();
-            var status = JsonSerializer.Deserialize<RecheckStatus>(content);
-            return status?.HasApplied ?? false;
+            Console.WriteLine($"Recheck status response: {content}");
+            
+            try {
+                // Use case-insensitive deserialization
+                var options = new JsonSerializerOptions { 
+                    PropertyNameCaseInsensitive = true 
+                };
+                var status = JsonSerializer.Deserialize<RecheckStatus>(content, options);
+                return status?.HasApplied ?? false;
+            }
+            catch (JsonException ex) {
+                Console.WriteLine($"JSON deserialization error: {ex.Message}");
+                // Fallback: manually parse the JSON response
+                if (content.Contains("hasApplied") && content.Contains("true")) {
+                    return true;
+                }
+                return false;
+            }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Log the error in production
+            Console.WriteLine($"Exception checking recheck status: {ex.Message}");
             return false;
         }
     }
@@ -179,8 +212,13 @@ public class StudentGradeService : IStudentGradeService
 
 public class RecheckStatus
 {
+    [System.Text.Json.Serialization.JsonPropertyName("hasApplied")]
     public bool HasApplied { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("requestDate")]
     public DateTime? RequestDate { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("status")]
     public string? Status { get; set; }
 } 
 

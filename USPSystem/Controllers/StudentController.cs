@@ -299,7 +299,16 @@ public StudentController(
                 grade.CourseName = course.Name;
             }
             // Check if recheck has been applied
-            grade.HasAppliedForRecheck = await _gradeService.HasAppliedForRecheckAsync(user.StudentId, grade.CourseCode, grade.Year, grade.Semester);
+            try 
+            {
+                grade.HasAppliedForRecheck = await _gradeService.HasAppliedForRecheckAsync(user.StudentId, grade.CourseCode, grade.Year, grade.Semester);
+                Console.WriteLine($"Grade {grade.CourseCode}: HasAppliedForRecheck = {grade.HasAppliedForRecheck}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking recheck status for {grade.CourseCode}: {ex.Message}");
+                grade.HasAppliedForRecheck = false;
+            }
         }
 
         return View(grades);

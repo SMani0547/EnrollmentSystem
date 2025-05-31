@@ -65,20 +65,60 @@ namespace USPEducation.Controllers
             [FromQuery] int year,
             [FromQuery] int semester)
         {
-            var application = await _context.RecheckApplications
+            // Log the request parameters for debugging
+            Console.WriteLine($"GetRecheckStatus: studentId={studentId}, courseCode={courseCode}, year={year}, semester={semester}");
+            
+            if (string.IsNullOrEmpty(studentId) || string.IsNullOrEmpty(courseCode))
+            {
+                return BadRequest("Student ID and Course Code are required parameters");
+            }
+
+            var query = _context.RecheckApplications
                 .Where(r => r.StudentId == studentId &&
-                       r.CourseCode == courseCode &&
-                       r.Year == year &&
-                       r.Semester == semester)
+                       r.CourseCode == courseCode);
+                       
+            // Only add year and semester filters if they are provided and valid
+            if (year > 0)
+            {
+                query = query.Where(r => r.Year == year);
+            }
+            
+            if (semester > 0)
+            {
+                query = query.Where(r => r.Semester == semester);
+            }
+            
+            var application = await query
                 .OrderByDescending(r => r.ApplicationDate)
                 .FirstOrDefaultAsync();
 
-            return new
+            var result = new
             {
                 HasApplied = application != null,
                 RequestDate = application?.ApplicationDate,
                 Status = application?.Status.ToString()
             };
+            
+            Console.WriteLine($"Result: HasApplied={result.HasApplied}, Status={result.Status}");
+            
+            return result;
+        }
+
+        // GET: api/grades/recheck/check
+        [HttpGet("check")]
+        public async Task<ActionResult<object>> CheckRecheckStatus(
+            [FromQuery] string studentId, 
+            [FromQuery] string courseCode)
+        {
+            if (string.IsNullOrEmpty(studentId) || string.IsNullOrEmpty(courseCode))
+            {
+                return BadRequest("Student ID and Course Code are required parameters");
+            }
+
+            var hasApplied = await _context.RecheckApplications
+                .AnyAsync(r => r.StudentId == studentId && r.CourseCode == courseCode);
+
+            return new { HasApplied = hasApplied };
         }
 
         // POST: api/grades/recheck
