@@ -198,6 +198,90 @@ public class StudentGradeService : IStudentGradeService
         }
     }
 
+    public async Task<List<RecheckRequestViewModel>> GetAllRecheckRequestsAsync()
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync("http://localhost:5240/api/grades/recheck");
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Error getting recheck requests: {response.StatusCode}");
+                return new List<RecheckRequestViewModel>();
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Recheck requests response: {content}");
+            
+            var options = new JsonSerializerOptions { 
+                PropertyNameCaseInsensitive = true 
+            };
+            
+            var recheckRequests = JsonSerializer.Deserialize<List<RecheckApplication>>(content, options);
+            if (recheckRequests == null)
+                return new List<RecheckRequestViewModel>();
+
+            var viewModels = new List<RecheckRequestViewModel>();
+            foreach (var request in recheckRequests)
+            {
+                // Get student name if possible
+                string studentName = "Unknown";
+                var student = await _context.Users.FirstOrDefaultAsync(u => u.StudentId == request.StudentId);
+                if (student != null)
+                {
+                    studentName = $"{student.FirstName} {student.LastName}";
+                }
+
+                viewModels.Add(new RecheckRequestViewModel
+                {
+                    Id = request.Id,
+                    StudentId = request.StudentId,
+                    StudentName = studentName,
+                    CourseCode = request.CourseCode,
+                    CourseName = request.CourseName,
+                    CurrentGrade = request.CurrentGrade,
+                    Year = request.Year,
+                    Semester = request.Semester,
+                    ApplicationDate = request.ApplicationDate,
+                    Status = request.Status.ToString(),
+                    Reason = request.Reason,
+                    Email = request.Email,
+                    PaymentReceiptNumber = request.PaymentReceiptNumber
+                });
+            }
+
+            return viewModels;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception getting recheck requests: {ex.Message}");
+            return new List<RecheckRequestViewModel>();
+        }
+    }
+
+    public async Task<bool> UpdateRecheckStatusAsync(int recheckId, string newStatus)
+    {
+        try
+        {
+            if (!Enum.TryParse<USPGradeSystem.Models.RecheckStatus>(newStatus, out var status))
+            {
+                Console.WriteLine($"Invalid status: {newStatus}");
+                return false;
+            }
+
+            var statusUpdate = new { Status = (int)status };
+            var json = JsonSerializer.Serialize(statusUpdate);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"http://localhost:5240/api/grades/recheck/{recheckId}/status", content);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception updating recheck status: {ex.Message}");
+            return false;
+        }
+    }
+
     private static Semester GetCurrentSemester()
     {
         var month = DateTime.Now.Month;

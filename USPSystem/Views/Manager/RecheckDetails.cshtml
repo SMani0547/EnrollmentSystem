@@ -1,0 +1,171 @@
+@model USPSystem.Models.RecheckRequestViewModel
+@{
+    ViewData["Title"] = "Recheck Request Details";
+}
+
+<div class="container">
+    <h2 class="mb-4">Recheck Request Details</h2>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-teal text-white">
+                    <h5 class="mb-0">Request Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Request ID:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.Id
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Student:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.StudentName (@Model.StudentId)
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Course:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.CourseCode - @Model.CourseName
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Current Grade:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.CurrentGrade
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Year/Semester:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.Year / @(Model.Semester == 1 ? "Semester 1" : "Semester 2")
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Application Date:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.ApplicationDate.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Contact Email:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.Email
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Payment Receipt:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.PaymentReceiptNumber
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Status:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @{
+                                var badgeClass = Model.Status switch
+                                {
+                                    "Pending" => "bg-warning text-dark",
+                                    "InProgress" => "bg-primary",
+                                    "Completed" => "bg-success",
+                                    "Rejected" => "bg-danger",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @badgeClass">@Model.Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-teal text-white">
+                    <h5 class="mb-0">Reason for Recheck</h5>
+                </div>
+                <div class="card-body">
+                    <p>@Model.Reason</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-teal text-white">
+                    <h5 class="mb-0">Update Status</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateRecheckStatus" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        
+                        <div class="mb-3">
+                            <label for="status" class="form-label">New Status</label>
+                            <select id="status" name="status" class="form-select">
+                                @if (Model.Status == "Pending")
+                                {
+                                    <option value="Pending" selected>Pending</option>
+                                }
+                                else
+                                {
+                                    <option value="Pending">Pending</option>
+                                }
+                                
+                                @if (Model.Status == "InProgress")
+                                {
+                                    <option value="InProgress" selected>In Progress</option>
+                                }
+                                else
+                                {
+                                    <option value="InProgress">In Progress</option>
+                                }
+                                
+                                @if (Model.Status == "Completed")
+                                {
+                                    <option value="Completed" selected>Completed</option>
+                                }
+                                else
+                                {
+                                    <option value="Completed">Completed</option>
+                                }
+                                
+                                @if (Model.Status == "Rejected")
+                                {
+                                    <option value="Rejected" selected>Rejected</option>
+                                }
+                                else
+                                {
+                                    <option value="Rejected">Rejected</option>
+                                }
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <a asp-action="RecheckRequests" class="btn btn-secondary">Back to Recheck Requests</a>
+            </div>
+        </div>
+    </div>
+</div> 

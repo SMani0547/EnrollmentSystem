@@ -62,13 +62,16 @@
                             @if (User.IsInRole("Manager"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Manager" asp-action="Index">Student Enrollments</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="Index">Student Enrollments</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Manager" asp-action="Students">Students</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="Students">Students</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Manager" asp-action="Courses">Courses</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="Courses">Courses</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="RecheckRequests">Recheck Requests</a>
                                 </li>
                             }
                             else if (User.IsInRole("Student"))
@@ -99,30 +102,37 @@
                             {
                                 <li class="nav-item">
                                     <a class="nav-link @(Context.Request.Path.Value?.Contains("/Manager/Program") == true ? "active" : "")"
-                                       asp-area="Manager" asp-controller="Program" asp-action="Index">
+                                       asp-controller="Program" asp-action="Index">
                                         <i class="bi bi-mortarboard"></i>
                                         Programs
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link @(Context.Request.Path.Value?.Contains("/Manager/Index") == true ? "active" : "")"
-                                       asp-controller="Manager" asp-action="Index">
+                                       asp-area="" asp-controller="Manager" asp-action="Index">
                                         <i class="bi bi-people"></i>
                                         Student Enrollments
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link @(Context.Request.Path.Value?.Contains("/Manager/Students") == true ? "active" : "")"
-                                       asp-controller="Manager" asp-action="Students">
+                                       asp-area="" asp-controller="Manager" asp-action="Students">
                                         <i class="bi bi-person-vcard"></i>
                                         Students
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link @(Context.Request.Path.Value?.Contains("/Manager/Courses") == true ? "active" : "")"
-                                       asp-controller="Manager" asp-action="Courses">
+                                       asp-area="" asp-controller="Manager" asp-action="Courses">
                                         <i class="bi bi-book"></i>
                                         Courses
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/Manager/RecheckRequests") == true ? "active" : "")"
+                                       asp-area="" asp-controller="Manager" asp-action="RecheckRequests">
+                                        <i class="bi bi-clipboard-check"></i>
+                                        Grade Recheck Requests
                                     </a>
                                 </li>
                             }

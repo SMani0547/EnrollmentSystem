@@ -1,0 +1,84 @@
+@model List<USPSystem.Models.RecheckRequestViewModel>
+@{
+    ViewData["Title"] = "Grade Recheck Requests";
+}
+
+<div class="container">
+    <h2 class="mb-4">Grade Recheck Requests</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No recheck requests found.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="bg-teal text-white">
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Course</th>
+                        <th>Current Grade</th>
+                        <th>Year/Semester</th>
+                        <th>Application Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Model.OrderByDescending(r => r.ApplicationDate))
+                    {
+                        <tr>
+                            <td>@request.StudentId</td>
+                            <td>@request.StudentName</td>
+                            <td>
+                                <strong>@request.CourseCode</strong><br />
+                                <small>@request.CourseName</small>
+                            </td>
+                            <td>@request.CurrentGrade</td>
+                            <td>@request.Year / @(request.Semester == 1 ? "S1" : "S2")</td>
+                            <td>@request.ApplicationDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                @{
+                                    var badgeClass = request.Status switch
+                                    {
+                                        "Pending" => "bg-warning text-dark",
+                                        "InProgress" => "bg-primary",
+                                        "Completed" => "bg-success",
+                                        "Rejected" => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @badgeClass">@request.Status</span>
+                            </td>
+                            <td>
+                                <a asp-action="RecheckDetails" asp-route-id="@request.Id" class="btn btn-primary btn-sm">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div> 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using USPSystem.Data;
 using USPSystem.Models;
+using USPSystem.Services;
 
 namespace USPSystem.Controllers;
 
@@ -12,11 +13,16 @@ public class ManagerController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IStudentGradeService _gradeService;
 
-    public ManagerController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public ManagerController(
+        ApplicationDbContext context, 
+        UserManager<ApplicationUser> userManager,
+        IStudentGradeService gradeService)
     {
         _context = context;
         _userManager = userManager;
+        _gradeService = gradeService;
     }
 
     public async Task<IActionResult> Index()
@@ -57,6 +63,39 @@ public class ManagerController : Controller
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(StudentDetails), new { id = enrollment.StudentId });
+    }
+    
+    public async Task<IActionResult> RecheckRequests()
+    {
+        var requests = await _gradeService.GetAllRecheckRequestsAsync();
+        return View(requests);
+    }
+    
+    public async Task<IActionResult> RecheckDetails(int id)
+    {
+        var requests = await _gradeService.GetAllRecheckRequestsAsync();
+        var request = requests.FirstOrDefault(r => r.Id == id);
+        
+        if (request == null)
+            return NotFound();
+            
+        return View(request);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateRecheckStatus(int id, string status)
+    {
+        if (await _gradeService.UpdateRecheckStatusAsync(id, status))
+        {
+            TempData["SuccessMessage"] = $"Recheck request status updated to {status}";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Failed to update recheck request status";
+        }
+        
+        return RedirectToAction(nameof(RecheckRequests));
     }
 } 
 
