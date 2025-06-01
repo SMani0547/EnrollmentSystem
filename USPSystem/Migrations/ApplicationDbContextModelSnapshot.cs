@@ -484,6 +484,45 @@ namespace USPSystem.Migrations
 
                     b.ToTable("GraduationApplications");
                 });
+                modelBuilder.Entity("USPSystem.Models.HoldAccessSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Controller")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBlockedByHold")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SectionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModifiedByUserId");
+
+                    b.ToTable("HoldAccessSettings");
+                });
 
             modelBuilder.Entity("USPSystem.Models.ProgramRequirement", b =>
                 {

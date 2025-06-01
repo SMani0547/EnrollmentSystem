@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using USPSystem.Data;
 using USPSystem.Models;
 using USPSystem.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace USPSystem.Controllers;
@@ -13,7 +16,7 @@ namespace USPSystem.Controllers;
 public class StudentController : BaseController
 {
     private readonly ApplicationDbContext _context;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly new UserManager<ApplicationUser> _userManager;
     private readonly IStudentGradeService _gradeService;
 
     public StudentController(
