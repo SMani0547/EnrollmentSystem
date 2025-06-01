@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\USPGradeSystem\USPGradeSystem.csproj" />
+    <ProjectReference Include="..\USPFinance\USPFinance.csproj" />
   </ItemGroup>
 
 </Project>

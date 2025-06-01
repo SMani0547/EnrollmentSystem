@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using USPSystem.Models;
 using USPSystem.Models.ViewModels;
+using USPSystem.Services;
+using System.Threading.Tasks;
 
 namespace USPSystem.Controllers;
 
 [AllowAnonymous]
-public class AccountController : Controller
+public class AccountController : BaseController
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -17,7 +19,10 @@ public class AccountController : Controller
     public AccountController(
         SignInManager<ApplicationUser> signInManager,
         UserManager<ApplicationUser> userManager,
-        ILogger<AccountController> logger)
+        ILogger<AccountController> logger,
+        StudentHoldService studentHoldService,
+        PageHoldService pageHoldService) 
+        : base(studentHoldService, pageHoldService, userManager)
     {
         _signInManager = signInManager;
         _userManager = userManager;

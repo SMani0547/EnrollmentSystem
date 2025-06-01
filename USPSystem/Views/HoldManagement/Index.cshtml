@@ -1,0 +1,230 @@
+@using USPFinance.Models
+@model List<USPFinance.Models.StudentFinance>
+
+@{
+    ViewData["Title"] = "Student Hold Management";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Student Hold Management</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-table me-1"></i>
+                Student Hold Status
+            </div>
+            <div class="col-md-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <span class="input-group-text bg-light border-0" style="border-top-left-radius: 50px; border-bottom-left-radius: 50px;">
+                        <i class="fas fa-search text-secondary" style="font-size: 0.875rem;"></i>
+                    </span>
+                    <input type="text" id="searchInput" class="form-control border-0 shadow-none" 
+                           placeholder="🔎︎ Search Here..." 
+                           style="background-color: #f8f9fa; font-size: 0.875rem; height: 32px;">
+                    <span class="input-group-text bg-light border-0" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
+                        <i class="fas fa-search text-secondary" style="font-size: 0.875rem;"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Hold Status</th>
+                            <th>Hold Reason</th>
+                            <th>Hold Start Date</th>
+                            <th>Hold Placed By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        @foreach (var student in Model)
+                        {
+                            <tr>
+                                <td>@student.StudentID</td>
+                                <td>
+                                    @if (student.IsOnHold)
+                                    {
+                                        <span class="badge bg-danger">On Hold</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">No Hold</span>
+                                    }
+                                </td>
+                                <td>@student.HoldReason</td>
+                                <td>@(student.HoldStartDate?.ToString("yyyy-MM-dd HH:mm"))</td>
+                                <td>@student.HoldPlacedBy</td>
+                                <td>
+                                    @if (student.IsOnHold)
+                                    {
+                                        <form asp-controller="HoldManagement" asp-action="RemoveHold" method="post" style="display: inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="studentId" value="@student.StudentID" />
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-unlock"></i> Remove Hold
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-controller="HoldManagement" asp-action="PlaceHold" method="post" style="display: inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="studentId" value="@student.StudentID" />
+                                            <div class="input-group">
+                                                <input type="text" name="reason" class="form-control form-control-sm" placeholder="Enter hold reason" required />
+                                                <button type="submit" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-lock"></i> Place Hold
+                                                </button>
+                                            </div>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div id="noResults" class="text-center py-4 d-none">
+                    <i class="fas fa-search fa-2x text-muted mb-2"></i>
+                    <h5 class="text-muted">No results found</h5>
+                    <p class="text-muted">Try adjusting your search terms</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.getElementById('tableBody');
+            const noResults = document.getElementById('noResults');
+            const rows = tableBody.getElementsByTagName('tr');
+
+            function filterTable() {
+                const searchText = searchInput.value.toLowerCase();
+                let hasResults = false;
+
+                for (let row of rows) {
+                    const text = row.textContent.toLowerCase();
+                    const isVisible = text.includes(searchText);
+                    row.style.display = isVisible ? '' : 'none';
+                    if (isVisible) hasResults = true;
+                }
+
+                // Show/hide no results message
+                if (searchText && !hasResults) {
+                    noResults.classList.remove('d-none');
+                    tableBody.style.display = 'none';
+                } else {
+                    noResults.classList.add('d-none');
+                    tableBody.style.display = '';
+                }
+            }
+
+            // Add event listener for search
+            searchInput.addEventListener('input', filterTable);
+
+            // Add pagination
+            const itemsPerPage = 10;
+            let currentPage = 1;
+
+            function showPage(page) {
+                const start = (page - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                let visibleCount = 0;
+
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].style.display !== 'none') {
+                        if (visibleCount >= start && visibleCount < end) {
+                            rows[i].style.display = '';
+                        } else {
+                            rows[i].style.display = 'none';
+                        }
+                        visibleCount++;
+                    }
+                }
+            }
+
+            // Add pagination controls
+            const paginationDiv = document.createElement('div');
+            paginationDiv.className = 'd-flex justify-content-center mt-3';
+            tableBody.parentNode.insertAdjacentElement('afterend', paginationDiv);
+
+            function updatePagination() {
+                const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+                const pageCount = Math.ceil(visibleRows.length / itemsPerPage);
+                
+                paginationDiv.innerHTML = '';
+                
+                if (pageCount > 1) {
+                    const prevButton = document.createElement('button');
+                    prevButton.className = 'btn btn-sm btn-outline-primary mx-1';
+                    prevButton.innerHTML = '&laquo; Previous';
+                    prevButton.onclick = () => {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            showPage(currentPage);
+                        }
+                    };
+                    paginationDiv.appendChild(prevButton);
+
+                    for (let i = 1; i <= pageCount; i++) {
+                        const pageButton = document.createElement('button');
+                        pageButton.className = `btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1`;
+                        pageButton.textContent = i;
+                        pageButton.onclick = () => {
+                            currentPage = i;
+                            showPage(currentPage);
+                        };
+                        paginationDiv.appendChild(pageButton);
+                    }
+
+                    const nextButton = document.createElement('button');
+                    nextButton.className = 'btn btn-sm btn-outline-primary mx-1';
+                    nextButton.innerHTML = 'Next &raquo;';
+                    nextButton.onclick = () => {
+                        if (currentPage < pageCount) {
+                            currentPage++;
+                            showPage(currentPage);
+                        }
+                    };
+                    paginationDiv.appendChild(nextButton);
+                }
+            }
+
+            // Update pagination when search changes
+            searchInput.addEventListener('input', function() {
+                filterTable();
+                currentPage = 1;
+                showPage(currentPage);
+                updatePagination();
+            });
+
+            // Initial setup
+            showPage(1);
+            updatePagination();
+        });
+    </script>
+} 

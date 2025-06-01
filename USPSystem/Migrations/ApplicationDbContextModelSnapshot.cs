@@ -261,7 +261,7 @@ namespace USPSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Programs", (string)null);
+                    b.ToTable("Programs");
                 });
 
             modelBuilder.Entity("USPSystem.Models.ApplicationUser", b =>
@@ -408,7 +408,47 @@ namespace USPSystem.Migrations
 
                     b.HasIndex("SubjectAreaId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("USPSystem.Models.HoldAccessSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Controller")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBlockedByHold")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SectionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModifiedByUserId");
+
+                    b.ToTable("HoldAccessSettings");
                 });
 
             modelBuilder.Entity("USPSystem.Models.ProgramRequirement", b =>
@@ -460,7 +500,65 @@ namespace USPSystem.Migrations
 
                     b.HasIndex("SubjectAreaId1");
 
-                    b.ToTable("ProgramRequirements", (string)null);
+                    b.ToTable("ProgramRequirements");
+                });
+
+            modelBuilder.Entity("USPSystem.Models.RecheckApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdditionalComments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ApplicationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CurrentGrade")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentReceiptNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("RecheckApplications");
                 });
 
             modelBuilder.Entity("USPSystem.Models.StudentEnrollment", b =>
@@ -505,7 +603,7 @@ namespace USPSystem.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("StudentEnrollments", (string)null);
+                    b.ToTable("StudentEnrollments");
                 });
 
             modelBuilder.Entity("USPSystem.Models.StudentFinance", b =>
@@ -533,7 +631,53 @@ namespace USPSystem.Migrations
 
                     b.HasIndex("StudentID");
 
-                    b.ToTable("StudentFinances", (string)null);
+                    b.ToTable("StudentFinances");
+                });
+
+            modelBuilder.Entity("USPSystem.Models.StudentHold", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoldType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ResolvedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ResolvedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("ResolvedByUserId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("StudentHolds");
                 });
 
             modelBuilder.Entity("USPSystem.Models.SubjectArea", b =>
@@ -570,7 +714,7 @@ namespace USPSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubjectAreas", (string)null);
+                    b.ToTable("SubjectAreas");
                 });
 
             modelBuilder.Entity("AcademicProgramCourse", b =>
@@ -695,6 +839,16 @@ namespace USPSystem.Migrations
                     b.Navigation("SubjectArea");
                 });
 
+            modelBuilder.Entity("USPSystem.Models.HoldAccessSettings", b =>
+                {
+                    b.HasOne("USPSystem.Models.ApplicationUser", "ModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("ModifiedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ModifiedByUser");
+                });
+
             modelBuilder.Entity("USPSystem.Models.ProgramRequirement", b =>
                 {
                     b.HasOne("USPSystem.Models.AcademicProgram", "Program")
@@ -716,6 +870,17 @@ namespace USPSystem.Migrations
                     b.Navigation("Program");
 
                     b.Navigation("SubjectArea");
+                });
+
+            modelBuilder.Entity("USPSystem.Models.RecheckApplication", b =>
+                {
+                    b.HasOne("USPSystem.Models.ApplicationUser", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("USPSystem.Models.StudentEnrollment", b =>
@@ -748,6 +913,29 @@ namespace USPSystem.Migrations
                         .HasForeignKey("StudentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("USPSystem.Models.StudentHold", b =>
+                {
+                    b.HasOne("USPSystem.Models.ApplicationUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId");
+
+                    b.HasOne("USPSystem.Models.ApplicationUser", "ResolvedByUser")
+                        .WithMany()
+                        .HasForeignKey("ResolvedByUserId");
+
+                    b.HasOne("USPSystem.Models.ApplicationUser", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("ResolvedByUser");
 
                     b.Navigation("Student");
                 });

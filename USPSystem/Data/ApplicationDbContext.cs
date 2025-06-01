@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ProgramRequirement> ProgramRequirements { get; set; }
     public DbSet<StudentFinance> StudentFinances { get; set; }
     public DbSet<RecheckApplication> RecheckApplications { get; set; }
+    public DbSet<StudentHold> StudentHolds { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

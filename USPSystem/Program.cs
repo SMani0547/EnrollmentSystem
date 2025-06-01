@@ -44,6 +44,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // Add HttpClient
 builder.Services.AddHttpClient<IStudentGradeService, StudentGradeService>();
 builder.Services.AddHttpClient<IStudentFinanceService, StudentFinanceService>();
+builder.Services.AddHttpClient<StudentHoldService>();
+builder.Services.AddHttpClient<PageHoldService>();
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();

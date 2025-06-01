@@ -7,85 +7,90 @@
 <div class="container-fluid px-4">
     <h1 class="mt-4">My Profile</h1>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="bi bi-person"></i>
-            Personal Information
+    <partial name="_HoldMessage" />
+
+    @if (ViewData["HoldReason"] == null)
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-person"></i>
+                Personal Information
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Student ID</dt>
+                    <dd class="col-sm-9">@Model.StudentId</dd>
+
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+
+                    <dt class="col-sm-3">Email</dt>
+                    <dd class="col-sm-9">@Model.Email</dd>
+
+                    <dt class="col-sm-3">Admission Year</dt>
+                    <dd class="col-sm-9">@Model.AdmissionYear</dd>
+
+                    <dt class="col-sm-3">Program Structure</dt>
+                    <dd class="col-sm-9">@Model.MajorType</dd>
+
+                    <dt class="col-sm-3">First Major</dt>
+                    <dd class="col-sm-9">@Model.MajorI</dd>
+
+                    @if (Model.MajorType == MajorType.DoubleMajor)
+                    {
+                        <dt class="col-sm-3">Second Major</dt>
+                        <dd class="col-sm-9">@Model.MajorII</dd>
+                    }
+                    else if (Model.MajorType == MajorType.MajorMinor)
+                    {
+                        <dt class="col-sm-3">Minor</dt>
+                        <dd class="col-sm-9">@Model.MinorI</dd>
+                    }
+                </dl>
+            </div>
         </div>
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Student ID</dt>
-                <dd class="col-sm-9">@Model.StudentId</dd>
 
-                <dt class="col-sm-3">Name</dt>
-                <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
-
-                <dt class="col-sm-3">Email</dt>
-                <dd class="col-sm-9">@Model.Email</dd>
-
-                <dt class="col-sm-3">Admission Year</dt>
-                <dd class="col-sm-9">@Model.AdmissionYear</dd>
-
-                <dt class="col-sm-3">Program Structure</dt>
-                <dd class="col-sm-9">@Model.MajorType</dd>
-
-                <dt class="col-sm-3">First Major</dt>
-                <dd class="col-sm-9">@Model.MajorI</dd>
-
-                @if (Model.MajorType == MajorType.DoubleMajor)
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-journal-text"></i>
+                Current Enrollments
+            </div>
+            <div class="card-body">
+                @if (!Model.Enrollments.Any())
                 {
-                    <dt class="col-sm-3">Second Major</dt>
-                    <dd class="col-sm-9">@Model.MajorII</dd>
+                    <div class="alert alert-info">
+                        You are not currently enrolled in any courses.
+                    </div>
                 }
-                else if (Model.MajorType == MajorType.MajorMinor)
+                else
                 {
-                    <dt class="col-sm-3">Minor</dt>
-                    <dd class="col-sm-9">@Model.MinorI</dd>
-                }
-            </dl>
-        </div>
-    </div>
-
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="bi bi-journal-text"></i>
-            Current Enrollments
-        </div>
-        <div class="card-body">
-            @if (!Model.Enrollments.Any())
-            {
-                <div class="alert alert-info">
-                    You are not currently enrolled in any courses.
-                </div>
-            }
-            else
-            {
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Course Code</th>
-                                <th>Course Name</th>
-                                <th>Year</th>
-                                <th>Semester</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var enrollment in Model.Enrollments.OrderByDescending(e => e.Year).ThenByDescending(e => e.Semester))
-                            {
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
                                 <tr>
-                                    <td>@enrollment.Course.Code</td>
-                                    <td>@enrollment.Course.Name</td>
-                                    <td>@enrollment.Year</td>
-                                    <td>@enrollment.Semester</td>
+                                    <th>Course Code</th>
+                                    <th>Course Name</th>
+                                    <th>Year</th>
+                                    <th>Semester</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
+                            </thead>
+                            <tbody>
+                                @foreach (var enrollment in Model.Enrollments.OrderByDescending(e => e.Year).ThenByDescending(e => e.Semester))
+                                {
+                                    <tr>
+                                        <td>@enrollment.Course.Code</td>
+                                        <td>@enrollment.Course.Name</td>
+                                        <td>@enrollment.Year</td>
+                                        <td>@enrollment.Semester</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
         </div>
-    </div>
+    }
 </div>
 
 @section Scripts {

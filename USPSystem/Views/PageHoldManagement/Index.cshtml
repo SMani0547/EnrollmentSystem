@@ -1,0 +1,105 @@
+@model IEnumerable<USPFinance.Models.PageHold>
+@{
+    ViewData["Title"] = "Page Hold Management";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Page Hold Management</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-lock me-1"></i>
+            Manage Page Holds
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <h5><i class="bi bi-info-circle me-2"></i>How to Set Up Page Holds</h5>
+                <p>To place a hold on specific pages:</p>
+                <ol>
+                    <li>Enter the page path that you want to restrict (e.g., "/Student/Finance" to block all finance-related pages)</li>
+                    <li>Provide a clear description of why the page is on hold</li>
+                    <li>Click "Place Hold" to activate the restriction</li>
+                </ol>
+                <p class="mb-0"><strong>Note:</strong> The hold will apply to all pages that start with the specified path.</p>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Page Name</th>
+                            <th>Path</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Last Modified</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var hold in Model)
+                        {
+                            <tr>
+                                <td>@hold.PageName</td>
+                                <td>@hold.PagePath</td>
+                                <td>
+                                    <form asp-action="UpdateHold" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@hold.Id" />
+                                        <div class="input-group">
+                                            <input type="text" name="description" value="@hold.Description" class="form-control" />
+                                            <button type="submit" class="btn btn-outline-primary">
+                                                <i class="bi bi-save"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td>
+                                    <span class="badge @(hold.IsActive ? "bg-danger" : "bg-success")">
+                                        @(hold.IsActive ? "On Hold" : "Active")
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (hold.LastModifiedAt.HasValue)
+                                    {
+                                        <span>@hold.LastModifiedAt.Value.ToString("g")</span>
+                                        <br />
+                                        <small class="text-muted">by @hold.LastModifiedBy</small>
+                                    }
+                                </td>
+                                <td>
+                                    <form asp-action="ToggleHold" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@hold.Id" />
+                                        <button type="submit" class="btn @(hold.IsActive ? "btn-success" : "btn-danger")">
+                                            @(hold.IsActive ? "Remove Hold" : "Place Hold")
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add any JavaScript needed for the page hold management
+    </script>
+} 

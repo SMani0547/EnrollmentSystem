@@ -1,0 +1,38 @@
+@model object
+
+@if (ViewData["HoldReason"] != null)
+{
+    <script>
+        document.body.classList.add('has-hold');
+    </script>
+    <div class="hold-message">
+        <div class="alert alert-warning">
+            <h4 class="alert-heading">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                @(ViewData["HoldReason"].ToString().Contains("This page") ? "Page Access Restricted" : "Account On Hold")
+            </h4>
+            <p class="lead">@ViewData["HoldReason"]</p>
+            <hr>
+            <div class="hold-details">
+                <p><strong>Placed By:</strong> @ViewData["HoldPlacedBy"]</p>
+                <p><strong>Start Date:</strong> @ViewData["HoldStartDate"]</p>
+            </div>
+            <p class="mb-0">
+                @if (ViewData["HoldReason"].ToString().Contains("This page"))
+                {
+                    <text>This page is currently restricted. Please contact the administration office if you need access.</text>
+                }
+                else
+                {
+                    <text>Please contact the administration office for more information about your account hold.</text>
+                }
+            </p>
+        </div>
+    </div>
+}
+else
+{
+    <script>
+        document.body.classList.remove('has-hold');
+    </script>
+} 

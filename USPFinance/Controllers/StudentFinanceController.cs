@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using USPFinance.Data;
 using USPFinance.Models;
+using System.Collections.Generic;
 
 namespace USPFinance.Controllers
 {
@@ -19,12 +20,19 @@ namespace USPFinance.Controllers
             _context = context;
         }
 
-        // GET: api/StudentFinance/{studentId}
-        [HttpGet("{studentId}")]
-        public async Task<ActionResult<StudentFinance>> GetStudentFinance(string studentId)
+        // GET: api/StudentFinance
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<StudentFinance>>> GetStudentFinances()
+        {
+            return await _context.StudentFinances.ToListAsync();
+        }
+
+        // GET: api/StudentFinance/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StudentFinance>> GetStudentFinance(string id)
         {
             var studentFinance = await _context.StudentFinances
-                .FirstOrDefaultAsync(s => s.StudentID == studentId);
+                .FirstOrDefaultAsync(s => s.StudentID == id);
 
             if (studentFinance == null)
             {
@@ -54,7 +62,6 @@ namespace USPFinance.Controllers
             // Create a detailed response
             var details = new StudentFinanceDetails
             {
-                Id = studentFinance.Id,
                 StudentID = studentFinance.StudentID,
                 TotalFees = studentFinance.TotalFees,
                 AmountPaid = studentFinance.AmountPaid,
@@ -72,27 +79,15 @@ namespace USPFinance.Controllers
             return details;
         }
 
-        // POST: api/StudentFinance
-        [HttpPost]
-        public async Task<ActionResult<StudentFinance>> CreateStudentFinance(StudentFinance studentFinance)
-        {
-            studentFinance.LastUpdated = DateTime.Now;
-            _context.StudentFinances.Add(studentFinance);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetStudentFinance), new { studentId = studentFinance.StudentID }, studentFinance);
-        }
-
-        // PUT: api/StudentFinance/{id}
+        // PUT: api/StudentFinance/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStudentFinance(int id, StudentFinance studentFinance)
+        public async Task<IActionResult> PutStudentFinance(string id, StudentFinance studentFinance)
         {
-            if (id != studentFinance.Id)
+            if (id != studentFinance.StudentID)
             {
                 return BadRequest();
             }
 
-            studentFinance.LastUpdated = DateTime.Now;
             _context.Entry(studentFinance).State = EntityState.Modified;
 
             try
@@ -114,9 +109,50 @@ namespace USPFinance.Controllers
             return NoContent();
         }
 
-        private bool StudentFinanceExists(int id)
+        // POST: api/StudentFinance
+        [HttpPost]
+        public async Task<ActionResult<StudentFinance>> PostStudentFinance(StudentFinance studentFinance)
         {
-            return _context.StudentFinances.Any(e => e.Id == id);
+            _context.StudentFinances.Add(studentFinance);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (StudentFinanceExists(studentFinance.StudentID))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtAction("GetStudentFinance", new { id = studentFinance.StudentID }, studentFinance);
+        }
+
+        // DELETE: api/StudentFinance/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStudentFinance(string id)
+        {
+            var studentFinance = await _context.StudentFinances
+                .FirstOrDefaultAsync(s => s.StudentID == id);
+            if (studentFinance == null)
+            {
+                return NotFound();
+            }
+
+            _context.StudentFinances.Remove(studentFinance);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool StudentFinanceExists(string id)
+        {
+            return _context.StudentFinances.Any(e => e.StudentID == id);
         }
     }
 } 
