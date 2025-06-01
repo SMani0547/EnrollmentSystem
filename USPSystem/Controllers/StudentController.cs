@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace USPSystem.Controllers;
 
@@ -20,11 +23,11 @@ public class StudentController : BaseController
     private readonly IStudentGradeService _gradeService;
 
     public StudentController(
-        ApplicationDbContext context, 
+        ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
         IStudentGradeService gradeService,
         StudentHoldService studentHoldService,
-        PageHoldService pageHoldService) 
+        PageHoldService pageHoldService)
         : base(studentHoldService, pageHoldService, userManager)
     {
         _context = context;
@@ -70,14 +73,14 @@ public class StudentController : BaseController
             .ToListAsync();
 
         // Get core requirements
-        var coreRequirements = requirements.Where(r => 
+        var coreRequirements = requirements.Where(r =>
             r.Type == RequirementType.MajorCore ||
             r.Type == RequirementType.MinorCore ||
             r.Type == RequirementType.ProgressionRequirement
         ).ToList();
 
         // Get major requirements
-        var majorRequirements = requirements.Where(r => 
+        var majorRequirements = requirements.Where(r =>
             (r.Type == RequirementType.MajorCore || r.Type == RequirementType.MajorElective) &&
             r.SubjectArea.Code == user.MajorI
         ).ToList();
@@ -85,7 +88,7 @@ public class StudentController : BaseController
         if (user.MajorType == MajorType.DoubleMajor)
         {
             // Add second major requirements
-            majorRequirements.AddRange(requirements.Where(r => 
+            majorRequirements.AddRange(requirements.Where(r =>
                 (r.Type == RequirementType.MajorCore || r.Type == RequirementType.MajorElective) &&
                 r.SubjectArea.Code == user.MajorII
             ));
@@ -93,7 +96,7 @@ public class StudentController : BaseController
         else if (user.MajorType == MajorType.MajorMinor)
         {
             // Add minor requirements
-            majorRequirements.AddRange(requirements.Where(r => 
+            majorRequirements.AddRange(requirements.Where(r =>
                 (r.Type == RequirementType.MinorCore || r.Type == RequirementType.MinorElective) &&
                 r.SubjectArea.Code == user.MinorI
             ));
@@ -307,7 +310,7 @@ public class StudentController : BaseController
                 grade.CourseName = course.Name;
             }
             // Check if recheck has been applied
-            try 
+            try
             {
                 grade.HasAppliedForRecheck = await _gradeService.HasAppliedForRecheckAsync(user.StudentId, grade.CourseCode, grade.Year, grade.Semester);
                 Console.WriteLine($"Grade {grade.CourseCode}: HasAppliedForRecheck = {grade.HasAppliedForRecheck}");
@@ -331,10 +334,10 @@ public class StudentController : BaseController
 
         // Get all grades for the student
         var grades = await _gradeService.GetGradesAsync(user.StudentId);
-        
+
         // Find the specific grade by ID
         var grade = grades?.FirstOrDefault(g => g.Id == gradeId);
-        
+
         if (grade == null)
             return NotFound();
 
@@ -370,23 +373,23 @@ public class StudentController : BaseController
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
-                
+
             var grades = await _gradeService.GetGradesAsync(user.StudentId);
             var grade = grades?.FirstOrDefault(g => g.Id == model.GradeId);
-            
+
             if (grade != null)
             {
                 // Repopulate the form data
                 model.CourseCode = grade.CourseCode;
                 model.CourseName = grade.CourseName;
                 model.CurrentGrade = grade.Grade;
-                
+
                 // Keep the submitted year and semester if present
                 if (model.Year <= 0)
                 {
                     model.Year = grade.Year;
                 }
-                
+
                 if (model.Semester <= 0)
                 {
                     model.Semester = grade.Semester;
@@ -404,7 +407,7 @@ public class StudentController : BaseController
         {
             // Submit to grade system API
             var result = await _gradeService.ApplyForRecheckAsync(
-                currentUser.StudentId, 
+                currentUser.StudentId,
                 model.CourseCode,
                 model.Year,
                 model.Semester,
@@ -420,7 +423,7 @@ public class StudentController : BaseController
                 TempData["SuccessMessage"] = "Your recheck application has been submitted successfully. You will receive updates at " + model.Email;
                 return RedirectToAction(nameof(Grades));
             }
-            
+
             TempData["ErrorMessage"] = "Failed to submit recheck application. Please try again later.";
             return RedirectToAction(nameof(Grades));
         }
@@ -440,7 +443,7 @@ public class StudentController : BaseController
 
         // Check if the student has completed enough courses to graduate
         var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.StudentId);
-        
+
         // For now, just display a simple view
         ViewBag.CompletedCoursesCount = completedCourseIds.Count;
         ViewBag.CanGraduate = completedCourseIds.Count >= 24; // Example threshold
@@ -450,10 +453,10 @@ public class StudentController : BaseController
         ViewBag.MajorI = user.MajorI;
         ViewBag.MajorII = user.MajorII;
         ViewBag.MinorI = user.MinorI;
-        
+
         // Calculate expected graduation date (example: next semester end)
-        ViewBag.ExpectedGraduationDate = DateTime.Now.Month < 6 
-            ? new DateTime(DateTime.Now.Year, 7, 15) 
+        ViewBag.ExpectedGraduationDate = DateTime.Now.Month < 6
+            ? new DateTime(DateTime.Now.Year, 7, 15)
             : new DateTime(DateTime.Now.Year + 1, 1, 15);
 
         // Check if student already has a pending graduation application
@@ -470,7 +473,7 @@ public class StudentController : BaseController
 
         return View();
     }
-    
+
     [HttpPost]
     [Authorize]
     [ValidateAntiForgeryToken]
@@ -484,7 +487,7 @@ public class StudentController : BaseController
                 return NotFound();
 
             var completedCourseIds = await _gradeService.GetCompletedCourseIdsAsync(user.StudentId);
-            
+
             ViewBag.CompletedCoursesCount = completedCourseIds.Count;
             ViewBag.CanGraduate = completedCourseIds.Count >= 24;
             ViewBag.StudentName = $"{user.FirstName} {user.LastName}";
@@ -493,7 +496,7 @@ public class StudentController : BaseController
             ViewBag.MajorI = user.MajorI;
             ViewBag.MajorII = user.MajorII;
             ViewBag.MinorI = user.MinorI;
-            
+
             // Return to the form with validation errors
             return View("ApplyForGraduation", model);
         }
@@ -533,5 +536,55 @@ public class StudentController : BaseController
         TempData["SuccessMessage"] = "Your graduation application has been submitted successfully. You will be notified once it has been processed.";
         return RedirectToAction(nameof(Index));
     }
+    
+    // ✅ TRANSCRIPT FEATURE – START
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult Transcript()
+    {
+        return View();
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> GenerateTranscript()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        string studentId = user.StudentId;
+
+        var client = new HttpClient();
+        var authBytes = Encoding.ASCII.GetBytes("admin:password123"); // ← use this
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
+
+        var response = await client.GetAsync($"http://localhost:5240/transcript/{studentId}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            var fileBytes = await response.Content.ReadAsByteArrayAsync();
+            return File(fileBytes, "application/pdf", $"Transcript_{studentId}.pdf");
+        }
+        else
+        {
+            // ✅ Read the actual response content from Flask
+            string errorDetails = await response.Content.ReadAsStringAsync();
+
+            // ✅ Optional: Log it or print to console
+            Console.WriteLine($"Transcript API Error: {errorDetails}");
+
+            // ✅ Show error on page
+            TempData["Error"] = $"Unable to retrieve transcript. API returned: {errorDetails}";
+            return RedirectToAction("Transcript");
+        }
+
+
+    }
+
+    // ✅ TRANSCRIPT FEATURE – END
+
 }
 

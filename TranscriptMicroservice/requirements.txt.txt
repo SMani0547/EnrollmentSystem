@@ -1,0 +1,6 @@
+flask
+flask_sqlalchemy
+pyodbc
+flask_httpauth
+fpdf
+werkzeug
