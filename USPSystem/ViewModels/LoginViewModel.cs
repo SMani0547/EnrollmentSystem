@@ -10,6 +10,7 @@ public class LoginViewModel
 
     [Required]
     [DataType(DataType.Password)]
+    [Display(Name = "Password")]
     public required string Password { get; set; }
 
     [Display(Name = "Remember me?")]

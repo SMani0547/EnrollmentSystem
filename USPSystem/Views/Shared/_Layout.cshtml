@@ -73,6 +73,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="RecheckRequests">Recheck Requests</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="GraduationApplications">Graduation Applications</a>
+                                </li>
                             }
                             else if (User.IsInRole("Student"))
                             {
@@ -133,6 +136,13 @@
                                        asp-area="" asp-controller="Manager" asp-action="RecheckRequests">
                                         <i class="bi bi-clipboard-check"></i>
                                         Grade Recheck Requests
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/Manager/GraduationApplications") == true ? "active" : "")"
+                                       asp-area="" asp-controller="Manager" asp-action="GraduationApplications">
+                                        <i class="bi bi-mortarboard-fill"></i>
+                                        Graduation Applications
                                     </a>
                                 </li>
                             }

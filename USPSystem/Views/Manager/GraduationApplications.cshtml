@@ -1,0 +1,96 @@
+@model IEnumerable<USPSystem.Models.GraduationApplication>
+@using USPSystem.Models
+
+@{
+    ViewData["Title"] = "Manage Graduation Applications";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>@ViewData["Title"]</h2>
+            <p class="text-muted">Review and manage student graduation applications</p>
+        </div>
+    </div>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>ID</th>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Programme</th>
+                            <th>Application Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var application in Model)
+                            {
+                                <tr>
+                                    <td>@application.Id</td>
+                                    <td>@application.StudentId</td>
+                                    <td>@application.FirstName @application.Surname</td>
+                                    <td>@application.Programme</td>
+                                    <td>@application.ApplicationDate.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        <span class="badge @GetStatusBadgeClass(application.Status)">
+                                            @application.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a asp-action="GraduationApplicationDetails" asp-route-id="@application.Id" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center">No graduation applications found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadgeClass(ApplicationStatus status)
+    {
+        return status switch
+        {
+            ApplicationStatus.Pending => "bg-warning text-dark",
+            ApplicationStatus.Approved => "bg-success",
+            ApplicationStatus.Rejected => "bg-danger",
+            ApplicationStatus.Deferred => "bg-secondary",
+            _ => "bg-info"
+        };
+    }
+} 
