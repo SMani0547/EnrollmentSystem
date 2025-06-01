@@ -12,5 +12,11 @@ namespace USPFinance.Data
 
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<StudentFinance> StudentFinances { get; set; }
+        public DbSet<PageHold> PageHolds { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 } 

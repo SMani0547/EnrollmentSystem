@@ -16,5 +16,12 @@ namespace USPFinance.Models
         public decimal AmountPaid { get; set; }
         
         public DateTime LastUpdated { get; set; }
+
+        // Hold related properties
+        public bool IsOnHold { get; set; }
+        public string HoldReason { get; set; }
+        public DateTime? HoldStartDate { get; set; }
+        public DateTime? HoldEndDate { get; set; }
+        public string HoldPlacedBy { get; set; }  // To track which manager placed the hold
     }
 } 

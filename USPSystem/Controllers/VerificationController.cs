@@ -2,14 +2,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using USPSystem.Data;
 using USPSystem.Models;
+using USPSystem.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
-namespace USPEducation.Controllers;
+namespace USPSystem.Controllers;
 
-public class VerificationController : Controller
+[Authorize(Roles = "Manager")]
+public class VerificationController : BaseController
 {
     private readonly ApplicationDbContext _context;
 
-    public VerificationController(ApplicationDbContext context)
+    public VerificationController(
+        ApplicationDbContext context, 
+        StudentHoldService studentHoldService,
+        PageHoldService pageHoldService,
+        UserManager<ApplicationUser> userManager) 
+        : base(studentHoldService, pageHoldService, userManager)
     {
         _context = context;
     }

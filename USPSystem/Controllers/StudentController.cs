@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using USPSystem.Data;
 using USPSystem.Models;
 using USPSystem.Services;
+using System.Threading.Tasks;
 
 namespace USPSystem.Controllers;
 
-public class StudentController : Controller
+[Authorize(Roles = "Student")]
+public class StudentController : BaseController
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -17,7 +19,10 @@ public class StudentController : Controller
     public StudentController(
         ApplicationDbContext context, 
         UserManager<ApplicationUser> userManager,
-        IStudentGradeService gradeService)
+        IStudentGradeService gradeService,
+        StudentHoldService studentHoldService,
+        PageHoldService pageHoldService) 
+        : base(studentHoldService, pageHoldService, userManager)
     {
         _context = context;
         _userManager = userManager;

@@ -20,6 +20,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<RecheckApplication> RecheckApplications { get; set; }
     public DbSet<GraduationApplication> GraduationApplications { get; set; }
     public DbSet<SpecialConsiderationApplication> SpecialConsiderationApplications { get; set; }
+    public DbSet<StudentHold> StudentHolds { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

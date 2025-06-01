@@ -152,6 +152,20 @@
                                         Special Consideration Applications
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/HoldManagement") == true ? "active" : "")"
+                                       href="/HoldManagement">
+                                        <i class="bi bi-lock"></i>
+                                        Manage Student Holds
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/PageHoldManagement") == true ? "active" : "")"
+                                       asp-controller="PageHoldManagement" asp-action="Index">
+                                        <i class="bi bi-shield-lock"></i>
+                                        Manage Page Holds
+                                    </a>
+                                </li>
                             }
                             else if (User.IsInRole("Student"))
                             {
