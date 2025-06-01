@@ -1,0 +1,258 @@
+@model USPSystem.Models.SpecialConsiderationApplication
+
+@{
+    ViewData["Title"] = "Review Special Consideration Application";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>Review Application <small class="text-muted">Reference: SC-@Model.Id</small></h2>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-12 d-flex justify-content-between">
+            <a asp-action="Manage" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Applications
+            </a>
+            <div>
+                <span class="fw-bold me-2">Current Status:</span>
+                @switch (Model.ApplicationStatus)
+                {
+                    case "Pending":
+                        <span class="badge bg-warning text-dark p-2">Pending</span>
+                        break;
+                    case "Approved":
+                        <span class="badge bg-success p-2">Approved</span>
+                        break;
+                    case "Rejected":
+                        <span class="badge bg-danger p-2">Rejected</span>
+                        break;
+                    default:
+                        <span class="badge bg-secondary p-2">@Model.ApplicationStatus</span>
+                        break;
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Application Details -->
+            <div class="card mb-4">
+                <div class="card-header bg-teal text-white">
+                    <h5 class="mb-0">SECTION A: PERSONAL DETAILS</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Student ID:</strong> @Model.StudentId</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Name:</strong> @Model.FirstName @Model.MiddleName @Model.LastName</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Date of Birth:</strong> @Model.DateOfBirth.ToString("dd MMM yyyy")</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Campus:</strong> @Model.Campus</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Semester/Year:</strong> @Model.SemesterYear</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Telephone:</strong> @Model.Telephone</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Address:</strong> @Model.Address</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Email:</strong> @Model.Email</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-teal text-white">
+                    <h5 class="mb-0">SECTION B: MISSED EXAM DETAILS</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Course Code</th>
+                                    <th>Exam Date</th>
+                                    <th>Exam Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!string.IsNullOrEmpty(Model.CourseCode1))
+                                {
+                                    <tr>
+                                        <td>1</td>
+                                        <td>@Model.CourseCode1</td>
+                                        <td>@(Model.ExamDate1?.ToString("dd MMM yyyy") ?? "-")</td>
+                                        <td>@(Model.ExamTime1 ?? "-")</td>
+                                    </tr>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.CourseCode2))
+                                {
+                                    <tr>
+                                        <td>2</td>
+                                        <td>@Model.CourseCode2</td>
+                                        <td>@(Model.ExamDate2?.ToString("dd MMM yyyy") ?? "-")</td>
+                                        <td>@(Model.ExamTime2 ?? "-")</td>
+                                    </tr>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.CourseCode3))
+                                {
+                                    <tr>
+                                        <td>3</td>
+                                        <td>@Model.CourseCode3</td>
+                                        <td>@(Model.ExamDate3?.ToString("dd MMM yyyy") ?? "-")</td>
+                                        <td>@(Model.ExamTime3 ?? "-")</td>
+                                    </tr>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.CourseCode4))
+                                {
+                                    <tr>
+                                        <td>4</td>
+                                        <td>@Model.CourseCode4</td>
+                                        <td>@(Model.ExamDate4?.ToString("dd MMM yyyy") ?? "-")</td>
+                                        <td>@(Model.ExamTime4 ?? "-")</td>
+                                    </tr>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.CourseCode5))
+                                {
+                                    <tr>
+                                        <td>5</td>
+                                        <td>@Model.CourseCode5</td>
+                                        <td>@(Model.ExamDate5?.ToString("dd MMM yyyy") ?? "-")</td>
+                                        <td>@(Model.ExamTime5 ?? "-")</td>
+                                    </tr>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.CourseCode6))
+                                {
+                                    <tr>
+                                        <td>6</td>
+                                        <td>@Model.CourseCode6</td>
+                                        <td>@(Model.ExamDate6?.ToString("dd MMM yyyy") ?? "-")</td>
+                                        <td>@(Model.ExamTime6 ?? "-")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-teal text-white">
+                    <h5 class="mb-0">SECTION C: APPLICATION DETAILS</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <p><strong>Application Type:</strong>
+                                @switch (Model.ApplicationType)
+                                {
+                                    case USPSystem.Models.SpecialConsiderationType.CompassionatePass:
+                                        <span>Compassionate Pass</span>
+                                        break;
+                                    case USPSystem.Models.SpecialConsiderationType.AegrotatPass:
+                                        <span>Aegrotat Pass</span>
+                                        break;
+                                    case USPSystem.Models.SpecialConsiderationType.SpecialExamination:
+                                        <span>Special Examination</span>
+                                        break;
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <p><strong>Reason:</strong></p>
+                            <div class="p-3 bg-light rounded">
+                                @Model.Reason
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p><strong>Supporting Documents:</strong></p>
+                            @if (!string.IsNullOrEmpty(Model.SupportingDocuments))
+                            {
+                                <p>
+                                    <a href="/uploads/special_consideration/@Model.SupportingDocuments" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-file-earmark"></i> View Document
+                                    </a>
+                                </p>
+                            }
+                            else
+                            {
+                                <p>No supporting documents provided.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Update Status Panel -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">UPDATE APPLICATION STATUS</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateStatus" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        
+                        <div class="form-group mb-3">
+                            <label class="control-label">Change Status:</label>
+                            <select name="status" class="form-control">
+                                <option value="Pending" selected="@(Model.ApplicationStatus == "Pending")">Pending</option>
+                                <option value="Under Review" selected="@(Model.ApplicationStatus == "Under Review")">Under Review</option>
+                                <option value="Approved" selected="@(Model.ApplicationStatus == "Approved")">Approved</option>
+                                <option value="Rejected" selected="@(Model.ApplicationStatus == "Rejected")">Rejected</option>
+                                <option value="More Information Required" selected="@(Model.ApplicationStatus == "More Information Required")">More Information Required</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label class="control-label">Comments (will be sent to student):</label>
+                            <textarea name="comments" class="form-control" rows="5"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-save"></i> Update Status
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Application Tracking Panel -->
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">APPLICATION TRACKING</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Date Submitted:</strong> @Model.ApplicationDate.ToString("dd MMM yyyy HH:mm")</p>
+                    <p><strong>Days Since Submission:</strong> @((DateTime.Now - Model.ApplicationDate).Days) days</p>
+                    <p><strong>Current Status:</strong> @Model.ApplicationStatus</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

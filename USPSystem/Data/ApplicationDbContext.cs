@@ -19,10 +19,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<StudentFinance> StudentFinances { get; set; }
     public DbSet<RecheckApplication> RecheckApplications { get; set; }
     public DbSet<GraduationApplication> GraduationApplications { get; set; }
+    public DbSet<SpecialConsiderationApplication> SpecialConsiderationApplications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        // Configure SpecialConsiderationApplications table
+        builder.Entity<SpecialConsiderationApplication>()
+            .ToTable("SpecialConsiderationApplications");
 
         // Configure Course prerequisites relationship
         builder.Entity<Course>()

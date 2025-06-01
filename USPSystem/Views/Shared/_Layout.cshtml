@@ -145,6 +145,13 @@
                                         Graduation Applications
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/SpecialConsideration/Manage") == true ? "active" : "")"
+                                       asp-controller="SpecialConsideration" asp-action="Manage">
+                                        <i class="bi bi-file-earmark-medical"></i>
+                                        Special Consideration Applications
+                                    </a>
+                                </li>
                             }
                             else if (User.IsInRole("Student"))
                             {
@@ -188,6 +195,13 @@
                                        asp-controller="Student" asp-action="ApplyForGraduation">
                                         <i class="bi bi-mortarboard-fill"></i>
                                         Apply For Graduation
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/SpecialConsideration") == true ? "active" : "")"
+                                       asp-controller="SpecialConsideration" asp-action="Apply">
+                                        <i class="bi bi-file-earmark-medical"></i>
+                                        Special Consideration
                                     </a>
                                 </li>
                             }
