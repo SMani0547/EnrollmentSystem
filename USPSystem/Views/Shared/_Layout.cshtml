@@ -17,28 +17,35 @@
         .bg-teal {
             background-color: #008080 !important;
         }
+
         .nav-link {
             color: #ffffff;
         }
-        .nav-link:hover {
-            color: #e0e0e0;
-        }
+
+            .nav-link:hover {
+                color: #e0e0e0;
+            }
+
         .sidebar {
             min-height: calc(100vh - 60px);
             background-color: #f8f9fa;
             padding-top: 20px;
         }
-        .sidebar .nav-link {
-            color: #333;
-            padding: 0.5rem 1rem;
-        }
-        .sidebar .nav-link:hover {
-            background-color: #e9ecef;
-        }
-        .sidebar .nav-link.active {
-            background-color: #008080;
-            color: white;
-        }
+
+            .sidebar .nav-link {
+                color: #333;
+                padding: 0.5rem 1rem;
+            }
+
+                .sidebar .nav-link:hover {
+                    background-color: #e9ecef;
+                }
+
+                .sidebar .nav-link.active {
+                    background-color: #008080;
+                    color: white;
+                }
+
         .main-content {
             padding: 20px;
         }
@@ -184,6 +191,13 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/Student/Transcript") == true ? "active" : "")"
+                                       asp-controller="Student" asp-action="Transcript">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                        My Transcript
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link @(Context.Request.Path.Value?.Contains("/Student/ApplyForGraduation") == true ? "active" : "")"
                                        asp-controller="Student" asp-action="ApplyForGraduation">
                                         <i class="bi bi-mortarboard-fill"></i>
@@ -213,5 +227,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-
