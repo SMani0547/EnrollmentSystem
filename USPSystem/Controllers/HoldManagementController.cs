@@ -12,6 +12,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using USPSystem.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace USPSystem.Controllers
 {
@@ -19,15 +20,21 @@ namespace USPSystem.Controllers
     public class HoldManagementController : BaseController
     {
         private readonly ILogger<HoldManagementController> _logger;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
         public HoldManagementController(
             StudentHoldService studentHoldService,
             PageHoldService pageHoldService,
             UserManager<ApplicationUser> userManager,
-            ILogger<HoldManagementController> logger)
+            ILogger<HoldManagementController> logger,
+            IConfiguration configuration)
             : base(studentHoldService, pageHoldService, userManager)
         {
             _logger = logger;
+            _configuration = configuration;
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(_configuration["FinanceApi:BaseUrl"]);
         }
 
         [AllowAnonymous]
@@ -128,6 +135,43 @@ namespace USPSystem.Controllers
             {
                 _logger.LogError(ex, $"Error removing hold for student {studentId}");
                 TempData["ErrorMessage"] = "An error occurred while removing the hold.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessPayment(string studentId, decimal amount)
+        {
+            try
+            {
+                // Create payment request
+                var paymentRequest = new
+                {
+                    Amount = amount,
+                    Notes = $"Payment processed by {User.Identity?.Name}"
+                };
+
+                // Send payment request to finance API
+                var response = await _httpClient.PostAsJsonAsync(
+                    $"api/StudentFinance/{studentId}/process-payment",
+                    paymentRequest);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["SuccessMessage"] = $"Payment of {amount:C} processed successfully.";
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Failed to process payment: {Error}", error);
+                    TempData["ErrorMessage"] = "Failed to process payment. Please try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing payment for student {StudentId}", studentId);
+                TempData["ErrorMessage"] = "An error occurred while processing the payment.";
             }
 
             return RedirectToAction(nameof(Index));

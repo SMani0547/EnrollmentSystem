@@ -78,29 +78,44 @@
                                 <td>@student.HoldPlacedBy</td>
                                 <td>@((student.TotalFees - student.AmountPaid).ToString("C"))</td>
                                 <td>
-                                    @if (student.IsOnHold)
-                                    {
-                                        <form asp-controller="HoldManagement" asp-action="RemoveHold" method="post" style="display: inline;">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="studentId" value="@student.StudentID" />
-                                            <button type="submit" class="btn btn-success btn-sm">
-                                                <i class="fas fa-unlock"></i> Remove Hold
-                                            </button>
-                                        </form>
-                                    }
-                                    else
-                                    {
-                                        <form asp-controller="HoldManagement" asp-action="PlaceHold" method="post" style="display: inline;">
+                                    <div class="d-flex gap-2">
+                                        @if (student.IsOnHold)
+                                        {
+                                            <form asp-controller="HoldManagement" asp-action="RemoveHold" method="post" style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="studentId" value="@student.StudentID" />
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-unlock"></i> Remove Hold
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-controller="HoldManagement" asp-action="PlaceHold" method="post" style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="studentId" value="@student.StudentID" />
+                                                <div class="input-group">
+                                                    <input type="text" name="reason" class="form-control form-control-sm" placeholder="Enter hold reason" required />
+                                                    <button type="submit" class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-lock"></i> Place Hold
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        }
+                                        
+                                        <!-- Add Payment Form -->
+                                        <form asp-controller="HoldManagement" asp-action="ProcessPayment" method="post" style="display: inline;">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="studentId" value="@student.StudentID" />
                                             <div class="input-group">
-                                                <input type="text" name="reason" class="form-control form-control-sm" placeholder="Enter hold reason" required />
-                                                <button type="submit" class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-lock"></i> Place Hold
+                                                <input type="number" name="amount" class="form-control form-control-sm" 
+                                                       placeholder="Amount" step="0.01" min="0" max="@(student.TotalFees - student.AmountPaid)" required />
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-money-bill"></i> Add Payment
                                                 </button>
                                             </div>
                                         </form>
-                                    }
+                                    </div>
                                 </td>
                             </tr>
                         }

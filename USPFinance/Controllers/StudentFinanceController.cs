@@ -88,6 +88,15 @@ namespace USPFinance.Controllers
                 return BadRequest();
             }
 
+            // Check if balance is zero and remove hold if it is
+            if (studentFinance.TotalFees - studentFinance.AmountPaid <= 0 && studentFinance.IsOnHold)
+            {
+                studentFinance.IsOnHold = false;
+                studentFinance.HoldEndDate = DateTime.UtcNow;
+                studentFinance.HoldReason = string.Empty;
+                studentFinance.HoldPlacedBy = string.Empty;
+            }
+
             _context.Entry(studentFinance).State = EntityState.Modified;
 
             try
@@ -150,9 +159,89 @@ namespace USPFinance.Controllers
             return NoContent();
         }
 
+        // POST: api/StudentFinance/{studentId}/process-payment
+        [HttpPost("{studentId}/process-payment")]
+        public async Task<ActionResult<StudentFinance>> ProcessPayment(string studentId, [FromBody] PaymentRequest request)
+        {
+            var studentFinance = await _context.StudentFinances
+                .FirstOrDefaultAsync(s => s.StudentID == studentId);
+
+            if (studentFinance == null)
+            {
+                return NotFound("Student not found");
+            }
+
+            // Validate payment amount
+            if (request.Amount <= 0)
+            {
+                return BadRequest("Payment amount must be greater than zero");
+            }
+
+            var outstandingBalance = studentFinance.TotalFees - studentFinance.AmountPaid;
+            if (request.Amount > outstandingBalance)
+            {
+                return BadRequest($"Payment amount cannot exceed outstanding balance of {outstandingBalance:C}");
+            }
+
+            // Create transaction record
+            var transaction = new Transaction
+            {
+                Description = $"Payment for student {studentId}",
+                Amount = request.Amount,
+                Date = DateTime.UtcNow,
+                TransactionType = "Income",
+                Category = "Student Payment",
+                Notes = request.Notes
+            };
+            _context.Transactions.Add(transaction);
+
+            // Update student finance record
+            studentFinance.AmountPaid += request.Amount;
+            studentFinance.LastUpdated = DateTime.UtcNow;
+
+            // Check if balance is now zero and remove hold if it is
+            var newBalance = studentFinance.TotalFees - studentFinance.AmountPaid;
+            if (newBalance <= 0 && studentFinance.IsOnHold)
+            {
+                studentFinance.IsOnHold = false;
+                studentFinance.HoldEndDate = DateTime.UtcNow;
+                studentFinance.HoldReason = string.Empty;
+                studentFinance.HoldPlacedBy = string.Empty;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new
+                {
+                    studentFinance,
+                    message = newBalance <= 0 && studentFinance.IsOnHold 
+                        ? "Payment processed successfully. Hold has been removed." 
+                        : "Payment processed successfully."
+                });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!StudentFinanceExists(studentId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
         private bool StudentFinanceExists(string id)
         {
             return _context.StudentFinances.Any(e => e.StudentID == id);
         }
+    }
+
+    public class PaymentRequest
+    {
+        public decimal Amount { get; set; }
+        public string Notes { get; set; }
     }
 } 
