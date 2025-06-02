@@ -277,5 +277,14 @@ USP Graduation Office";
     }
     
     #endregion
+
+    public async Task<IActionResult> Students()
+    {
+        var students = await _userManager.Users
+            .OrderBy(s => s.StudentId)
+            .ToListAsync();
+
+        return View(students);
+    }
 } 
 

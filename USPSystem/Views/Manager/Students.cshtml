@@ -1,0 +1,71 @@
+@model IEnumerable<USPSystem.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Students";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Students</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-people me-1"></i>
+            All Students
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    No students found.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Admission Year</th>
+                                <th>Major Type</th>
+                                <th>First Major</th>
+                                <th>Second Major/Minor</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var student in Model)
+                            {
+                                <tr>
+                                    <td>@student.StudentId</td>
+                                    <td>@student.FirstName @student.LastName</td>
+                                    <td>@student.Email</td>
+                                    <td>@student.AdmissionYear</td>
+                                    <td>@student.MajorType</td>
+                                    <td>@student.MajorI</td>
+                                    <td>
+                                        @if (student.MajorType == MajorType.DoubleMajor)
+                                        {
+                                            @student.MajorII
+                                        }
+                                        else if (student.MajorType == MajorType.MajorMinor)
+                                        {
+                                            @student.MinorI
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="StudentDetails" asp-route-id="@student.Id" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-eye"></i> View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div> 
