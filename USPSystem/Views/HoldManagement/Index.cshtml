@@ -54,11 +54,12 @@
                             <th>Hold Reason</th>
                             <th>Hold Start Date</th>
                             <th>Hold Placed By</th>
+                            <th>Outstanding Balance</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        @foreach (var student in Model)
+                        @foreach (var student in Model.Where(s => (s.TotalFees - s.AmountPaid) > 0))
                         {
                             <tr>
                                 <td>@student.StudentID</td>
@@ -75,6 +76,7 @@
                                 <td>@student.HoldReason</td>
                                 <td>@(student.HoldStartDate?.ToString("yyyy-MM-dd HH:mm"))</td>
                                 <td>@student.HoldPlacedBy</td>
+                                <td>@((student.TotalFees - student.AmountPaid).ToString("C"))</td>
                                 <td>
                                     @if (student.IsOnHold)
                                     {
