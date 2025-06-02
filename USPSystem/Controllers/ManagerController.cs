@@ -281,6 +281,7 @@ USP Graduation Office";
     public async Task<IActionResult> Students()
     {
         var students = await _userManager.Users
+            .Where(s => s.StudentId != "MNGR0000")
             .OrderBy(s => s.StudentId)
             .ToListAsync();
 

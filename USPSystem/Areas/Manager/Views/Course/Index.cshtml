@@ -1,0 +1,95 @@
+@model IEnumerable<USPSystem.Models.Course>
+
+@{
+    ViewData["Title"] = "Available Courses";
+    var coursesByLevel = Model
+        .GroupBy(c => c.Level)
+        .OrderBy(g => g.Key);
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Available Courses</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            No courses are available at this time.
+        </div>
+    }
+    else
+    {
+        <div class="accordion" id="coursesAccordion">
+            @foreach (var levelGroup in coursesByLevel)
+            {
+                var levelId = $"level{levelGroup.Key.ToString().Replace(" ", "")}";
+                <div class="accordion-item border-0 mb-3">
+                    <h2 class="accordion-header" id="@($"heading{levelId}")">
+                        <button class="accordion-button @(levelGroup.Key == CourseLevel.Level100 ? "" : "collapsed") bg-teal text-white" type="button" 
+                                data-bs-toggle="collapse" data-bs-target="@($"#collapse{levelId}")" 
+                                aria-expanded="@(levelGroup.Key == CourseLevel.Level100 ? "true" : "false")" 
+                                aria-controls="@($"collapse{levelId}")">
+                            <i class="bi bi-book me-2"></i>
+                            @levelGroup.Key Courses
+                        </button>
+                    </h2>
+                    <div id="@($"collapse{levelId}")" class="accordion-collapse collapse @(levelGroup.Key == CourseLevel.Level100 ? "show" : "")" 
+                         aria-labelledby="@($"heading{levelId}")" data-bs-parent="#coursesAccordion">
+                        <div class="accordion-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Credit Points</th>
+                                            <th>Semester</th>
+                                            <th>Prerequisites</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var semesterGroup in levelGroup.GroupBy(c => c.Semester).OrderBy(g => g.Key))
+                                        {
+                                            <tr class="table-light">
+                                                <td colspan="6" class="text-center">
+                                                    <strong>@semesterGroup.Key</strong>
+                                                </td>
+                                            </tr>
+                                            @foreach (var course in semesterGroup.OrderBy(c => c.Code))
+                                            {
+                                                <tr>
+                                                    <td>@course.Code</td>
+                                                    <td>@course.Name</td>
+                                                    <td>@course.CreditPoints</td>
+                                                    <td>@course.Semester</td>
+                                                    <td>
+                                                        @if (course.Prerequisites.Any())
+                                                        {
+                                                            <div>
+                                                                @string.Join(", ", course.Prerequisites.Select(p => p.Code))
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">None</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <a asp-action="Details" asp-route-id="@course.Id" class="btn btn-sm btn-outline-info">
+                                                            <i class="bi bi-info-circle"></i> Details
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div> 

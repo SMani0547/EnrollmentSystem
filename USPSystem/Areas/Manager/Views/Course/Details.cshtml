@@ -1,0 +1,66 @@
+@model USPSystem.Models.Course
+
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Course Details</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-info-circle me-1"></i>
+            Course Information
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Course Code</dt>
+                <dd class="col-sm-9">@Model.Code</dd>
+
+                <dt class="col-sm-3">Course Name</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Credit Points</dt>
+                <dd class="col-sm-9">@Model.CreditPoints</dd>
+
+                <dt class="col-sm-3">Level</dt>
+                <dd class="col-sm-9">@Model.Level</dd>
+
+                <dt class="col-sm-3">Semester</dt>
+                <dd class="col-sm-9">@Model.Semester</dd>
+
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9">@Model.Description</dd>
+                }
+
+                <dt class="col-sm-3">Prerequisites</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Prerequisites.Any())
+                    {
+                        <ul class="list-unstyled">
+                            @foreach (var prereq in Model.Prerequisites)
+                            {
+                                <li>
+                                    <span class="badge bg-secondary">@prereq.Code</span>
+                                    @prereq.Name
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span class="text-muted">None</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="text-end">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Courses
+        </a>
+    </div>
+</div> 
