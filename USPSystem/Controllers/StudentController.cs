@@ -655,7 +655,7 @@ public class StudentController : BaseController
         var authBytes = Encoding.ASCII.GetBytes("admin:password123"); // ← use this
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
 
-        var response = await client.GetAsync($"http://localhost:5240/transcript/{studentId}");
+        var response = await client.GetAsync($"http://localhost:5241/transcript/{studentId}");
 
         if (response.IsSuccessStatusCode)
         {
