@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace USPSystem.Controllers;
 
@@ -21,18 +23,24 @@ public class StudentController : BaseController
     private readonly ApplicationDbContext _context;
     private readonly new UserManager<ApplicationUser> _userManager;
     private readonly IStudentGradeService _gradeService;
+    private readonly ILogger<StudentController> _logger;
+    private readonly IConfiguration _configuration;
 
     public StudentController(
         ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
         IStudentGradeService gradeService,
         StudentHoldService studentHoldService,
-        PageHoldService pageHoldService)
+        PageHoldService pageHoldService,
+        ILogger<StudentController> logger,
+        IConfiguration configuration)
         : base(studentHoldService, pageHoldService, userManager)
     {
         _context = context;
         _userManager = userManager;
         _gradeService = gradeService;
+        _logger = logger;
+        _configuration = configuration;
     }
 
     public async Task<IActionResult> Index()
@@ -213,7 +221,90 @@ public class StudentController : BaseController
         _context.StudentEnrollments.Add(enrollment);
         await _context.SaveChangesAsync();
 
+        // Trigger finance update
+        await UpdateStudentFinance(user.StudentId);
+
         return RedirectToAction(nameof(Index));
+    }
+
+    private async Task UpdateStudentFinance(string studentId)
+    {
+        try
+        {
+            // Create a new DbContext for the finance database
+            var optionsBuilder = new DbContextOptionsBuilder<USPFinance.Data.AppDbContext>();
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FinanceConnection"));
+            
+            using var financeContext = new USPFinance.Data.AppDbContext(optionsBuilder.Options);
+            
+            // Get the user from AspNetUsers using the StudentId (S-number)
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.StudentId == studentId);
+            if (user == null)
+            {
+                _logger.LogError("User not found for StudentId {StudentId}", studentId);
+                return;
+            }
+
+            _logger.LogInformation("Found user - Id: {Id}, StudentId: {StudentId}", user.Id, user.StudentId);
+
+            // Get all active enrollments for the student with course details
+            var enrollments = await _context.StudentEnrollments
+                .Include(e => e.Course)
+                .Where(e => e.StudentId == user.Id && e.IsActive)
+                .ToListAsync();
+
+            _logger.LogInformation("Found {Count} active enrollments for user", enrollments.Count);
+
+            // Calculate total fees from active enrollments
+            decimal totalFees = 0;
+            foreach (var enrollment in enrollments)
+            {
+                if (enrollment.Course?.Fees != null)
+                {
+                    totalFees += enrollment.Course.Fees.Value;
+                    _logger.LogInformation("Adding fees for course {CourseCode}: {Fees}", 
+                        enrollment.Course.Code, enrollment.Course.Fees.Value);
+                }
+            }
+
+            _logger.LogInformation("Total fees calculated: {TotalFees}", totalFees);
+
+            // Get existing finance record using StudentId
+            var studentFinance = await financeContext.StudentFinances
+                .FirstOrDefaultAsync(sf => sf.StudentID == user.StudentId);
+
+            if (studentFinance == null)
+            {
+                // Create new finance record
+                studentFinance = new USPFinance.Models.StudentFinance
+                {
+                    StudentID = user.StudentId,  // Use StudentId from AspNetUsers
+                    TotalFees = totalFees,
+                    AmountPaid = 0,
+                    LastUpdated = DateTime.UtcNow,
+                    IsOnHold = false,
+                    HoldReason = string.Empty,
+                    HoldPlacedBy = string.Empty
+                };
+                financeContext.StudentFinances.Add(studentFinance);
+                _logger.LogInformation("Created new finance record for StudentId: {StudentId}", user.StudentId);
+            }
+            else
+            {
+                // Update existing record
+                studentFinance.TotalFees = totalFees;
+                studentFinance.LastUpdated = DateTime.UtcNow;
+                _logger.LogInformation("Updated existing finance record for StudentId: {StudentId}", user.StudentId);
+            }
+
+            await financeContext.SaveChangesAsync();
+            _logger.LogInformation("Successfully saved finance record - StudentId: {StudentId}, TotalFees: {TotalFees}", 
+                user.StudentId, totalFees);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating student finance for {StudentId}", studentId);
+        }
     }
 
     public async Task<IActionResult> CourseDetails(int id)
@@ -253,6 +344,9 @@ public class StudentController : BaseController
 
         _context.StudentEnrollments.Remove(enrollment);
         await _context.SaveChangesAsync();
+
+        // Update finance record after unenrolling
+        await UpdateStudentFinance(user.StudentId);
 
         TempData["Success"] = "Successfully unenrolled from the course.";
         return RedirectToAction(nameof(Index));
