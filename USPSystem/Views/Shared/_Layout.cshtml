@@ -112,7 +112,7 @@
                             {
                                 <li class="nav-item">
                                     <a class="nav-link @(Context.Request.Path.Value?.Contains("/Manager/Program") == true ? "active" : "")"
-                                       asp-controller="Program" asp-action="Index">
+                                       asp-area="Manager" asp-controller="Program" asp-action="Index">
                                         <i class="bi bi-mortarboard"></i>
                                         Programs
                                     </a>
