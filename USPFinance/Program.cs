@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using USPFinance.Data;
+using USPFinance.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,13 +14,13 @@ var configuration = builder.Configuration;
 // 🔹 Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
 });
 
 // 🔹 Configure Database Connection
@@ -31,6 +32,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// 🔹 Add HttpClient for StudentFinanceUpdateService
+builder.Services.AddHttpClient<StudentFinanceUpdateService>();
+
+// 🔹 Register StudentFinanceUpdateService
+builder.Services.AddScoped<StudentFinanceUpdateService>();
 
 var app = builder.Build();
 
@@ -45,7 +52,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // 🔹 Enable CORS
-app.UseCors();
+app.UseCors("AllowAll");
 
 // 🔹 Enable Authorization Middleware
 app.UseAuthorization();

@@ -3,12 +3,17 @@
 }
 
 <h2>My Transcript</h2>
+ <partial name="_HoldMessage" />
 
-@if (TempData["Error"] != null)
-{
-<div class="alert alert-danger">@TempData["Error"]</div>
-}
+    @if (ViewData["HoldReason"] == null)
+    {
 
-<form method="post" asp-controller="Student" asp-action="GenerateTranscript">
-    <button type="submit" class="btn btn-primary">Generate Transcript (PDF)</button>
-</form>
+        @if (TempData["Error"] != null)
+        {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <form method="post" asp-controller="Student" asp-action="GenerateTranscript">
+            <button type="submit" class="btn btn-primary">Generate Transcript (PDF)</button>
+        </form>
+    }
