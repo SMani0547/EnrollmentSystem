@@ -14,6 +14,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using USPSystem.Filters;
 
 namespace USPSystem.Controllers;
 
@@ -459,6 +460,7 @@ public class StudentController : BaseController
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [GradeRecheckFilter]
     public async Task<IActionResult> SubmitRecheckApplication(RecheckApplicationModel model)
     {
         if (!ModelState.IsValid)
@@ -571,6 +573,7 @@ public class StudentController : BaseController
     [HttpPost]
     [Authorize]
     [ValidateAntiForgeryToken]
+    [EmailNotificationFilter]
     public async Task<IActionResult> SubmitGraduationApplication(GraduationApplicationViewModel model)
     {
         if (!ModelState.IsValid)
@@ -643,6 +646,7 @@ public class StudentController : BaseController
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [EmailNotificationFilter]
     public async Task<IActionResult> GenerateTranscript()
     {
         var user = await _userManager.GetUserAsync(User);
@@ -674,11 +678,8 @@ public class StudentController : BaseController
             TempData["Error"] = $"Unable to retrieve transcript. API returned: {errorDetails}";
             return RedirectToAction("Transcript");
         }
-
-
     }
 
     // ✅ TRANSCRIPT FEATURE – END
-
 }
 

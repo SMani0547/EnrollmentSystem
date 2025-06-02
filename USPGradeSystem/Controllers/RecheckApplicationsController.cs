@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using System.IO;
 
 namespace USPEducation.Controllers
 {
@@ -132,7 +133,33 @@ namespace USPEducation.Controllers
             _context.RecheckApplications.Add(recheckApplication);
             await _context.SaveChangesAsync();
 
+            // Log the recheck application
+            LogRecheckApplication(recheckApplication);
+
             return CreatedAtAction(nameof(GetRecheckApplication), new { id = recheckApplication.Id }, recheckApplication);
+        }
+
+        // Helper method to log recheck applications
+        private void LogRecheckApplication(RecheckApplication application)
+        {
+            try
+            {
+                var time = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+                string logMessage = $"[{time}] GRADE RECHECK API - Student: {application.StudentId} - Course: {application.CourseCode} - Year: {application.Year} - Semester: {application.Semester} - Reason: {application.Reason}";
+                
+                // Log to console
+                Console.WriteLine(logMessage);
+                
+                // Log to file system
+                string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+                Directory.CreateDirectory(logPath); // Ensure directory exists
+                System.IO.File.AppendAllText(Path.Combine(logPath, "grade_rechecks_api.txt"), logMessage + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                // Log exception but don't fail the request
+                Console.WriteLine($"Error logging recheck application: {ex.Message}");
+            }
         }
 
         // PUT: api/grades/recheck/5

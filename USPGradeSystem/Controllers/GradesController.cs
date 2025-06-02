@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using USPGradeSystem.Models;
 using System.Linq;
+using System;
+using System.IO;
 
 namespace USPEducation.Controllers
 {
@@ -62,6 +64,8 @@ namespace USPEducation.Controllers
             [FromQuery] string studentId, 
             [FromQuery] string courseId)
         {
+            LogApiAction($"Checking recheck status for Student: {studentId}, Course: {courseId}");
+            
             var hasApplied = await _context.RecheckApplications
                 .AnyAsync(r => r.StudentId == studentId && r.CourseCode == courseId);
 
@@ -72,6 +76,8 @@ namespace USPEducation.Controllers
         [HttpPost]
         public async Task<ActionResult<Grade>> PostGrade(Grade grade)
         {
+            LogApiAction($"Creating new grade for Student: {grade.StudentId}, Course: {grade.CourseId}, Grade: {grade.GradeLetter}");
+            
             _context.Grades.Add(grade);
             await _context.SaveChangesAsync();
 
@@ -82,6 +88,8 @@ namespace USPEducation.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGrade(int id, Grade grade)
         {
+            LogApiAction($"Updating grade ID: {id}, Student: {grade.StudentId}, Course: {grade.CourseId}, Grade: {grade.GradeLetter}");
+            
             if (id != grade.Id)
             {
                 return BadRequest();
@@ -118,6 +126,8 @@ namespace USPEducation.Controllers
                 return NotFound();
             }
 
+            LogApiAction($"Deleting grade ID: {id}, Student: {grade.StudentId}, Course: {grade.CourseId}");
+            
             _context.Grades.Remove(grade);
             await _context.SaveChangesAsync();
 
@@ -127,6 +137,29 @@ namespace USPEducation.Controllers
         private bool GradeExists(int id)
         {
             return _context.Grades.Any(e => e.Id == id);
+        }
+        
+        // Helper method to log API actions
+        private void LogApiAction(string message)
+        {
+            try
+            {
+                var time = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+                string logMessage = $"[{time}] GRADES API - {message}";
+                
+                // Log to console
+                Console.WriteLine(logMessage);
+                
+                // Log to file system
+                string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+                Directory.CreateDirectory(logPath); // Ensure directory exists
+                System.IO.File.AppendAllText(Path.Combine(logPath, "grades_api.txt"), logMessage + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                // Log exception but don't fail the request
+                Console.WriteLine($"Error logging API action: {ex.Message}");
+            }
         }
     }
 }

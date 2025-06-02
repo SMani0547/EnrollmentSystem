@@ -19,10 +19,12 @@ namespace USPSystem.Services
         private readonly string _smtpPassword;
         private readonly string _fromEmail;
         private readonly string _fromName;
+        private readonly IEmailLoggingService _emailLogger;
 
-        public EmailService(IConfiguration configuration)
+        public EmailService(IConfiguration configuration, IEmailLoggingService emailLogger)
         {
             _configuration = configuration;
+            _emailLogger = emailLogger;
             
             // Try to get settings from configuration
             _smtpServer = configuration["EmailSettings:SmtpServer"] ?? "smtp-relay.brevo.com";
@@ -65,6 +67,10 @@ namespace USPSystem.Services
                 };
 
                 await client.SendMailAsync(mailMessage);
+                
+                // Log the email
+                _emailLogger.LogEmailSent(to, subject);
+                
                 Console.WriteLine($"Email sent successfully to {to}");
                 return true;
             }
@@ -109,6 +115,9 @@ namespace USPSystem.Services
                 </div>
             </body>
             </html>";
+
+            // Log before sending
+            _emailLogger.LogEmailSent(to, subject, $"Student: {studentName}, Course: {courseCode}, Status: {status}");
 
             return await SendEmailAsync(to, subject, body);
         }

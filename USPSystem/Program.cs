@@ -3,11 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using USPSystem.Data;
 using USPSystem.Models;
 using USPSystem.Services;
+using USPSystem.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews()
+builder.Services.AddControllersWithViews(options =>
+{
+    // Register global filters here if needed
+    // options.Filters.Add<LogActionFilter>(); // Uncomment to apply globally
+})
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
@@ -60,6 +66,9 @@ builder.Services.AddHttpClient<PageHoldService>();
 
 // Register DirectGradeDataService for direct database access
 builder.Services.AddScoped<DirectGradeDataService>();
+
+// Register Email Logging Service
+builder.Services.AddScoped<IEmailLoggingService, EmailLoggingService>();
 
 // Register Email Service
 builder.Services.AddScoped<IEmailService, EmailService>();
