@@ -5,292 +5,297 @@
 }
 
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h2>@ViewData["Title"]</h2>
-            <p class="lead">Form SAS.3.34.0AA/B - Application for Compassionate / Aegrotat Pass / Special Exam</p>
-            <hr />
-        </div>
-    </div>
+    <partial name="_HoldMessage" />
 
-    <form asp-action="Apply" method="post" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="card mb-4">
-            <div class="card-header bg-teal text-white">
-                <h5 class="mb-0">SECTION A: PERSONAL DETAILS</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label asp-for="StudentId" class="control-label">Student ID Number:</label>
-                            <input asp-for="StudentId" class="form-control" readonly />
-                            <span asp-validation-for="StudentId" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
-                            <label asp-for="LastName" class="control-label">Last Name:</label>
-                            <input asp-for="LastName" class="form-control" readonly />
-                            <span asp-validation-for="LastName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
-                            <label asp-for="FirstName" class="control-label">First Name:</label>
-                            <input asp-for="FirstName" class="form-control" readonly />
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
-                            <label asp-for="MiddleName" class="control-label">Middle Name:</label>
-                            <input asp-for="MiddleName" class="form-control" />
-                            <span asp-validation-for="MiddleName" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
-                            <label asp-for="DateOfBirth" class="control-label">Date of Birth:</label>
-                            <input asp-for="DateOfBirth" class="form-control" type="date" />
-                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
-                            <label asp-for="Campus" class="control-label">Campus:</label>
-                            <select asp-for="Campus" class="form-control">
-                                <option value="">Select Campus</option>
-                                <option value="Laucala">Laucala</option>
-                                <option value="Alafua">Alafua</option>
-                                <option value="Emalus">Emalus</option>
-                                <option value="Kiribati">Kiribati</option>
-                                <option value="Labasa">Labasa</option>
-                                <option value="Lautoka">Lautoka</option>
-                                <option value="Marshall Islands">Marshall Islands</option>
-                                <option value="Nauru">Nauru</option>
-                                <option value="Niue">Niue</option>
-                                <option value="Solomon Islands">Solomon Islands</option>
-                                <option value="Tokelau">Tokelau</option>
-                                <option value="Tonga">Tonga</option>
-                                <option value="Tuvalu">Tuvalu</option>
-                                <option value="Vanuatu">Vanuatu</option>
-                            </select>
-                            <span asp-validation-for="Campus" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
-                            <label asp-for="SemesterYear" class="control-label">Semester/Year:</label>
-                            <input asp-for="SemesterYear" class="form-control" placeholder="e.g., Semester 1, 2023" />
-                            <span asp-validation-for="SemesterYear" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label asp-for="Address" class="control-label">Address:</label>
-                            <textarea asp-for="Address" class="form-control" rows="3"></textarea>
-                            <span asp-validation-for="Address" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Telephone" class="control-label">Telephone:</label>
-                                    <input asp-for="Telephone" class="form-control" />
-                                    <span asp-validation-for="Telephone" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Email" class="control-label">Email:</label>
-                                    <input asp-for="Email" class="form-control" />
-                                    <span asp-validation-for="Email" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header bg-teal text-white">
-                <h5 class="mb-0">SECTION B: MISSED EXAM DETAILS</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <table class="table table-bordered">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Course Code</th>
-                                    <th>Exam Date</th>
-                                    <th>Exam Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>
-                                        <select asp-for="CourseCode1" class="form-control">
-                                            <option value="">Select Course</option>
-                                            @foreach (var course in ViewBag.StudentCourses)
-                                            {
-                                                <option value="@course.Code">@course.Code - @course.Name</option>
-                                            }
-                                        </select>
-                                    </td>
-                                    <td><input asp-for="ExamDate1" class="form-control" type="date" /></td>
-                                    <td><input asp-for="ExamTime1" class="form-control" placeholder="e.g., 9:00 AM" /></td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>
-                                        <select asp-for="CourseCode2" class="form-control">
-                                            <option value="">Select Course</option>
-                                            @foreach (var course in ViewBag.StudentCourses)
-                                            {
-                                                <option value="@course.Code">@course.Code - @course.Name</option>
-                                            }
-                                        </select>
-                                    </td>
-                                    <td><input asp-for="ExamDate2" class="form-control" type="date" /></td>
-                                    <td><input asp-for="ExamTime2" class="form-control" placeholder="e.g., 9:00 AM" /></td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>
-                                        <select asp-for="CourseCode3" class="form-control">
-                                            <option value="">Select Course</option>
-                                            @foreach (var course in ViewBag.StudentCourses)
-                                            {
-                                                <option value="@course.Code">@course.Code - @course.Name</option>
-                                            }
-                                        </select>
-                                    </td>
-                                    <td><input asp-for="ExamDate3" class="form-control" type="date" /></td>
-                                    <td><input asp-for="ExamTime3" class="form-control" placeholder="e.g., 9:00 AM" /></td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>
-                                        <select asp-for="CourseCode4" class="form-control">
-                                            <option value="">Select Course</option>
-                                            @foreach (var course in ViewBag.StudentCourses)
-                                            {
-                                                <option value="@course.Code">@course.Code - @course.Name</option>
-                                            }
-                                        </select>
-                                    </td>
-                                    <td><input asp-for="ExamDate4" class="form-control" type="date" /></td>
-                                    <td><input asp-for="ExamTime4" class="form-control" placeholder="e.g., 9:00 AM" /></td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>
-                                        <select asp-for="CourseCode5" class="form-control">
-                                            <option value="">Select Course</option>
-                                            @foreach (var course in ViewBag.StudentCourses)
-                                            {
-                                                <option value="@course.Code">@course.Code - @course.Name</option>
-                                            }
-                                        </select>
-                                    </td>
-                                    <td><input asp-for="ExamDate5" class="form-control" type="date" /></td>
-                                    <td><input asp-for="ExamTime5" class="form-control" placeholder="e.g., 9:00 AM" /></td>
-                                </tr>
-                                <tr>
-                                    <td>6</td>
-                                    <td>
-                                        <select asp-for="CourseCode6" class="form-control">
-                                            <option value="">Select Course</option>
-                                            @foreach (var course in ViewBag.StudentCourses)
-                                            {
-                                                <option value="@course.Code">@course.Code - @course.Name</option>
-                                            }
-                                        </select>
-                                    </td>
-                                    <td><input asp-for="ExamDate6" class="form-control" type="date" /></td>
-                                    <td><input asp-for="ExamTime6" class="form-control" placeholder="e.g., 9:00 AM" /></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header bg-teal text-white">
-                <h5 class="mb-0">SECTION C: APPLICATION DETAILS</h5>
-            </div>
-            <div class="card-body">
-                <div class="row mb-4">
-                    <div class="col-md-12">
-                        <label class="control-label">What are you applying for?</label>
-                        <div class="mt-2">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" asp-for="ApplicationType" id="compassionate" value="CompassionatePass" />
-                                <label class="form-check-label" for="compassionate">Compassionate Pass</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" asp-for="ApplicationType" id="aegrotat" value="AegrotatPass" />
-                                <label class="form-check-label" for="aegrotat">Aegrotat Pass</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" asp-for="ApplicationType" id="special" value="SpecialExamination" />
-                                <label class="form-check-label" for="special">Special Examination</label>
-                            </div>
-                        </div>
-                        <span asp-validation-for="ApplicationType" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group mb-3">
-                            <label asp-for="Reason" class="control-label">Please state below your reasons for making this application:</label>
-                            <textarea asp-for="Reason" class="form-control" rows="5"></textarea>
-                            <span asp-validation-for="Reason" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group mb-3">
-                            <label class="control-label">Supporting Documentation (e.g. USP medical certificate, death certificate etc):</label>
-                            <input type="file" name="supportingDocument" class="form-control" />
-                            <small class="form-text text-muted">Please attach all necessary documents to support your application.</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    @if (ViewData["HoldReason"] == null)
+    {
         <div class="row mb-4">
             <div class="col-md-12">
-                <div class="form-group text-center">
-                    <input type="submit" value="Submit Application" class="btn btn-primary btn-lg" />
-                </div>
+                <h2>@ViewData["Title"]</h2>
+                <p class="lead">Form SAS.3.34.0AA/B - Application for Compassionate / Aegrotat Pass / Special Exam</p>
+                <hr />
             </div>
         </div>
-    </form>
+
+        <form asp-action="Apply" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-teal text-white">
+                    <h5 class="mb-0">SECTION A: PERSONAL DETAILS</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="StudentId" class="control-label">Student ID Number:</label>
+                                <input asp-for="StudentId" class="form-control" readonly />
+                                <span asp-validation-for="StudentId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="LastName" class="control-label">Last Name:</label>
+                                <input asp-for="LastName" class="form-control" readonly />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="FirstName" class="control-label">First Name:</label>
+                                <input asp-for="FirstName" class="form-control" readonly />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="MiddleName" class="control-label">Middle Name:</label>
+                                <input asp-for="MiddleName" class="form-control" />
+                                <span asp-validation-for="MiddleName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="DateOfBirth" class="control-label">Date of Birth:</label>
+                                <input asp-for="DateOfBirth" class="form-control" type="date" />
+                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="Campus" class="control-label">Campus:</label>
+                                <select asp-for="Campus" class="form-control">
+                                    <option value="">Select Campus</option>
+                                    <option value="Laucala">Laucala</option>
+                                    <option value="Alafua">Alafua</option>
+                                    <option value="Emalus">Emalus</option>
+                                    <option value="Kiribati">Kiribati</option>
+                                    <option value="Labasa">Labasa</option>
+                                    <option value="Lautoka">Lautoka</option>
+                                    <option value="Marshall Islands">Marshall Islands</option>
+                                    <option value="Nauru">Nauru</option>
+                                    <option value="Niue">Niue</option>
+                                    <option value="Solomon Islands">Solomon Islands</option>
+                                    <option value="Tokelau">Tokelau</option>
+                                    <option value="Tonga">Tonga</option>
+                                    <option value="Tuvalu">Tuvalu</option>
+                                    <option value="Vanuatu">Vanuatu</option>
+                                </select>
+                                <span asp-validation-for="Campus" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="SemesterYear" class="control-label">Semester/Year:</label>
+                                <input asp-for="SemesterYear" class="form-control" placeholder="e.g., Semester 1, 2023" />
+                                <span asp-validation-for="SemesterYear" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Address" class="control-label">Address:</label>
+                                <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Telephone" class="control-label">Telephone:</label>
+                                        <input asp-for="Telephone" class="form-control" />
+                                        <span asp-validation-for="Telephone" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Email" class="control-label">Email:</label>
+                                        <input asp-for="Email" class="form-control" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-teal text-white">
+                    <h5 class="mb-0">SECTION B: MISSED EXAM DETAILS</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Course Code</th>
+                                        <th>Exam Date</th>
+                                        <th>Exam Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>
+                                            <select asp-for="CourseCode1" class="form-control">
+                                                <option value="">Select Course</option>
+                                                @foreach (var course in ViewBag.StudentCourses)
+                                                {
+                                                    <option value="@course.Code">@course.Code - @course.Name</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input asp-for="ExamDate1" class="form-control" type="date" /></td>
+                                        <td><input asp-for="ExamTime1" class="form-control" placeholder="e.g., 9:00 AM" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>
+                                            <select asp-for="CourseCode2" class="form-control">
+                                                <option value="">Select Course</option>
+                                                @foreach (var course in ViewBag.StudentCourses)
+                                                {
+                                                    <option value="@course.Code">@course.Code - @course.Name</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input asp-for="ExamDate2" class="form-control" type="date" /></td>
+                                        <td><input asp-for="ExamTime2" class="form-control" placeholder="e.g., 9:00 AM" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>
+                                            <select asp-for="CourseCode3" class="form-control">
+                                                <option value="">Select Course</option>
+                                                @foreach (var course in ViewBag.StudentCourses)
+                                                {
+                                                    <option value="@course.Code">@course.Code - @course.Name</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input asp-for="ExamDate3" class="form-control" type="date" /></td>
+                                        <td><input asp-for="ExamTime3" class="form-control" placeholder="e.g., 9:00 AM" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>
+                                            <select asp-for="CourseCode4" class="form-control">
+                                                <option value="">Select Course</option>
+                                                @foreach (var course in ViewBag.StudentCourses)
+                                                {
+                                                    <option value="@course.Code">@course.Code - @course.Name</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input asp-for="ExamDate4" class="form-control" type="date" /></td>
+                                        <td><input asp-for="ExamTime4" class="form-control" placeholder="e.g., 9:00 AM" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>
+                                            <select asp-for="CourseCode5" class="form-control">
+                                                <option value="">Select Course</option>
+                                                @foreach (var course in ViewBag.StudentCourses)
+                                                {
+                                                    <option value="@course.Code">@course.Code - @course.Name</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input asp-for="ExamDate5" class="form-control" type="date" /></td>
+                                        <td><input asp-for="ExamTime5" class="form-control" placeholder="e.g., 9:00 AM" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>
+                                            <select asp-for="CourseCode6" class="form-control">
+                                                <option value="">Select Course</option>
+                                                @foreach (var course in ViewBag.StudentCourses)
+                                                {
+                                                    <option value="@course.Code">@course.Code - @course.Name</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input asp-for="ExamDate6" class="form-control" type="date" /></td>
+                                        <td><input asp-for="ExamTime6" class="form-control" placeholder="e.g., 9:00 AM" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-teal text-white">
+                    <h5 class="mb-0">SECTION C: APPLICATION DETAILS</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <label class="control-label">What are you applying for?</label>
+                            <div class="mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" asp-for="ApplicationType" id="compassionate" value="CompassionatePass" />
+                                    <label class="form-check-label" for="compassionate">Compassionate Pass</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" asp-for="ApplicationType" id="aegrotat" value="AegrotatPass" />
+                                    <label class="form-check-label" for="aegrotat">Aegrotat Pass</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" asp-for="ApplicationType" id="special" value="SpecialExamination" />
+                                    <label class="form-check-label" for="special">Special Examination</label>
+                                </div>
+                            </div>
+                            <span asp-validation-for="ApplicationType" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label asp-for="Reason" class="control-label">Please state below your reasons for making this application:</label>
+                                <textarea asp-for="Reason" class="form-control" rows="5"></textarea>
+                                <span asp-validation-for="Reason" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label class="control-label">Supporting Documentation (e.g. USP medical certificate, death certificate etc):</label>
+                                <input type="file" name="supportingDocument" class="form-control" />
+                                <small class="form-text text-muted">Please attach all necessary documents to support your application.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="form-group text-center">
+                        <input type="submit" value="Submit Application" class="btn btn-primary btn-lg" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    }
 </div>
 
 @section Scripts {

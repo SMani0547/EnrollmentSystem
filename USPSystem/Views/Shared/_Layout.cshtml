@@ -205,17 +205,17 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/StudentFinance") == true ? "active" : "")"
-                                       asp-controller="StudentFinance" asp-action="Index">
-                                        <i class="bi bi-cash-coin"></i>
-                                        My Finance
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link @(Context.Request.Path.Value?.Contains("/Student/Transcript") == true ? "active" : "")"
                                        asp-controller="Student" asp-action="Transcript">
                                         <i class="bi bi-file-earmark-pdf"></i>
                                         My Transcript
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(Context.Request.Path.Value?.Contains("/StudentFinance") == true ? "active" : "")"
+                                       asp-controller="StudentFinance" asp-action="Index">
+                                        <i class="bi bi-cash-coin"></i>
+                                        My Finance
                                     </a>
                                 </li>
                                 <li class="nav-item">

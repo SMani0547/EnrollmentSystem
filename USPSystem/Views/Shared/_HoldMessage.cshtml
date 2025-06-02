@@ -6,7 +6,7 @@
         document.body.classList.add('has-hold');
     </script>
     <div class="hold-message">
-        <div class="alert alert-warning">
+        <div class="alert alert-danger">
             <h4 class="alert-heading">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 @(ViewData["HoldReason"].ToString().Contains("This page") ? "Page Access Restricted" : "Account On Hold")

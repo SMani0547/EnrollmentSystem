@@ -5,248 +5,256 @@
 @using System.Linq
 
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-12 text-center">
-            <div class="d-flex align-items-center justify-content-center mb-2">
-                <img src="~/images/usp-logo.png" alt="USP Logo" height="80" class="me-3" />
-                <div>
-                    <h2 class="mb-0">USP</h2>
-                    <p class="mb-0 small">THE UNIVERSITY OF THE SOUTH PACIFIC</p>
-                </div>
-                <div class="ms-5 text-teal">
-                    <h3 class="text-primary">APPLICATION FOR COMPLETION<br />OF PROGRAMME</h3>
-                </div>
-            </div>
-            <div class="alert alert-info small">
-                This form is also available on the USP website: www.usp.ac.fj/forms
-            </div>
-            <div class="alert alert-teal text-center">
-                <strong>Please complete all sections of this form.</strong><br />
-                Students are required to read the instructions at the back of this application form before submitting.
-            </div>
-        </div>
-    </div>
+    
+    <partial name="_HoldMessage" />
 
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">IMPORTANT NOTES FOR GRADUATION APPLICANTS</h5>
+    @if (ViewData["HoldReason"] == null)
+    { 
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <div class="d-flex align-items-center justify-content-center mb-2">
+                    <img src="~/images/usp-logo.png" alt="USP Logo" height="80" class="me-3" />
+                    <div>
+                        <h2 class="mb-0">USP</h2>
+                        <p class="mb-0 small">THE UNIVERSITY OF THE SOUTH PACIFIC</p>
+                    </div>
+                    <div class="ms-5 text-teal">
+                        <h3 class="text-primary">APPLICATION FOR COMPLETION<br />OF PROGRAMME</h3>
+                    </div>
+                </div>
+                <div class="alert alert-info small">
+                    This form is also available on the USP website: www.usp.ac.fj/forms
+                </div>
+                <div class="alert alert-teal text-center">
+                    <strong>Please complete all sections of this form.</strong><br />
+                    Students are required to read the instructions at the back of this application form before submitting.
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <p><strong>Students applying to graduate should note the following:</strong></p>
-            <ol>
-                <li><strong>Apply</strong> - You are required to apply for only one of the stated graduation ceremonies and your application should reach Student Administrative Services – Laucala Campus by the advertised closing date. This date is sent out via email notification to your student email account.</li>
-                <li><strong>For any other Campus graduation ceremony</strong>, please liaise with your Campus Administration Office prior to applying as the decision to have a graduation ceremony other than the ones scheduled, depends on the approval of USP Senior Management.</li>
-                <li><strong>Only students</strong> from Samoa, Vanuatu and the Solomon Islands or students studying at those campuses are eligible to apply for those graduation ceremonies.</li>
-                <li><strong>Response to your application.</strong> If you have not received a response to your application 3 weeks prior to the graduation ceremony, contact Student Administrative Services / your Campus Administration Office for an update.</li>
-                <li><strong>Deferment.</strong> If you decide to defer your application to a later graduation ceremony, an email needs to be sent to completions@usp.ac.fj no later than three weeks before the graduation ceremony you initially applied for takes place.</li>
-                <li><strong>Check your name on your SOLS account.</strong> If your name is incorrect or you would like to request for a change in your name, you are required to complete and submit a "Request for Change to Personal Details" form as soon as possible but no later than three weeks before the graduation ceremony.</li>
-                <li><strong>Check your mailing and vacation address.</strong> If your address has changed or it will change before graduation, inform Student Administrative Services / your Campus Administration Office by completing a "Request for Change to Personal Details" form as soon as possible but no later than three weeks before the graduation ceremony. Note that the decision on your application is normally sent to your vacation address.</li>
-                <li><strong>Attendance</strong> – If you do not attend the graduation ceremony, you can either collect your certificate from Student Administrative Services – Laucala Campus the week after the graduation day or request it to be sent to your vacation postal address or to the USP campus in your home country.</li>
-                <li>If you do <strong>not attend the graduation ceremony</strong> and do not notify the means of collection, your certificate will be sent to the vacation address listed on your SOLS account.</li>
-            </ol>
-            <p><strong>Your application will be deemed unsuccessful if the following issues are not sorted three weeks before the graduation ceremony:</strong></p>
-            <ol>
-                <li>Your courses are not properly registered and your tuition fees have not been cleared,</li>
-                <li>You have HOLDS (that is a block against your student account for outstanding fees, discipline issues, etc),</li>
-                <li>Written approvals for any waiver/substitution of courses from your Head of School (endorsed by the Associate Dean's Office) have not been submitted to Student Administrative Services for processing,</li>
-                <li>Your pending/outstanding grades and practicum have not been submitted to Student Administrative Services for updating,</li>
-                <li>The completed paperwork for your thesis (Master, PhD) has not been submitted to Student Administrative Services for processing.</li>
-            </ol>
-            <p><strong>For clarifications, please email the SAS Assessment Team: completions@usp.ac.fj</strong></p>
-        </div>
-    </div>
 
-    @if (ViewBag.HasPendingApplication == true)
-    {
-        <div class="alert alert-info mb-4">
-            <h5 class="alert-heading">Previous Application Found</h5>
-            <p>You have a graduation application submitted on @ViewBag.ApplicationDate.ToString("MMMM dd, yyyy").</p>
-            <p>Ceremony: @ViewBag.GraduationCeremony</p>
-            <p>Status: @ViewBag.ApplicationStatus</p>
+      
+        <div class="card mb-4">
+                 <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">IMPORTANT NOTES FOR GRADUATION APPLICANTS</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Students applying to graduate should note the following:</strong></p>
+                <ol>
+                    <li><strong>Apply</strong> - You are required to apply for only one of the stated graduation ceremonies and your application should reach Student Administrative Services – Laucala Campus by the advertised closing date. This date is sent out via email notification to your student email account.</li>
+                    <li><strong>For any other Campus graduation ceremony</strong>, please liaise with your Campus Administration Office prior to applying as the decision to have a graduation ceremony other than the ones scheduled, depends on the approval of USP Senior Management.</li>
+                    <li><strong>Only students</strong> from Samoa, Vanuatu and the Solomon Islands or students studying at those campuses are eligible to apply for those graduation ceremonies.</li>
+                    <li><strong>Response to your application.</strong> If you have not received a response to your application 3 weeks prior to the graduation ceremony, contact Student Administrative Services / your Campus Administration Office for an update.</li>
+                    <li><strong>Deferment.</strong> If you decide to defer your application to a later graduation ceremony, an email needs to be sent to completions@usp.ac.fj no later than three weeks before the graduation ceremony you initially applied for takes place.</li>
+                    <li><strong>Check your name on your SOLS account.</strong> If your name is incorrect or you would like to request for a change in your name, you are required to complete and submit a "Request for Change to Personal Details" form as soon as possible but no later than three weeks before the graduation ceremony.</li>
+                    <li><strong>Check your mailing and vacation address.</strong> If your address has changed or it will change before graduation, inform Student Administrative Services / your Campus Administration Office by completing a "Request for Change to Personal Details" form as soon as possible but no later than three weeks before the graduation ceremony. Note that the decision on your application is normally sent to your vacation address.</li>
+                    <li><strong>Attendance</strong> – If you do not attend the graduation ceremony, you can either collect your certificate from Student Administrative Services – Laucala Campus the week after the graduation day or request it to be sent to your vacation postal address or to the USP campus in your home country.</li>
+                    <li>If you do <strong>not attend the graduation ceremony</strong> and do not notify the means of collection, your certificate will be sent to the vacation address listed on your SOLS account.</li>
+                </ol>
+                <p><strong>Your application will be deemed unsuccessful if the following issues are not sorted three weeks before the graduation ceremony:</strong></p>
+                <ol>
+                    <li>Your courses are not properly registered and your tuition fees have not been cleared,</li>
+                    <li>You have HOLDS (that is a block against your student account for outstanding fees, discipline issues, etc),</li>
+                    <li>Written approvals for any waiver/substitution of courses from your Head of School (endorsed by the Associate Dean's Office) have not been submitted to Student Administrative Services for processing,</li>
+                    <li>Your pending/outstanding grades and practicum have not been submitted to Student Administrative Services for updating,</li>
+                    <li>The completed paperwork for your thesis (Master, PhD) has not been submitted to Student Administrative Services for processing.</li>
+                </ol>
+                <p><strong>For clarifications, please email the SAS Assessment Team: completions@usp.ac.fj</strong></p>
+            </div>
         </div>
+
+        @if (ViewBag.HasPendingApplication == true)
+        {
+            <div class="alert alert-info mb-4">
+                <h5 class="alert-heading">Previous Application Found</h5>
+                <p>You have a graduation application submitted on @ViewBag.ApplicationDate.ToString("MMMM dd, yyyy").</p>
+                <p>Ceremony: @ViewBag.GraduationCeremony</p>
+                <p>Status: @ViewBag.ApplicationStatus</p>
+            </div>
+        }
+
+        @if (ViewBag.CanGraduate)
+        {
+            <div class="alert alert-success mb-4">
+                <h5 class="alert-heading">Congratulations!</h5>
+                <p>Based on your academic records, you appear to be eligible to apply for graduation.</p>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning mb-4">
+                <h5 class="alert-heading">Notice</h5>
+                <p>You currently have completed @ViewBag.CompletedCoursesCount courses. The minimum requirement for graduation is typically 24 courses.</p>
+                <p>Please review your program requirements before proceeding with your application.</p>
+            </div>
+        }
+
+        <form method="post" asp-controller="Student" asp-action="SubmitGraduationApplication">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">SECTION A: PERSONAL DETAILS</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Student ID:</label>
+                            <input type="text" class="form-control" value="@ViewBag.StudentId" readonly />
+                            <input type="hidden" asp-for="StudentId" value="@ViewBag.StudentId" />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name:</label>
+                            <input type="text" class="form-control" value="@(ViewBag.StudentName?.Split(' ')[0])" readonly />
+                            <input type="hidden" asp-for="FirstName" value="@(ViewBag.StudentName?.Split(' ')[0])" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Surname:</label>
+                            <input type="text" class="form-control" value="@(ViewBag.StudentName != null && ViewBag.StudentName.ToString().IndexOf(' ') > 0 ? ViewBag.StudentName.ToString().Substring(ViewBag.StudentName.ToString().IndexOf(' ') + 1) : "")" readonly />
+                            <input type="hidden" asp-for="Surname" value="@(ViewBag.StudentName != null && ViewBag.StudentName.ToString().IndexOf(' ') > 0 ? ViewBag.StudentName.ToString().Substring(ViewBag.StudentName.ToString().IndexOf(' ') + 1) : "")" />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Postal Address:</label>
+                            <textarea class="form-control" asp-for="PostalAddress" rows="3" required></textarea>
+                            <span asp-validation-for="PostalAddress" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Date of Birth:</label>
+                                <input type="date" class="form-control" asp-for="DateOfBirth" required />
+                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Telephone:</label>
+                                <input type="tel" class="form-control" asp-for="Telephone" placeholder="Enter your phone number" required />
+                                <span asp-validation-for="Telephone" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email:</label>
+                                <input type="email" class="form-control" asp-for="Email" placeholder="Enter your email address" required />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label class="form-label">Programme you are completing?:</label>
+                            <input type="text" class="form-control" value="@ViewBag.Program" readonly />
+                            <input type="hidden" asp-for="Programme" value="@ViewBag.Program" />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Major 1:</label>
+                            <input type="text" class="form-control" value="@ViewBag.MajorI" readonly />
+                            <input type="hidden" asp-for="MajorI" value="@ViewBag.MajorI" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Major 2:</label>
+                            <input type="text" class="form-control" value="@ViewBag.MajorII" readonly />
+                            <input type="hidden" asp-for="MajorII" value="@ViewBag.MajorII" />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Minor:</label>
+                            <input type="text" class="form-control" value="@ViewBag.MinorI" readonly />
+                            <input type="hidden" asp-for="Minor" value="@ViewBag.MinorI" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">SECTION B: GRADUATION CEREMONY</h5>
+                </div>
+                <div class="card-body">
+                    <p>Please tick only <strong>ONE</strong> graduation ceremony:</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="laucalaMarchApril" value="Laucala Campus - March/April">
+                                <label class="form-check-label" for="laucalaMarchApril">Laucala Campus - March / April</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="laucalaSeptOct" value="Laucala Campus - September/October">
+                                <label class="form-check-label" for="laucalaSeptOct">Laucala Campus - September / October</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="emalusCampus" value="Emalus Campus - April/May">
+                                <label class="form-check-label" for="emalusCampus">Emalus Campus - April / May</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="samoaCampus" value="Samoa Campus - April/May">
+                                <label class="form-check-label" for="samoaCampus">Samoa Campus - April / May</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="solomonCampus" value="Solomon Campus - September/October">
+                                <label class="form-check-label" for="solomonCampus">Solomon Campus - September / October</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="tongaCampus" value="Tonga Campus - October/November">
+                                <label class="form-check-label" for="tongaCampus">Tonga Campus - October / November</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="foundation" value="Foundation">
+                                <label class="form-check-label" for="foundation">Foundation</label>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="GraduationCeremony" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">SECTION C: GRADUATION ATTENDANCE</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" asp-for="AttendanceOption" id="willAttend" value="attend">
+                        <label class="form-check-label" for="willAttend">I will attend the graduation ceremony</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" asp-for="AttendanceOption" id="willNotAttend" value="notAttend">
+                        <label class="form-check-label" for="willNotAttend">I will NOT attend the graduation ceremony</label>
+                    </div>
+                    <span asp-validation-for="AttendanceOption" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">SECTION D: DECLARATION</h5>
+                </div>
+                <div class="card-body">
+                    <p>I certify that the particulars in this form are correct, I have read the notes at the back of this form, and I will abide by the rules set out in the Statutes, Ordinances, Regulations and the Charter of the University of the South Pacific.</p>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" asp-for="ConfirmDeclaration" id="confirmDeclaration" required>
+                        <label class="form-check-label" for="confirmDeclaration">
+                            I confirm the above declaration
+                        </label>
+                        <span asp-validation-for="ConfirmDeclaration" class="text-danger"></span>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Submit Application</button>
+                        <a href="@Url.Action("Index", "Student")" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </form>
     }
-
-    @if (ViewBag.CanGraduate)
-    {
-        <div class="alert alert-success mb-4">
-            <h5 class="alert-heading">Congratulations!</h5>
-            <p>Based on your academic records, you appear to be eligible to apply for graduation.</p>
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-warning mb-4">
-            <h5 class="alert-heading">Notice</h5>
-            <p>You currently have completed @ViewBag.CompletedCoursesCount courses. The minimum requirement for graduation is typically 24 courses.</p>
-            <p>Please review your program requirements before proceeding with your application.</p>
-        </div>
-    }
-
-    <form method="post" asp-controller="Student" asp-action="SubmitGraduationApplication">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">SECTION A: PERSONAL DETAILS</h5>
-            </div>
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Student ID:</label>
-                        <input type="text" class="form-control" value="@ViewBag.StudentId" readonly />
-                        <input type="hidden" asp-for="StudentId" value="@ViewBag.StudentId" />
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">First Name:</label>
-                        <input type="text" class="form-control" value="@(ViewBag.StudentName?.Split(' ')[0])" readonly />
-                        <input type="hidden" asp-for="FirstName" value="@(ViewBag.StudentName?.Split(' ')[0])" />
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Surname:</label>
-                        <input type="text" class="form-control" value="@(ViewBag.StudentName != null && ViewBag.StudentName.ToString().IndexOf(' ') > 0 ? ViewBag.StudentName.ToString().Substring(ViewBag.StudentName.ToString().IndexOf(' ') + 1) : "")" readonly />
-                        <input type="hidden" asp-for="Surname" value="@(ViewBag.StudentName != null && ViewBag.StudentName.ToString().IndexOf(' ') > 0 ? ViewBag.StudentName.ToString().Substring(ViewBag.StudentName.ToString().IndexOf(' ') + 1) : "")" />
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Postal Address:</label>
-                        <textarea class="form-control" asp-for="PostalAddress" rows="3" required></textarea>
-                        <span asp-validation-for="PostalAddress" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">Date of Birth:</label>
-                            <input type="date" class="form-control" asp-for="DateOfBirth" required />
-                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Telephone:</label>
-                            <input type="tel" class="form-control" asp-for="Telephone" placeholder="Enter your phone number" required />
-                            <span asp-validation-for="Telephone" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email:</label>
-                            <input type="email" class="form-control" asp-for="Email" placeholder="Enter your email address" required />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <label class="form-label">Programme you are completing?:</label>
-                        <input type="text" class="form-control" value="@ViewBag.Program" readonly />
-                        <input type="hidden" asp-for="Programme" value="@ViewBag.Program" />
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Major 1:</label>
-                        <input type="text" class="form-control" value="@ViewBag.MajorI" readonly />
-                        <input type="hidden" asp-for="MajorI" value="@ViewBag.MajorI" />
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Major 2:</label>
-                        <input type="text" class="form-control" value="@ViewBag.MajorII" readonly />
-                        <input type="hidden" asp-for="MajorII" value="@ViewBag.MajorII" />
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Minor:</label>
-                        <input type="text" class="form-control" value="@ViewBag.MinorI" readonly />
-                        <input type="hidden" asp-for="Minor" value="@ViewBag.MinorI" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">SECTION B: GRADUATION CEREMONY</h5>
-            </div>
-            <div class="card-body">
-                <p>Please tick only <strong>ONE</strong> graduation ceremony:</p>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="laucalaMarchApril" value="Laucala Campus - March/April">
-                            <label class="form-check-label" for="laucalaMarchApril">Laucala Campus - March / April</label>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="laucalaSeptOct" value="Laucala Campus - September/October">
-                            <label class="form-check-label" for="laucalaSeptOct">Laucala Campus - September / October</label>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="emalusCampus" value="Emalus Campus - April/May">
-                            <label class="form-check-label" for="emalusCampus">Emalus Campus - April / May</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="samoaCampus" value="Samoa Campus - April/May">
-                            <label class="form-check-label" for="samoaCampus">Samoa Campus - April / May</label>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="solomonCampus" value="Solomon Campus - September/October">
-                            <label class="form-check-label" for="solomonCampus">Solomon Campus - September / October</label>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="tongaCampus" value="Tonga Campus - October/November">
-                            <label class="form-check-label" for="tongaCampus">Tonga Campus - October / November</label>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" asp-for="GraduationCeremony" id="foundation" value="Foundation">
-                            <label class="form-check-label" for="foundation">Foundation</label>
-                        </div>
-                    </div>
-                </div>
-                <span asp-validation-for="GraduationCeremony" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">SECTION C: GRADUATION ATTENDANCE</h5>
-            </div>
-            <div class="card-body">
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" asp-for="AttendanceOption" id="willAttend" value="attend">
-                    <label class="form-check-label" for="willAttend">I will attend the graduation ceremony</label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" asp-for="AttendanceOption" id="willNotAttend" value="notAttend">
-                    <label class="form-check-label" for="willNotAttend">I will NOT attend the graduation ceremony</label>
-                </div>
-                <span asp-validation-for="AttendanceOption" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">SECTION D: DECLARATION</h5>
-            </div>
-            <div class="card-body">
-                <p>I certify that the particulars in this form are correct, I have read the notes at the back of this form, and I will abide by the rules set out in the Statutes, Ordinances, Regulations and the Charter of the University of the South Pacific.</p>
-                
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" asp-for="ConfirmDeclaration" id="confirmDeclaration" required>
-                    <label class="form-check-label" for="confirmDeclaration">
-                        I confirm the above declaration
-                    </label>
-                    <span asp-validation-for="ConfirmDeclaration" class="text-danger"></span>
-                </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">Submit Application</button>
-                    <a href="@Url.Action("Index", "Student")" class="btn btn-secondary">Cancel</a>
-                </div>
-            </div>
-        </div>
-    </form>
 </div>
+
 
 <style>
     .alert-teal {

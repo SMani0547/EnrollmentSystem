@@ -16,10 +16,9 @@ using USPSystem.Services;
 namespace USPSystem.Controllers
 {
     [Authorize]
-    public class SpecialConsiderationController : Controller
+    public class SpecialConsiderationController : BaseController
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailService _emailService;
         private readonly IWebHostEnvironment _hostEnvironment;
 
@@ -27,10 +26,12 @@ namespace USPSystem.Controllers
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             IEmailService emailService,
-            IWebHostEnvironment hostEnvironment)
+            IWebHostEnvironment hostEnvironment,
+            StudentHoldService studentHoldService,
+            PageHoldService pageHoldService)
+            : base(studentHoldService, pageHoldService, userManager)
         {
             _context = context;
-            _userManager = userManager;
             _emailService = emailService;
             _hostEnvironment = hostEnvironment;
         }
