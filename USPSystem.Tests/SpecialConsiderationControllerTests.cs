@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using USPSystem.Controllers;
 using USPSystem.Data;
@@ -29,6 +30,11 @@ namespace USPSystem.Tests
         private readonly Mock<UserManager<ApplicationUser>> _mockUserManager;
         private readonly Mock<IEmailService> _mockEmailService;
         private readonly Mock<IWebHostEnvironment> _mockHostEnvironment;
+        private readonly Mock<IConfiguration> _mockConfiguration;
+        private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
+        private readonly Mock<ILogger<PageHoldService>> _mockPageHoldLogger;
+        private readonly StudentHoldService _studentHoldService;
+        private readonly PageHoldService _pageHoldService;
         private readonly DbContextOptions<ApplicationDbContext> _dbContextOptions;
 
         public SpecialConsiderationControllerTests()
@@ -53,10 +59,27 @@ namespace USPSystem.Tests
             _mockHostEnvironment = new Mock<IWebHostEnvironment>();
             _mockHostEnvironment.Setup(h => h.WebRootPath).Returns("webroot_path");
 
+            // Setup Configuration mock
+            _mockConfiguration = new Mock<IConfiguration>();
+            _mockConfiguration.Setup(c => c["FinanceApi:BaseUrl"]).Returns("http://localhost:5000");
+
+            // Setup HttpContextAccessor mock
+            _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+            var httpContext = new DefaultHttpContext();
+            _mockHttpContextAccessor.Setup(h => h.HttpContext).Returns(httpContext);
+
+            // Setup PageHoldService logger mock
+            _mockPageHoldLogger = new Mock<ILogger<PageHoldService>>();
+
             // Setup in-memory database
             _dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
+
+            // Create real instances of services with the in-memory database
+            var httpClient = new HttpClient();
+            _studentHoldService = new StudentHoldService(httpClient, _mockConfiguration.Object, _mockHttpContextAccessor.Object);
+            _pageHoldService = new PageHoldService(httpClient, _mockConfiguration.Object, _mockHttpContextAccessor.Object, _mockPageHoldLogger.Object);
         }
 
         private ApplicationDbContext GetDbContext()
@@ -72,7 +95,9 @@ namespace USPSystem.Tests
                 context,
                 _mockUserManager.Object,
                 _mockEmailService.Object,
-                _mockHostEnvironment.Object
+                _mockHostEnvironment.Object,
+                _studentHoldService,
+                _pageHoldService
             );
         }
 
